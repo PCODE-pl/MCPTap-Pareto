@@ -18,7 +18,20 @@ DEFAULT_BENCHMARK_URL = (
     "?source=openrouter&benchmark_type=tau_bench_verified_airline"
 )
 DEFAULT_ACCURACY_THRESHOLD = 0.60
+DEFAULT_EXCLUDE_PROVIDERS_WITH_PLAN = True
 DATE_SUFFIX_RE = re.compile(r"-(?:\d{8}|\d{4}-\d{2}-\d{2}|\d{2}-\d{2})$")
+
+
+def parse_bool(value: str | None, default: bool) -> bool:
+    """Parse a boolean environment value with an explicit default."""
+    if value is None or not value.strip():
+        return default
+    normalized = value.strip().lower()
+    if normalized in {"1", "true", "yes", "on"}:
+        return True
+    if normalized in {"0", "false", "no", "off"}:
+        return False
+    raise ValueError(f"Invalid boolean value: {value}")
 
 
 def normalize_model_ref(value: str) -> str:
@@ -187,6 +200,7 @@ def collect_provider_prices(
     canonical_model: str,
     canonical_metadata: dict[str, dict[str, Any]],
     openrouter_ref: dict[str, Any],
+    exclude_providers_with_plan: bool,
 ) -> dict[str, dict[str, dict[str, Any]]]:
     """Collect provider records by canonical ID and OpenRouter family fallback."""
     providers: dict[str, dict[str, dict[str, Any]]] = {}
@@ -199,6 +213,8 @@ def collect_provider_prices(
     target_name = openrouter_ref.get("name")
     target_name_key = normalize_display_name(target_name) if target_name else None
     for provider_dir in providers_root.iterdir():
+        if exclude_providers_with_plan and "-plan" in provider_dir.name.lower():
+            continue
         models_root = provider_dir / "models"
         if not models_root.is_dir():
             continue
@@ -242,6 +258,7 @@ def compile_pareto_data(
     repo_root: Path,
     benchmark_payload: dict[str, Any],
     accuracy_threshold: float,
+    exclude_providers_with_plan: bool,
 ) -> dict[str, dict[str, Any]]:
     """Compile the requested canonical-model-to-provider-price structure."""
     canonical_metadata = build_canonical_metadata(repo_root)
@@ -269,7 +286,11 @@ def compile_pareto_data(
         result[canonical_model] = {
             "accuracy": accuracy,
             "providers": collect_provider_prices(
-                repo_root, canonical_model, canonical_metadata, openrouter_ref
+                repo_root,
+                canonical_model,
+                canonical_metadata,
+                openrouter_ref,
+                exclude_providers_with_plan,
             ),
         }
 
@@ -285,10 +306,19 @@ def main() -> None:
     threshold = float(
         os.environ.get("PARETO_ACCURACY_THRESHOLD", DEFAULT_ACCURACY_THRESHOLD)
     )
+    exclude_providers_with_plan = parse_bool(
+        os.environ.get("EXCLUDE_PROVIDERS_WITH_PLAN"),
+        DEFAULT_EXCLUDE_PROVIDERS_WITH_PLAN,
+    )
     output_path = Path(os.environ.get("PARETO_OUTPUT_PATH", repo_root / "pareto.json"))
     benchmark_url = os.environ.get("OPENROUTER_BENCHMARK_URL", DEFAULT_BENCHMARK_URL)
     payload = fetch_benchmark(benchmark_url, api_key)
-    result = compile_pareto_data(repo_root, payload, threshold)
+    result = compile_pareto_data(
+        repo_root,
+        payload,
+        threshold,
+        exclude_providers_with_plan,
+    )
     output_path.write_text(
         json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )

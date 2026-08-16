@@ -1144,26 +1144,6 @@
           }
         }
       },
-      "umans-ai-coding-plan": {
-        "umans-flash": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
-          }
-        },
-        "umans-qwen3.6-35b-a3b": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
-          }
-        }
-      },
       "venice": {
         "qwen3-6-35b-a3b": {
           "is_thinking": true,
@@ -5483,16 +5463,6 @@
           }
         }
       },
-      "scnet-token-plan": {
-        "DeepSeek-V3.2": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0
-          }
-        }
-      },
       "tensorx": {
         "deepseek/deepseek-v3.2": {
           "is_thinking": true,
@@ -5710,28 +5680,6 @@
             "input": 0.14,
             "output": 0.28,
             "cache_read": 0.0028
-          }
-        }
-      },
-      "alibaba-token-plan": {
-        "deepseek-v4-flash": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
-          }
-        }
-      },
-      "alibaba-token-plan-cn": {
-        "deepseek-v4-flash": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
           }
         }
       },
@@ -6071,16 +6019,6 @@
           }
         }
       },
-      "scnet-token-plan": {
-        "DeepSeek-V4-Flash": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0
-          }
-        }
-      },
       "siliconflow": {
         "deepseek-ai/DeepSeek-V4-Flash": {
           "is_thinking": true,
@@ -6208,28 +6146,6 @@
             "input": 0.435,
             "output": 0.87,
             "cache_read": 0.003625
-          }
-        }
-      },
-      "alibaba-token-plan": {
-        "deepseek-v4-pro": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
-          }
-        }
-      },
-      "alibaba-token-plan-cn": {
-        "deepseek-v4-pro": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
           }
         }
       },
@@ -9806,28 +9722,6 @@
           }
         }
       },
-      "alibaba-token-plan": {
-        "MiniMax-M2.5": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
-          }
-        }
-      },
-      "alibaba-token-plan-cn": {
-        "MiniMax-M2.5": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
-          }
-        }
-      },
       "cortecs": {
         "minimax-m2.5": {
           "is_thinking": true,
@@ -9980,16 +9874,6 @@
             "output": 1.2,
             "cache_read": 0.03,
             "cache_write": 0.375
-          }
-        }
-      },
-      "scnet-token-plan": {
-        "MiniMax-M2.5": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0
           }
         }
       },
@@ -10210,16 +10094,6 @@
             "output": 1.2,
             "cache_read": 0.279,
             "cache_write": 0.279
-          }
-        }
-      },
-      "scnet-token-plan": {
-        "MiniMax-M2.7": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0
           }
         }
       },
@@ -10522,16 +10396,6 @@
           }
         }
       },
-      "scnet-token-plan": {
-        "MiniMax-M3": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0
-          }
-        }
-      },
       "synthetic": {
         "hf:MiniMaxAI/MiniMax-M3": {
           "is_thinking": true,
@@ -10707,28 +10571,6 @@
   "moonshotai/kimi-k2.5": {
     "accuracy": 0.71306668,
     "providers": {
-      "alibaba-token-plan": {
-        "kimi-k2.5": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
-          }
-        }
-      },
-      "alibaba-token-plan-cn": {
-        "kimi-k2.5": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
-          }
-        }
-      },
       "auriko": {
         "kimi-k2.5": {
           "is_thinking": true,
@@ -10928,16 +10770,6 @@
           "cost": {}
         }
       },
-      "scnet-token-plan": {
-        "Kimi-K2.5": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0
-          }
-        }
-      },
       "tensorx": {
         "moonshotai/kimi-k2.5": {
           "is_thinking": true,
@@ -10991,28 +10823,6 @@
             "input": 0.95,
             "output": 4,
             "cache_read": 0.19
-          }
-        }
-      },
-      "alibaba-token-plan": {
-        "kimi-k2.6": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
-          }
-        }
-      },
-      "alibaba-token-plan-cn": {
-        "kimi-k2.6": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
           }
         }
       },
@@ -11426,16 +11236,6 @@
           }
         }
       },
-      "scnet-token-plan": {
-        "Kimi-K2.6": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0
-          }
-        }
-      },
       "tensorx": {
         "moonshotai/kimi-k2.6": {
           "is_thinking": true,
@@ -11556,28 +11356,6 @@
           "cost": {
             "input": 0.86,
             "output": 3.0
-          }
-        }
-      },
-      "alibaba-token-plan": {
-        "kimi-k2.7-code": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
-          }
-        }
-      },
-      "alibaba-token-plan-cn": {
-        "kimi-k2.7-code": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
           }
         }
       },
@@ -12014,16 +11792,6 @@
           }
         }
       },
-      "scnet-token-plan": {
-        "Kimi-K2.7-Code": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0
-          }
-        }
-      },
       "synthetic": {
         "hf:moonshotai/Kimi-K2.7-Code": {
           "is_thinking": true,
@@ -12059,26 +11827,6 @@
             "input": 0.95,
             "output": 4.0,
             "cache_read": 0.19
-          }
-        }
-      },
-      "umans-ai-coding-plan": {
-        "umans-coder": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
-          }
-        },
-        "umans-kimi-k2.7": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
           }
         }
       },
@@ -12607,16 +12355,6 @@
           }
         }
       },
-      "scnet-token-plan": {
-        "Kimi-K3": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0
-          }
-        }
-      },
       "synthetic": {
         "hf:moonshotai/Kimi-K3": {
           "is_thinking": true,
@@ -12663,17 +12401,6 @@
             "input": 3.0,
             "output": 15.0,
             "cache_read": 0.3
-          }
-        }
-      },
-      "umans-ai-coding-plan": {
-        "umans-kimi-k3": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
           }
         }
       },
@@ -18014,18 +17741,6 @@
           }
         }
       },
-      "stepfun-ai-step-plan": {
-        "step-3.7-flash": {
-          "is_thinking": true,
-          "cost": {}
-        }
-      },
-      "stepfun-step-plan": {
-        "step-3.7-flash": {
-          "is_thinking": true,
-          "cost": {}
-        }
-      },
       "unorouter": {
         "step-3.7-flash:free": {
           "is_thinking": true,
@@ -18506,36 +18221,6 @@
           }
         }
       },
-      "xiaomi-token-plan-ams": {
-        "mimo-v2.5": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0
-          }
-        }
-      },
-      "xiaomi-token-plan-cn": {
-        "mimo-v2.5": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0
-          }
-        }
-      },
-      "xiaomi-token-plan-sgp": {
-        "mimo-v2.5": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0
-          }
-        }
-      },
       "zenmux": {
         "xiaomi/mimo-v2.5": {
           "is_thinking": true,
@@ -18804,16 +18489,6 @@
           }
         }
       },
-      "scnet-token-plan": {
-        "MiMo-V2.5-Pro": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0
-          }
-        }
-      },
       "vercel": {
         "xiaomi/mimo-v2.5-pro": {
           "is_thinking": true,
@@ -18830,36 +18505,6 @@
           "cost": {
             "input": 0.55,
             "output": 1.65
-          }
-        }
-      },
-      "xiaomi-token-plan-ams": {
-        "mimo-v2.5-pro": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0
-          }
-        }
-      },
-      "xiaomi-token-plan-cn": {
-        "mimo-v2.5-pro": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0
-          }
-        }
-      },
-      "xiaomi-token-plan-sgp": {
-        "mimo-v2.5-pro": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0
           }
         }
       },
@@ -19523,28 +19168,6 @@
           }
         }
       },
-      "alibaba-token-plan": {
-        "glm-5": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
-          }
-        }
-      },
-      "alibaba-token-plan-cn": {
-        "glm-5": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
-          }
-        }
-      },
       "cortecs": {
         "glm-5": {
           "is_thinking": true,
@@ -19709,16 +19332,6 @@
           }
         }
       },
-      "scnet-token-plan": {
-        "GLM-5": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0
-          }
-        }
-      },
       "tensorx": {
         "z-ai/glm-5": {
           "is_thinking": true,
@@ -19781,28 +19394,6 @@
             "input": 1.4,
             "output": 4.4,
             "cache_read": 0.26
-          }
-        }
-      },
-      "alibaba-token-plan": {
-        "glm-5.1": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
-          }
-        }
-      },
-      "alibaba-token-plan-cn": {
-        "glm-5.1": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
           }
         }
       },
@@ -20135,16 +19726,6 @@
           }
         }
       },
-      "scnet-token-plan": {
-        "GLM-5.1": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0
-          }
-        }
-      },
       "tensorx": {
         "z-ai/glm-5.1": {
           "is_thinking": true,
@@ -20163,17 +19744,6 @@
             "input": 1.4,
             "output": 4.4,
             "cache_read": 0.29
-          }
-        }
-      },
-      "umans-ai-coding-plan": {
-        "umans-glm-5.1": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
           }
         }
       },
@@ -20270,28 +19840,6 @@
             "input": 1.1,
             "output": 3.851,
             "cache_read": 0.275,
-            "cache_write": 0
-          }
-        }
-      },
-      "alibaba-token-plan": {
-        "glm-5.2": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
-          }
-        }
-      },
-      "alibaba-token-plan-cn": {
-        "glm-5.2": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
             "cache_write": 0
           }
         }
@@ -20918,16 +20466,6 @@
           }
         }
       },
-      "scnet-token-plan": {
-        "GLM-5.2": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0
-          }
-        }
-      },
       "siliconflow": {
         "zai-org/GLM-5.2": {
           "is_thinking": true,
@@ -21007,17 +20545,6 @@
             "input": 1.4,
             "output": 4.4,
             "cache_read": 0.26
-          }
-        }
-      },
-      "umans-ai-coding-plan": {
-        "umans-glm-5.2": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
           }
         }
       },
@@ -21125,26 +20652,6 @@
           }
         }
       },
-      "zai-coding-plan": {
-        "glm-5.2": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
-          }
-        },
-        "glm-5.2-highspeed": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
-          }
-        }
-      },
       "zenmux": {
         "z-ai/glm-5.2": {
           "is_thinking": true,
@@ -21160,26 +20667,6 @@
             "input": 0,
             "output": 0,
             "cache_read": 0
-          }
-        }
-      },
-      "zhipuai-coding-plan": {
-        "glm-5.2": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
-          }
-        },
-        "glm-5.2-highspeed": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0,
-            "cache_write": 0
           }
         }
       }
