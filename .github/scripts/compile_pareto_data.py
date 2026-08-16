@@ -85,9 +85,9 @@ def build_canonical_metadata(repo_root: Path) -> dict[str, dict[str, Any]]:
     return metadata
 
 
-def build_openrouter_refs(repo_root: Path) -> list[tuple[str, str]]:
-    """Return OpenRouter provider model IDs and their canonical base models."""
-    refs: list[tuple[str, str]] = []
+def build_openrouter_refs(repo_root: Path) -> list[dict[str, Any]]:
+    """Return OpenRouter model files and their canonical/family metadata."""
+    refs: list[dict[str, Any]] = []
     models_root = repo_root / "providers" / "openrouter" / "models"
     for path in models_root.rglob("*.toml"):
         model_id = path.relative_to(models_root).with_suffix("").as_posix()
@@ -95,49 +95,85 @@ def build_openrouter_refs(repo_root: Path) -> list[tuple[str, str]]:
         if not data:
             continue
         base_model = data.get("base_model")
-        if isinstance(base_model, str) and base_model.strip():
-            refs.append((model_id, base_model.strip()))
+        refs.append(
+            {
+                "model_id": model_id,
+                "base_model": base_model.strip()
+                if isinstance(base_model, str)
+                else None,
+                "family": data.get("family")
+                if isinstance(data.get("family"), str)
+                else None,
+                "name": data.get("name") if isinstance(data.get("name"), str) else None,
+                "reasoning": bool(data.get("reasoning")),
+            }
+        )
     return refs
 
 
 def resolve_canonical_model(
     benchmark_record: dict[str, Any],
-    openrouter_refs: list[tuple[str, str]],
+    openrouter_refs: list[dict[str, Any]],
     canonical_metadata: dict[str, dict[str, Any]],
-) -> str | None:
-    """Map one benchmark result to a canonical model ID."""
+) -> tuple[str, dict[str, Any]] | None:
+    """Map one benchmark result to a canonical model and OpenRouter metadata."""
     benchmark_ref = benchmark_record.get("model_permaslug")
     if not isinstance(benchmark_ref, str) or not benchmark_ref.strip():
         return None
 
     normalized_ref = normalize_model_ref(benchmark_ref)
-    exact_matches = {
-        base_model
-        for provider_model, base_model in openrouter_refs
+    exact_refs = [
+        ref
+        for ref in openrouter_refs
         if normalized_ref
         in {
-            normalize_model_ref(provider_model),
-            normalize_model_ref(base_model),
+            normalize_model_ref(ref["model_id"]),
+            normalize_model_ref(ref["base_model"] or ""),
         }
-    }
-    if len(exact_matches) == 1:
-        return exact_matches.pop()
-    if len(exact_matches) > 1:
+    ]
+    if len(exact_refs) == 1:
+        ref = exact_refs[0]
+        return ref["base_model"] or ref["model_id"], ref
+    if len(exact_refs) > 1:
+        canonical_models = {ref["base_model"] or ref["model_id"] for ref in exact_refs}
+        if len(canonical_models) == 1:
+            ref = exact_refs[0]
+            return canonical_models.pop(), ref
         raise RuntimeError(
-            f"Ambiguous OpenRouter model mapping for {benchmark_ref}: {sorted(exact_matches)}"
+            f"Ambiguous OpenRouter model mapping for {benchmark_ref}: "
+            f"{sorted(canonical_models)}"
         )
 
     display_name = benchmark_record.get("display_name")
     if isinstance(display_name, str):
         display_key = normalize_display_name(display_name)
+        named_refs = [
+            ref
+            for ref in openrouter_refs
+            if ref["name"] and normalize_display_name(ref["name"]) == display_key
+        ]
+        if len(named_refs) == 1:
+            ref = named_refs[0]
+            return ref["base_model"] or ref["model_id"], ref
+
         name_matches = {
             model_id
             for model_id, metadata in canonical_metadata.items()
             if normalize_display_name(metadata["name"]) == display_key
-            and any(base_model == model_id for _, base_model in openrouter_refs)
+            and any(
+                ref["base_model"] == model_id or ref["model_id"] == model_id
+                for ref in openrouter_refs
+            )
         }
         if len(name_matches) == 1:
-            return name_matches.pop()
+            canonical_model = name_matches.pop()
+            matching_refs = [
+                ref
+                for ref in openrouter_refs
+                if ref["base_model"] == canonical_model
+                or ref["model_id"] == canonical_model
+            ]
+            return canonical_model, matching_refs[0]
         if len(name_matches) > 1:
             raise RuntimeError(
                 f"Ambiguous display-name mapping for {display_name}: {sorted(name_matches)}"
@@ -150,13 +186,18 @@ def collect_provider_prices(
     repo_root: Path,
     canonical_model: str,
     canonical_metadata: dict[str, dict[str, Any]],
+    openrouter_ref: dict[str, Any],
 ) -> dict[str, dict[str, dict[str, Any]]]:
-    """Collect all provider TOML records serving the canonical model."""
+    """Collect provider records by canonical ID and OpenRouter family fallback."""
     providers: dict[str, dict[str, dict[str, Any]]] = {}
     providers_root = repo_root / "providers"
     canonical_is_thinking = bool(
         canonical_metadata.get(canonical_model, {}).get("reasoning")
+        or openrouter_ref.get("reasoning")
     )
+    target_family = openrouter_ref.get("family")
+    target_name = openrouter_ref.get("name")
+    target_name_key = normalize_display_name(target_name) if target_name else None
     for provider_dir in providers_root.iterdir():
         models_root = provider_dir / "models"
         if not models_root.is_dir():
@@ -167,7 +208,18 @@ def collect_provider_prices(
             if not data or data.get("status") == "alpha":
                 continue
             base_model = data.get("base_model")
-            if base_model != canonical_model and model_id != canonical_model:
+            direct_match = base_model == canonical_model or model_id == canonical_model
+            family_match = (
+                not direct_match
+                and target_family
+                and data.get("family") == target_family
+                and (
+                    not target_name_key
+                    or not isinstance(data.get("name"), str)
+                    or normalize_display_name(data["name"]) == target_name_key
+                )
+            )
+            if not direct_match and not family_match:
                 continue
 
             is_thinking = (
@@ -205,20 +257,19 @@ def compile_pareto_data(
         if accuracy <= accuracy_threshold:
             continue
 
-        canonical_model = resolve_canonical_model(
-            record, openrouter_refs, canonical_metadata
-        )
-        if canonical_model is None:
+        resolved = resolve_canonical_model(record, openrouter_refs, canonical_metadata)
+        if resolved is None:
             print(
                 f"Skipping benchmark model without local OpenRouter mapping: {record.get('model_permaslug')}",
                 file=sys.stderr,
             )
             continue
 
+        canonical_model, openrouter_ref = resolved
         result[canonical_model] = {
             "accuracy": accuracy,
             "providers": collect_provider_prices(
-                repo_root, canonical_model, canonical_metadata
+                repo_root, canonical_model, canonical_metadata, openrouter_ref
             ),
         }
 
