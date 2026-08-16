@@ -48,6 +48,17 @@ def normalize_display_name(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", "", value.lower())
 
 
+def slugify_display_name(value: str) -> str:
+    """Convert a benchmark display name into a model-reference slug."""
+    while True:
+        stripped = re.sub(r"\s*\([^()]*\)", "", value)
+        if stripped == value:
+            break
+        value = stripped
+    value = value.split(":", 1)[-1].strip().lower()
+    return re.sub(r"[^a-z0-9.]+", "-", value).strip("-")
+
+
 def load_toml(path: Path) -> dict[str, Any] | None:
     """Read a TOML file, ignoring broken symlinks and malformed optional files."""
     try:
@@ -191,6 +202,39 @@ def resolve_canonical_model(
         if len(name_matches) > 1:
             raise RuntimeError(
                 f"Ambiguous display-name mapping for {display_name}: {sorted(name_matches)}"
+            )
+
+        heuristic_slug = slugify_display_name(display_name)
+        heuristic_refs = [
+            ref
+            for ref in openrouter_refs
+            if heuristic_slug
+            in {
+                normalize_model_ref(ref["model_id"]).rsplit("/", 1)[-1],
+                normalize_model_ref(ref["base_model"] or "").rsplit("/", 1)[-1],
+            }
+        ]
+        if len(heuristic_refs) == 1:
+            ref = heuristic_refs[0]
+            print(
+                f"Using display-name slug mapping for {display_name!r}: {heuristic_slug}",
+                file=sys.stderr,
+            )
+            return ref["base_model"] or ref["model_id"], ref
+        if len(heuristic_refs) > 1:
+            canonical_models = {
+                ref["base_model"] or ref["model_id"] for ref in heuristic_refs
+            }
+            if len(canonical_models) == 1:
+                ref = heuristic_refs[0]
+                print(
+                    f"Using display-name slug mapping for {display_name!r}: {heuristic_slug}",
+                    file=sys.stderr,
+                )
+                return canonical_models.pop(), ref
+            raise RuntimeError(
+                f"Ambiguous display-name slug mapping for {display_name}: "
+                f"{sorted(canonical_models)}"
             )
 
     return None

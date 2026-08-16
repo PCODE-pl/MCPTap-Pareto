@@ -438,6 +438,1343 @@
       }
     }
   },
+  "anthropic/claude-fable-5": {
+    "accuracy": 76.5,
+    "providers": {
+      "abacus": {
+        "claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10,
+            "output": 50
+          }
+        }
+      },
+      "aihubmix": {
+        "claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 11,
+            "output": 55,
+            "cache_read": 1.1,
+            "cache_write": 13.75
+          }
+        }
+      },
+      "amazon-bedrock": {
+        "anthropic.claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10,
+            "output": 50,
+            "cache_read": 1,
+            "cache_write": 12.5
+          }
+        },
+        "eu.anthropic.claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 11,
+            "output": 55,
+            "cache_read": 1.1,
+            "cache_write": 13.75
+          }
+        },
+        "global.anthropic.claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10,
+            "output": 50,
+            "cache_read": 1,
+            "cache_write": 12.5
+          }
+        },
+        "us.anthropic.claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10,
+            "output": 50,
+            "cache_read": 1,
+            "cache_write": 12.5
+          }
+        }
+      },
+      "azure": {
+        "claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10.0,
+            "output": 50.0,
+            "cache_read": 1.0,
+            "cache_write": 12.5
+          }
+        }
+      },
+      "azure-cognitive-services": {
+        "claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10.0,
+            "output": 50.0,
+            "cache_read": 1.0,
+            "cache_write": 12.5
+          }
+        }
+      },
+      "cloudflare-ai-gateway": {
+        "anthropic/claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10,
+            "output": 50,
+            "cache_read": 1,
+            "cache_write": 12.5
+          }
+        }
+      },
+      "crossmodel": {
+        "anthropic/claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10,
+            "output": 50,
+            "cache_read": 1,
+            "cache_write": 12.5
+          }
+        }
+      },
+      "edenai": {
+        "anthropic/claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10,
+            "output": 50,
+            "cache_read": 1,
+            "cache_write": 12.5
+          }
+        },
+        "anthropic/claude-fable-latest": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10,
+            "output": 50,
+            "cache_read": 1,
+            "cache_write": 12.5
+          }
+        }
+      },
+      "freemodel": {
+        "claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10.0,
+            "output": 50.0,
+            "cache_read": 1.0,
+            "cache_write": 12.5
+          }
+        }
+      },
+      "github-copilot": {
+        "claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10,
+            "output": 50,
+            "cache_read": 1,
+            "cache_write": 12.5
+          }
+        }
+      },
+      "gitlab": {
+        "duo-chat-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cache_read": 0,
+            "cache_write": 0
+          }
+        }
+      },
+      "impossibl": {
+        "anthropic/claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10.0,
+            "output": 50.0,
+            "cache_read": 1.0,
+            "cache_write": 12.5
+          }
+        }
+      },
+      "kenari": {
+        "claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0,
+            "output": 0
+          }
+        }
+      },
+      "kilo": {
+        "anthropic/claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10,
+            "output": 50,
+            "cache_read": 1,
+            "cache_write": 12.5
+          }
+        }
+      },
+      "llmgateway": {
+        "claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10,
+            "output": 50,
+            "cache_read": 1,
+            "cache_write": 12.5
+          }
+        }
+      },
+      "merge-gateway": {
+        "anthropic/claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10,
+            "output": 50,
+            "cache_read": 1,
+            "cache_write": 12.5
+          }
+        }
+      },
+      "model-oracle-ai": {
+        "claude-fable-5": {
+          "is_thinking": true,
+          "cost": {}
+        }
+      },
+      "modelis": {
+        "claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10,
+            "output": 50
+          }
+        }
+      },
+      "nano-gpt": {
+        "anthropic/claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10,
+            "output": 50,
+            "cache_read": 1,
+            "cache_write": 12.5
+          }
+        }
+      },
+      "neon": {
+        "claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10,
+            "output": 50,
+            "cache_read": 1,
+            "cache_write": 12.5
+          }
+        }
+      },
+      "ofox": {
+        "anthropic/claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10,
+            "output": 50,
+            "cache_read": 1,
+            "cache_write": 12.5
+          }
+        }
+      },
+      "opencode": {
+        "claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10,
+            "output": 50,
+            "cache_read": 1,
+            "cache_write": 12.5
+          }
+        }
+      },
+      "openrouter": {
+        "anthropic/claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10,
+            "output": 50,
+            "cache_read": 1,
+            "cache_write": 12.5
+          }
+        }
+      },
+      "pioneer": {
+        "claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 11,
+            "output": 55,
+            "cache_read": 1.1,
+            "cache_write": 13.75
+          }
+        }
+      },
+      "requesty": {
+        "claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10,
+            "output": 50,
+            "cache_read": 1,
+            "cache_write": 12.5
+          }
+        }
+      },
+      "snowflake-cortex": {
+        "claude-fable-5": {
+          "is_thinking": true,
+          "cost": {}
+        }
+      },
+      "venice": {
+        "claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 12,
+            "output": 60,
+            "cache_read": 1.2,
+            "cache_write": 15
+          }
+        }
+      },
+      "vercel": {
+        "anthropic/claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10,
+            "output": 50,
+            "cache_read": 1,
+            "cache_write": 12.5
+          }
+        }
+      },
+      "xpersona": {
+        "claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3.0,
+            "output": 18.5,
+            "reasoning": 18.5,
+            "cache_read": 0.3
+          }
+        }
+      },
+      "zenmux": {
+        "anthropic/claude-fable-5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10.0,
+            "output": 50.0,
+            "cache_read": 1.0,
+            "cache_write": 12.5
+          }
+        }
+      }
+    }
+  },
+  "anthropic/claude-opus-4-7": {
+    "accuracy": 73.6,
+    "providers": {
+      "abacus": {
+        "claude-opus-4-7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25
+          }
+        }
+      },
+      "amazon-bedrock": {
+        "jp.anthropic.claude-opus-4-7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "anyapi": {
+        "anthropic/claude-opus-4-7": {
+          "is_thinking": true,
+          "cost": {}
+        }
+      },
+      "auriko": {
+        "claude-opus-4-7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "cloudflare-ai-gateway": {
+        "anthropic/claude-opus-4-7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "cortecs": {
+        "claude-opus4-7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5.437,
+            "output": 27.186,
+            "cache_read": 0.544,
+            "cache_write": 6.797
+          }
+        }
+      },
+      "crossmodel": {
+        "anthropic/claude-opus-4-7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "databricks": {
+        "databricks-claude-opus-4-7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "edenai": {
+        "anthropic/claude-opus-4-7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "freemodel": {
+        "claude-opus-4-7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5.0,
+            "output": 25.0,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "github-copilot": {
+        "claude-opus-4.7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "gmicloud": {
+        "anthropic/claude-opus-4.7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 4.5,
+            "output": 22.5,
+            "cache_read": 0.45
+          }
+        }
+      },
+      "google-vertex": {
+        "claude-opus-4-7@default": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25,
+            "tiers": [
+              {
+                "tier": {
+                  "type": "context",
+                  "size": 200000
+                },
+                "input": 10,
+                "output": 37.5,
+                "cache_read": 1,
+                "cache_write": 12.5
+              }
+            ]
+          }
+        }
+      },
+      "google-vertex-anthropic": {
+        "claude-opus-4-7@default": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25,
+            "tiers": [
+              {
+                "tier": {
+                  "type": "context",
+                  "size": 200000
+                },
+                "input": 10,
+                "output": 37.5,
+                "cache_read": 1,
+                "cache_write": 12.5
+              }
+            ]
+          }
+        }
+      },
+      "hpc-ai": {
+        "anthropic/claude-opus-4.7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5.0,
+            "output": 25.0,
+            "cache_read": 0.5
+          }
+        }
+      },
+      "impossibl": {
+        "anthropic/claude-opus-4-7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5.0,
+            "output": 25.0,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "kenari": {
+        "claude-opus-4-7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0,
+            "output": 0
+          }
+        }
+      },
+      "kilo": {
+        "anthropic/claude-opus-4.7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        },
+        "anthropic/claude-opus-4.7-fast": {
+          "is_thinking": true,
+          "cost": {
+            "input": 30,
+            "output": 150,
+            "cache_read": 3,
+            "cache_write": 37.5
+          }
+        }
+      },
+      "llmgateway": {
+        "claude-opus-4-7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "merge-gateway": {
+        "anthropic/claude-opus-4-7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "nano-gpt": {
+        "anthropic/claude-opus-4.7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5
+          }
+        },
+        "anthropic/claude-opus-4.7:thinking": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5
+          }
+        }
+      },
+      "nearai": {
+        "anthropic/claude-opus-4-7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "neon": {
+        "claude-opus-4-7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "ofox": {
+        "anthropic/claude-opus-4.7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "openrouter": {
+        "anthropic/claude-opus-4.7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25,
+            "tiers": [
+              {
+                "tier": {
+                  "type": "context",
+                  "size": 200000
+                },
+                "input": 10,
+                "output": 37.5,
+                "cache_read": 1,
+                "cache_write": 12.5
+              }
+            ]
+          }
+        },
+        "anthropic/claude-opus-4.7-fast": {
+          "is_thinking": true,
+          "cost": {
+            "input": 30,
+            "output": 150,
+            "cache_read": 3,
+            "cache_write": 37.5
+          }
+        }
+      },
+      "orcarouter": {
+        "anthropic/claude-opus-4.7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "perplexity-agent": {
+        "anthropic/claude-opus-4-7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5.0,
+            "output": 25.0,
+            "cache_read": 0.5
+          }
+        }
+      },
+      "pioneer": {
+        "claude-opus-4-7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "requesty": {
+        "claude-opus-4-7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        },
+        "claude-opus-4-7@eu": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5.5,
+            "output": 27.5,
+            "cache_read": 0.55,
+            "cache_write": 6.875
+          }
+        }
+      },
+      "sap-ai-core": {
+        "anthropic--claude-4.7-opus": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5.0,
+            "output": 25.0,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "snowflake-cortex": {
+        "claude-opus-4-7": {
+          "is_thinking": true,
+          "cost": {}
+        }
+      },
+      "venice": {
+        "claude-opus-4-7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 6,
+            "output": 30,
+            "cache_read": 0.6,
+            "cache_write": 7.5
+          }
+        }
+      },
+      "vercel": {
+        "anthropic/claude-opus-4.7": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      }
+    }
+  },
+  "anthropic/claude-opus-4-8": {
+    "accuracy": 74.3,
+    "providers": {
+      "abacus": {
+        "claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25
+          }
+        }
+      },
+      "aihubmix": {
+        "claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        },
+        "claude-opus-4-8-think": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "amazon-bedrock": {
+        "anthropic.claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        },
+        "au.anthropic.claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        },
+        "eu.anthropic.claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5.5,
+            "output": 27.5,
+            "cache_read": 0.55,
+            "cache_write": 6.875
+          }
+        },
+        "global.anthropic.claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        },
+        "jp.anthropic.claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        },
+        "us.anthropic.claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "azure": {
+        "claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5.0,
+            "output": 25.0,
+            "cache_read": 0.5,
+            "cache_write": 6.25,
+            "tiers": [
+              {
+                "tier": {
+                  "size": 200000
+                },
+                "input": 10.0,
+                "output": 37.5,
+                "cache_read": 1.0,
+                "cache_write": 12.5
+              }
+            ]
+          }
+        }
+      },
+      "azure-cognitive-services": {
+        "claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5.0,
+            "output": 25.0,
+            "cache_read": 0.5,
+            "cache_write": 6.25,
+            "tiers": [
+              {
+                "tier": {
+                  "size": 200000
+                },
+                "input": 10.0,
+                "output": 37.5,
+                "cache_read": 1.0,
+                "cache_write": 12.5
+              }
+            ]
+          }
+        }
+      },
+      "cloudflare-ai-gateway": {
+        "anthropic/claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "cortecs": {
+        "claude-opus4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5.437,
+            "output": 27.186,
+            "cache_read": 0.544,
+            "cache_write": 6.797
+          }
+        }
+      },
+      "crossmodel": {
+        "anthropic/claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "daoxe": {
+        "claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "edenai": {
+        "anthropic/claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "fastrouter": {
+        "anthropic/claude-opus-4.8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25
+          }
+        }
+      },
+      "freemodel": {
+        "claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5.0,
+            "output": 25.0,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "github-copilot": {
+        "claude-opus-4.8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "gmicloud": {
+        "anthropic/claude-opus-4.8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5
+          }
+        }
+      },
+      "google-vertex": {
+        "claude-opus-4-8@default": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25,
+            "tiers": [
+              {
+                "tier": {
+                  "type": "context",
+                  "size": 200000
+                },
+                "input": 10,
+                "output": 37.5,
+                "cache_read": 1,
+                "cache_write": 12.5
+              }
+            ]
+          }
+        }
+      },
+      "google-vertex-anthropic": {
+        "claude-opus-4-8@default": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25,
+            "tiers": [
+              {
+                "tier": {
+                  "type": "context",
+                  "size": 200000
+                },
+                "input": 10,
+                "output": 37.5,
+                "cache_read": 1,
+                "cache_write": 12.5
+              }
+            ]
+          }
+        }
+      },
+      "impossibl": {
+        "anthropic/claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5.0,
+            "output": 25.0,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "kenari": {
+        "claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0,
+            "output": 0
+          }
+        }
+      },
+      "kilo": {
+        "anthropic/claude-opus-4.8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        },
+        "anthropic/claude-opus-4.8-fast": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10,
+            "output": 50,
+            "cache_read": 1,
+            "cache_write": 12.5
+          }
+        }
+      },
+      "llmgateway": {
+        "claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "merge-gateway": {
+        "anthropic/claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "model-oracle-ai": {
+        "claude-opus-4.8": {
+          "is_thinking": true,
+          "cost": {}
+        }
+      },
+      "modelis": {
+        "claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25
+          }
+        }
+      },
+      "nano-gpt": {
+        "anthropic/claude-opus-4.8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5
+          }
+        },
+        "anthropic/claude-opus-4.8:thinking": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5
+          }
+        }
+      },
+      "neon": {
+        "claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "ofox": {
+        "anthropic/claude-opus-4.8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "opencode": {
+        "claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "openrouter": {
+        "anthropic/claude-opus-4.8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        },
+        "anthropic/claude-opus-4.8-fast": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10,
+            "output": 50,
+            "cache_read": 1,
+            "cache_write": 12.5
+          }
+        }
+      },
+      "pioneer": {
+        "claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "poe": {
+        "anthropic/claude-opus-4.8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 4.2929,
+            "output": 21.4646
+          }
+        }
+      },
+      "requesty": {
+        "claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        },
+        "claude-opus-4-8@eu": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5.5,
+            "output": 27.5,
+            "cache_read": 0.55,
+            "cache_write": 6.875
+          }
+        }
+      },
+      "routing-run": {
+        "claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5.0,
+            "output": 25.0
+          }
+        }
+      },
+      "sap-ai-core": {
+        "anthropic--claude-4.8-opus": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5.0,
+            "output": 25.0,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      },
+      "snowflake-cortex": {
+        "claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {}
+        }
+      },
+      "unorouter": {
+        "claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.425,
+            "output": 2.125
+          }
+        }
+      },
+      "venice": {
+        "claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 6,
+            "output": 30,
+            "cache_read": 0.6,
+            "cache_write": 7.5
+          }
+        },
+        "claude-opus-4-8-fast": {
+          "is_thinking": true,
+          "cost": {
+            "input": 12,
+            "output": 60,
+            "cache_read": 1.2,
+            "cache_write": 15
+          }
+        }
+      },
+      "vercel": {
+        "anthropic/claude-opus-4.8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 25,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        },
+        "anthropic/claude-opus-4.8-fast": {
+          "is_thinking": true,
+          "cost": {
+            "input": 10,
+            "output": 50,
+            "cache_read": 1,
+            "cache_write": 12.5
+          }
+        }
+      },
+      "xpersona": {
+        "claude-opus-4-8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.5,
+            "output": 9.25,
+            "reasoning": 9.25,
+            "cache_read": 0.15
+          }
+        }
+      },
+      "zenmux": {
+        "anthropic/claude-opus-4.8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5.0,
+            "output": 25.0,
+            "cache_read": 0.5,
+            "cache_write": 6.25
+          }
+        }
+      }
+    }
+  },
   "anthropic/claude-opus-5": {
     "accuracy": 78,
     "providers": {
@@ -838,6 +2175,509 @@
             "output": 50,
             "cache_read": 1,
             "cache_write": 12.5
+          }
+        }
+      }
+    }
+  },
+  "anthropic/claude-sonnet-4-6": {
+    "accuracy": 63,
+    "providers": {
+      "abacus": {
+        "claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15
+          }
+        }
+      },
+      "amazon-bedrock": {
+        "anthropic.claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+            "cache_write": 3.75
+          }
+        },
+        "eu.anthropic.claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3.3,
+            "output": 16.5,
+            "cache_read": 0.33,
+            "cache_write": 4.125
+          }
+        },
+        "global.anthropic.claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+            "cache_write": 3.75
+          }
+        },
+        "jp.anthropic.claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+            "cache_write": 3.75
+          }
+        },
+        "us.anthropic.claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+            "cache_write": 3.75
+          }
+        }
+      },
+      "anyapi": {
+        "anthropic/claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {}
+        }
+      },
+      "auriko": {
+        "claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+            "cache_write": 3.75
+          }
+        }
+      },
+      "azure": {
+        "claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+            "cache_write": 3.75
+          }
+        }
+      },
+      "azure-cognitive-services": {
+        "claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3.0,
+            "output": 15.0,
+            "cache_read": 0.3,
+            "cache_write": 3.75
+          }
+        }
+      },
+      "cloudflare-ai-gateway": {
+        "anthropic/claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+            "cache_write": 3.75
+          }
+        }
+      },
+      "cortecs": {
+        "claude-4-6-sonnet": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3.196,
+            "output": 15.94,
+            "cache_read": 0.32,
+            "cache_write": 3.999
+          }
+        }
+      },
+      "crossmodel": {
+        "anthropic/claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+            "cache_write": 3.75
+          }
+        }
+      },
+      "daoxe": {
+        "claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+            "cache_write": 3.75
+          }
+        }
+      },
+      "databricks": {
+        "databricks-claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+            "cache_write": 3.75
+          }
+        }
+      },
+      "edenai": {
+        "anthropic/claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+            "cache_write": 3.75
+          }
+        }
+      },
+      "fastrouter": {
+        "anthropic/claude-sonnet-4.6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15
+          }
+        }
+      },
+      "freemodel": {
+        "claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3.0,
+            "output": 15.0,
+            "cache_read": 0.3,
+            "cache_write": 3.75
+          }
+        }
+      },
+      "github-copilot": {
+        "claude-sonnet-4.6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+            "cache_write": 3.75
+          }
+        }
+      },
+      "gmicloud": {
+        "anthropic/claude-sonnet-4.6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3
+          }
+        }
+      },
+      "google-vertex": {
+        "claude-sonnet-4-6@default": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+            "cache_write": 3.75,
+            "tiers": [
+              {
+                "tier": {
+                  "type": "context",
+                  "size": 200000
+                },
+                "input": 6,
+                "output": 22.5,
+                "cache_read": 0.6,
+                "cache_write": 7.5
+              }
+            ]
+          }
+        }
+      },
+      "google-vertex-anthropic": {
+        "claude-sonnet-4-6@default": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+            "cache_write": 3.75,
+            "tiers": [
+              {
+                "tier": {
+                  "type": "context",
+                  "size": 200000
+                },
+                "input": 6,
+                "output": 22.5,
+                "cache_read": 0.6,
+                "cache_write": 7.5
+              }
+            ]
+          }
+        }
+      },
+      "impossibl": {
+        "anthropic/claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3.0,
+            "output": 15.0,
+            "cache_read": 0.3,
+            "cache_write": 3.75
+          }
+        }
+      },
+      "kilo": {
+        "anthropic/claude-sonnet-4.6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+            "cache_write": 3.75
+          }
+        }
+      },
+      "llmgateway": {
+        "claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+            "cache_write": 3.75
+          }
+        }
+      },
+      "merge-gateway": {
+        "anthropic/claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+            "cache_write": 3.75
+          }
+        }
+      },
+      "modelis": {
+        "claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15
+          }
+        }
+      },
+      "nano-gpt": {
+        "anthropic/claude-sonnet-4.6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3
+          }
+        },
+        "anthropic/claude-sonnet-4.6:thinking": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3
+          }
+        }
+      },
+      "nearai": {
+        "anthropic/claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+            "cache_write": 3.75
+          }
+        }
+      },
+      "neon": {
+        "claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+            "cache_write": 3.75
+          }
+        }
+      },
+      "ofox": {
+        "anthropic/claude-sonnet-4.6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+            "cache_write": 3.75
+          }
+        }
+      },
+      "openrouter": {
+        "anthropic/claude-sonnet-4.6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+            "cache_write": 3.75,
+            "tiers": [
+              {
+                "tier": {
+                  "type": "context",
+                  "size": 200000
+                },
+                "input": 6,
+                "output": 22.5,
+                "cache_read": 0.6,
+                "cache_write": 7.5
+              }
+            ]
+          }
+        }
+      },
+      "orcarouter": {
+        "anthropic/claude-sonnet-4.6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+            "cache_write": 3.75
+          }
+        }
+      },
+      "perplexity-agent": {
+        "anthropic/claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3.0,
+            "output": 15.0,
+            "cache_read": 0.3
+          }
+        }
+      },
+      "pioneer": {
+        "claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+            "cache_write": 3.75
+          }
+        }
+      },
+      "requesty": {
+        "claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+            "cache_write": 3.75
+          }
+        },
+        "claude-sonnet-4-6@eu": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3.3,
+            "output": 16.5,
+            "cache_read": 0.3,
+            "cache_write": 4.125
+          }
+        }
+      },
+      "routing-run": {
+        "claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3.0,
+            "output": 15.0
+          }
+        }
+      },
+      "sap-ai-core": {
+        "anthropic--claude-4.6-sonnet": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3.0,
+            "output": 15.0,
+            "cache_read": 0.3,
+            "cache_write": 3.75
+          }
+        }
+      },
+      "snowflake-cortex": {
+        "claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {}
+        }
+      },
+      "venice": {
+        "claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3.6,
+            "output": 18,
+            "cache_read": 0.36,
+            "cache_write": 4.5
+          }
+        }
+      },
+      "vercel": {
+        "anthropic/claude-sonnet-4.6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3,
+            "cache_write": 3.75,
+            "tiers": [
+              {
+                "tier": {
+                  "type": "context",
+                  "size": 200000
+                },
+                "input": 6,
+                "output": 22.5,
+                "cache_read": 0.6,
+                "cache_write": 7.5
+              }
+            ]
+          }
+        }
+      },
+      "xpersona": {
+        "claude-sonnet-4-6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.9,
+            "output": 5.55,
+            "reasoning": 5.55,
+            "cache_read": 0.09
           }
         }
       }
