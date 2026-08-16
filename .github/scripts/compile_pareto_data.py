@@ -73,16 +73,16 @@ def fetch_benchmark(url: str, api_key: str) -> dict[str, Any]:
     return payload
 
 
-def build_canonical_names(repo_root: Path) -> dict[str, str]:
-    """Build canonical model ID to display-name mappings from models/*.toml."""
-    names: dict[str, str] = {}
+def build_canonical_metadata(repo_root: Path) -> dict[str, dict[str, Any]]:
+    """Build canonical model metadata mappings from models/*.toml."""
+    metadata: dict[str, dict[str, Any]] = {}
     models_root = repo_root / "models"
     for path in models_root.rglob("*.toml"):
         model_id = path.relative_to(models_root).with_suffix("").as_posix()
         data = load_toml(path)
         if data and isinstance(data.get("name"), str):
-            names[model_id] = data["name"]
-    return names
+            metadata[model_id] = data
+    return metadata
 
 
 def build_openrouter_refs(repo_root: Path) -> list[tuple[str, str]]:
@@ -103,7 +103,7 @@ def build_openrouter_refs(repo_root: Path) -> list[tuple[str, str]]:
 def resolve_canonical_model(
     benchmark_record: dict[str, Any],
     openrouter_refs: list[tuple[str, str]],
-    canonical_names: dict[str, str],
+    canonical_metadata: dict[str, dict[str, Any]],
 ) -> str | None:
     """Map one benchmark result to a canonical model ID."""
     benchmark_ref = benchmark_record.get("model_permaslug")
@@ -114,7 +114,8 @@ def resolve_canonical_model(
     exact_matches = {
         base_model
         for provider_model, base_model in openrouter_refs
-        if normalized_ref in {
+        if normalized_ref
+        in {
             normalize_model_ref(provider_model),
             normalize_model_ref(base_model),
         }
@@ -122,29 +123,40 @@ def resolve_canonical_model(
     if len(exact_matches) == 1:
         return exact_matches.pop()
     if len(exact_matches) > 1:
-        raise RuntimeError(f"Ambiguous OpenRouter model mapping for {benchmark_ref}: {sorted(exact_matches)}")
+        raise RuntimeError(
+            f"Ambiguous OpenRouter model mapping for {benchmark_ref}: {sorted(exact_matches)}"
+        )
 
     display_name = benchmark_record.get("display_name")
     if isinstance(display_name, str):
         display_key = normalize_display_name(display_name)
         name_matches = {
             model_id
-            for model_id, name in canonical_names.items()
-            if normalize_display_name(name) == display_key
+            for model_id, metadata in canonical_metadata.items()
+            if normalize_display_name(metadata["name"]) == display_key
             and any(base_model == model_id for _, base_model in openrouter_refs)
         }
         if len(name_matches) == 1:
             return name_matches.pop()
         if len(name_matches) > 1:
-            raise RuntimeError(f"Ambiguous display-name mapping for {display_name}: {sorted(name_matches)}")
+            raise RuntimeError(
+                f"Ambiguous display-name mapping for {display_name}: {sorted(name_matches)}"
+            )
 
     return None
 
 
-def collect_provider_prices(repo_root: Path, canonical_model: str) -> dict[str, dict[str, Any]]:
+def collect_provider_prices(
+    repo_root: Path,
+    canonical_model: str,
+    canonical_metadata: dict[str, dict[str, Any]],
+) -> dict[str, dict[str, dict[str, Any]]]:
     """Collect all provider TOML records serving the canonical model."""
-    providers: dict[str, dict[str, Any]] = {}
+    providers: dict[str, dict[str, dict[str, Any]]] = {}
     providers_root = repo_root / "providers"
+    canonical_is_thinking = bool(
+        canonical_metadata.get(canonical_model, {}).get("reasoning")
+    )
     for provider_dir in providers_root.iterdir():
         models_root = provider_dir / "models"
         if not models_root.is_dir():
@@ -158,20 +170,20 @@ def collect_provider_prices(repo_root: Path, canonical_model: str) -> dict[str, 
             if base_model != canonical_model and model_id != canonical_model:
                 continue
 
-            provider_key = provider_dir.name
-            if provider_key in providers:
-                provider_key = f"{provider_key}/{model_id}"
-                suffix = 2
-                while provider_key in providers:
-                    provider_key = f"{provider_dir.name}/{model_id}#{suffix}"
-                    suffix += 1
-
-            cost = data.get("cost")
-            providers[provider_key] = {
-                "model": model_id,
-                "cost": cost if isinstance(cost, dict) else {},
+            is_thinking = (
+                canonical_is_thinking
+                or bool(data.get("reasoning"))
+                or "thinking" in model_id.lower()
+            )
+            provider_models = providers.setdefault(provider_dir.name, {})
+            provider_models[model_id] = {
+                "is_thinking": is_thinking,
+                "cost": data.get("cost") if isinstance(data.get("cost"), dict) else {},
             }
-    return dict(sorted(providers.items()))
+    return {
+        provider: dict(sorted(models.items()))
+        for provider, models in sorted(providers.items())
+    }
 
 
 def compile_pareto_data(
@@ -180,7 +192,7 @@ def compile_pareto_data(
     accuracy_threshold: float,
 ) -> dict[str, dict[str, Any]]:
     """Compile the requested canonical-model-to-provider-price structure."""
-    canonical_names = build_canonical_names(repo_root)
+    canonical_metadata = build_canonical_metadata(repo_root)
     openrouter_refs = build_openrouter_refs(repo_root)
     result: dict[str, dict[str, Any]] = {}
 
@@ -193,7 +205,9 @@ def compile_pareto_data(
         if accuracy <= accuracy_threshold:
             continue
 
-        canonical_model = resolve_canonical_model(record, openrouter_refs, canonical_names)
+        canonical_model = resolve_canonical_model(
+            record, openrouter_refs, canonical_metadata
+        )
         if canonical_model is None:
             print(
                 f"Skipping benchmark model without local OpenRouter mapping: {record.get('model_permaslug')}",
@@ -203,7 +217,9 @@ def compile_pareto_data(
 
         result[canonical_model] = {
             "accuracy": accuracy,
-            "providers": collect_provider_prices(repo_root, canonical_model),
+            "providers": collect_provider_prices(
+                repo_root, canonical_model, canonical_metadata
+            ),
         }
 
     return dict(sorted(result.items()))
@@ -215,12 +231,16 @@ def main() -> None:
     if not api_key:
         raise RuntimeError("OPENROUTER_API_KEY is required")
 
-    threshold = float(os.environ.get("PARETO_ACCURACY_THRESHOLD", DEFAULT_ACCURACY_THRESHOLD))
+    threshold = float(
+        os.environ.get("PARETO_ACCURACY_THRESHOLD", DEFAULT_ACCURACY_THRESHOLD)
+    )
     output_path = Path(os.environ.get("PARETO_OUTPUT_PATH", repo_root / "pareto.json"))
     benchmark_url = os.environ.get("OPENROUTER_BENCHMARK_URL", DEFAULT_BENCHMARK_URL)
     payload = fetch_benchmark(benchmark_url, api_key)
     result = compile_pareto_data(repo_root, payload, threshold)
-    output_path.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    output_path.write_text(
+        json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
     print(f"Wrote {len(result)} Pareto models to {output_path}")
 
 
