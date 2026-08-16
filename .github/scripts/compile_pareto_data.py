@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compile OpenRouter tau-bench results with provider pricing from TOML files."""
+"""Compile OpenRouter GPQA coding results with provider pricing from TOML files."""
 
 from __future__ import annotations
 
@@ -7,17 +7,18 @@ import json
 import os
 import re
 import sys
-import tomllib
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
+import tomllib
+
 DEFAULT_BENCHMARK_URL = (
     "https://openrouter.ai/api/v1/benchmarks"
-    "?source=openrouter&benchmark_type=tau_bench_verified_airline"
+    "?benchmark_type=gpqa_diamond&source=artificial-analysis&task_type=coding"
 )
-DEFAULT_ACCURACY_THRESHOLD = 0.60
+DEFAULT_ACCURACY_THRESHOLD = 60
 DEFAULT_EXCLUDE_PROVIDERS_WITH_PLAN = True
 DATE_SUFFIX_RE = re.compile(r"-(?:\d{8}|\d{4}-\d{2}-\d{2}|\d{2}-\d{2})$")
 
@@ -82,7 +83,7 @@ def fetch_benchmark(url: str, api_key: str) -> dict[str, Any]:
         raise RuntimeError("OpenRouter API returned invalid JSON") from exc
 
     if not isinstance(payload, dict) or not isinstance(payload.get("data"), list):
-        raise RuntimeError("OpenRouter API response does not contain a data list")
+        raise TypeError("OpenRouter API response does not contain a data list")
     return payload
 
 
@@ -268,10 +269,10 @@ def compile_pareto_data(
     for record in benchmark_payload["data"]:
         if not isinstance(record, dict):
             continue
-        accuracy = record.get("accuracy")
-        if not isinstance(accuracy, (int, float)) or isinstance(accuracy, bool):
+        coding_index = record.get("coding_index")
+        if not isinstance(coding_index, (int, float)) or isinstance(coding_index, bool):
             continue
-        if accuracy <= accuracy_threshold:
+        if coding_index <= accuracy_threshold:
             continue
 
         resolved = resolve_canonical_model(record, openrouter_refs, canonical_metadata)
@@ -284,7 +285,7 @@ def compile_pareto_data(
 
         canonical_model, openrouter_ref = resolved
         result[canonical_model] = {
-            "accuracy": accuracy,
+            "accuracy": coding_index,
             "providers": collect_provider_prices(
                 repo_root,
                 canonical_model,
