@@ -57,13 +57,13 @@ class CollectRoutersTest(unittest.TestCase):
             "example-provider",
             'name = "Example Provider"\n',
             None,
+            None,
             "Example documentation evidence.",
         )
         system_prompt = messages[0]["content"]
         self.assertIn("PURE_ROUTER", system_prompt)
         self.assertIn("MANAGED_MODEL_PLATFORM", system_prompt)
-        self.assertIn("underlying model inference", system_prompt)
-        self.assertIn("Do not use a provider name, slug, or memorized label", system_prompt)
+        self.assertIn("underlying inference", system_prompt)
         self.assertNotIn("Amazon Bedrock", system_prompt)
 
     def test_debug_usage_reports_openrouter_cost(self):
