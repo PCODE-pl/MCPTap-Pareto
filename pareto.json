@@ -10157,20 +10157,20 @@
         "openai/gpt-5.6-luna": {
           "is_thinking": true,
           "cost": {
-            "input": 0.1,
-            "output": 0.6,
-            "cache_read": 0.01,
-            "cache_write": 0.125,
+            "input": 0.2,
+            "output": 1.2,
+            "cache_read": 0.02,
+            "cache_write": 0.25,
             "tiers": [
               {
                 "tier": {
                   "type": "context",
                   "size": 272000
                 },
-                "input": 0.2,
-                "output": 0.9,
-                "cache_read": 0.02,
-                "cache_write": 0.25
+                "input": 0.4,
+                "output": 1.8,
+                "cache_read": 0.04,
+                "cache_write": 0.5
               }
             ]
           }
@@ -10178,20 +10178,20 @@
         "openai/gpt-5.6-luna-pro": {
           "is_thinking": true,
           "cost": {
-            "input": 0.1,
-            "output": 0.6,
-            "cache_read": 0.01,
-            "cache_write": 0.125,
+            "input": 0.2,
+            "output": 1.2,
+            "cache_read": 0.02,
+            "cache_write": 0.25,
             "tiers": [
               {
                 "tier": {
                   "type": "context",
                   "size": 272000
                 },
-                "input": 0.2,
-                "output": 0.9,
-                "cache_read": 0.02,
-                "cache_write": 0.25
+                "input": 0.4,
+                "output": 1.8,
+                "cache_read": 0.04,
+                "cache_write": 0.5
               }
             ]
           }
@@ -11121,10 +11121,10 @@
         "openai/gpt-5.6-sol": {
           "is_thinking": true,
           "cost": {
-            "input": 5,
-            "output": 30,
-            "cache_read": 0.5,
-            "cache_write": 6.25
+            "input": 2.5,
+            "output": 15,
+            "cache_read": 0.25,
+            "cache_write": 3.125
           }
         }
       },
@@ -11632,20 +11632,20 @@
         "openai/gpt-5.6-terra": {
           "is_thinking": true,
           "cost": {
-            "input": 1,
-            "output": 6,
-            "cache_read": 0.1,
-            "cache_write": 1.25,
+            "input": 2,
+            "output": 12,
+            "cache_read": 0.2,
+            "cache_write": 2.5,
             "tiers": [
               {
                 "tier": {
                   "type": "context",
                   "size": 272000
                 },
-                "input": 2,
-                "output": 9,
-                "cache_read": 0.2,
-                "cache_write": 2.5
+                "input": 4,
+                "output": 18,
+                "cache_read": 0.4,
+                "cache_write": 5
               }
             ]
           }
@@ -11653,20 +11653,20 @@
         "openai/gpt-5.6-terra-pro": {
           "is_thinking": true,
           "cost": {
-            "input": 1,
-            "output": 6,
-            "cache_read": 0.1,
-            "cache_write": 1.25,
+            "input": 2,
+            "output": 12,
+            "cache_read": 0.2,
+            "cache_write": 2.5,
             "tiers": [
               {
                 "tier": {
                   "type": "context",
                   "size": 272000
                 },
-                "input": 2,
-                "output": 9,
-                "cache_read": 0.2,
-                "cache_write": 2.5
+                "input": 4,
+                "output": 18,
+                "cache_read": 0.4,
+                "cache_write": 5
               }
             ]
           }
