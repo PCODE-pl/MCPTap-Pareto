@@ -4054,9 +4054,9 @@
         "deepseek/deepseek-v4-flash": {
           "is_thinking": true,
           "cost": {
-            "input": 0.0742,
-            "output": 0.1484,
-            "cache_read": 0.01484
+            "input": 0.0714,
+            "output": 0.1428,
+            "cache_read": 0.01428
           }
         }
       },
@@ -4279,6 +4279,16 @@
         "deepseek/deepseek-v4-pro": {
           "is_thinking": true,
           "cost": {}
+        }
+      },
+      "arcee": {
+        "deepseek/deepseek-v4-pro": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.74,
+            "output": 3.48,
+            "cache_read": 0.2
+          }
         }
       },
       "auriko": {
@@ -7596,6 +7606,16 @@
       },
       "aihubmix": {
         "kimi-k3": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3.0,
+            "output": 15.0,
+            "cache_read": 0.3
+          }
+        }
+      },
+      "arcee": {
+        "moonshotai/kimi-k3": {
           "is_thinking": true,
           "cost": {
             "input": 3.0,
@@ -13004,6 +13024,16 @@
           }
         }
       },
+      "arcee": {
+        "zai-org/glm-5.2": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.4,
+            "output": 4.4,
+            "cache_read": 0.26
+          }
+        }
+      },
       "baseten": {
         "zai-org/GLM-5.2": {
           "is_thinking": true,
@@ -13544,9 +13574,9 @@
         "z-ai/glm-5.2": {
           "is_thinking": true,
           "cost": {
-            "input": 0.476,
-            "output": 1.496,
-            "cache_read": 0.0884
+            "input": 0.462,
+            "output": 1.452,
+            "cache_read": 0.0858
           }
         },
         "z-ai/glm-5.2:free": {
