@@ -1,0 +1,938 @@
+{
+  "abacus": {
+    "fingerprint": "828d6ca2041ad772cc771c8482437f483f842a9611998f8430a4fb7a9f16090a",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-fable-5', 'anthropic/claude-haiku-4-5-20251001', 'anthropic/claude-opus-4-5-20251101', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-opus-4-8', 'anthropic/claude-opus-5', 'anthropic/claude-sonnet-4-5-20250929', 'anthropic/claude-sonnet-4-6', 'anthropic/claude-sonnet-5', 'google/gemini-3-flash-preview', 'google/gemini-3-pro-image', 'google/gemini-3-pro-image-preview', 'openai/gpt-4.1', 'openai/gpt-4.1-mini', 'openai/gpt-4.1-nano', 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-5', 'openai/gpt-5-codex', 'openai/gpt-5-mini', 'openai/gpt-5-nano', 'openai/gpt-5.1', 'openai/gpt-5.1-codex', 'openai/gpt-5.2', 'openai/gpt-5.2-codex', 'openai/gpt-5.3-codex', 'openai/gpt-5.4', 'openai/gpt-5.4-mini', 'openai/gpt-5.4-nano', 'openai/gpt-5.5', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra', 'openai/o3', 'openai/o3-mini', 'openai/o3-pro', 'openai/o4-mini', 'xiaomi/mimo-v2-pro']",
+    "source_urls": []
+  },
+  "ai-router": {
+    "fingerprint": "5d286bae0715b4d4c816f90f51231a7645f9e5a2eb64dda457f1791873d53727",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['openai/gpt-5.4', 'openai/gpt-5.5', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra']",
+    "source_urls": []
+  },
+  "aiand": {
+    "fingerprint": "b050c6c6081173fc2ee0e22baf29b701e704f72793bd6aa1f7b333442c916d60",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "aihubmix": {
+    "fingerprint": "06cd5c474f98bc2a9af0f59c44a65e85fd6b33b327c88aa73e274d3bc418e777",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-fable-5', 'anthropic/claude-opus-4-8', 'anthropic/claude-opus-5', 'anthropic/claude-sonnet-5', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra']",
+    "source_urls": []
+  },
+  "aki-io": {
+    "fingerprint": "2ff2e78006011a111b7ff01d345fbeac9a8e39780352e1ee8c84926b81d5f914",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "alibaba": {
+    "fingerprint": "55a09401f5020cc91ad938ad2d46ae7d9199b00a9b3dfef7cbaab60a70242acc",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "alibaba-cn": {
+    "fingerprint": "4a20b059eb2f6dedc448f5900a621b8539bd51a90c99b53dabd09cbac1d6785d",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "alibaba-coding-plan": {
+    "fingerprint": "0d56f5619172a96ec4d81ff240e05eb0fc39696cfb43b3177b14c7bb0bd94a23",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "alibaba-coding-plan-cn": {
+    "fingerprint": "8e5078a9648ec6bcdd19808a8a1e6cc712fa0bd6de31105c550d394bec6113b3",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "alibaba-token-plan": {
+    "fingerprint": "8cbc73accf93fed2014432b03bc465f1d5bc5bfb0d148d1d09a5b261bae6ce61",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['deepseek/deepseek-v4-pro-0813']",
+    "source_urls": []
+  },
+  "alibaba-token-plan-cn": {
+    "fingerprint": "b7034a17b2b5e276099ecf80be4d1de77b4023e60c8137639ca02aad69e85185",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['deepseek/deepseek-v4-pro-0813']",
+    "source_urls": []
+  },
+  "amazon-bedrock": {
+    "fingerprint": "26e4025c70478d8e978a46fad5b9884a7fa16dedfed7fc5fbb3c207b22ff09af",
+    "is_router": false,
+    "reason": "This provider is classified as a managed model-hosting platform, not a pure model router.",
+    "source_urls": []
+  },
+  "ambient": {
+    "fingerprint": "22fdd791a4775bbb3d1591064d10f4b7fc640740fdad0c4c018b285e619080b8",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "amd": {
+    "fingerprint": "2780bc0459e98dfa666a74ceb386342861ad791de49ba34ac9cabaa665d433bb",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "anthropic": {
+    "fingerprint": "1dfff95736448f6db8a6a899a9c1a96e703239fc1e0ba3928625878a460df6e2",
+    "is_router": false,
+    "reason": "The provider is lab, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "anyapi": {
+    "fingerprint": "a322cee79a4bfcfa420b20cce5f4395b1b510c50d53991ce7973b98dcd4149a2",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-haiku-4-5', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-sonnet-4-5', 'anthropic/claude-sonnet-4-6', 'google/gemini-3-flash-preview', 'google/gemini-3-pro-preview', 'openai/gpt-4.1', 'openai/gpt-4.1-mini', 'openai/gpt-5', 'openai/gpt-5-mini', 'openai/gpt-5.1', 'openai/gpt-5.2', 'openai/gpt-5.4', 'openai/o3', 'openai/o3-mini', 'openai/o4-mini', 'perplexity/sonar-pro', 'perplexity/sonar-reasoning-pro']",
+    "source_urls": []
+  },
+  "arcee": {
+    "fingerprint": "3fc415772af31565a9a4e39e2d9923c8bc99a09effdf199520734f523bfe5b74",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['deepseek/deepseek-v4-pro-0813']",
+    "source_urls": []
+  },
+  "auriko": {
+    "fingerprint": "bd42bd65cd6f9cf95daf0a1aa2ddc566aa678ccba02caa2887453025625d9af8",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-sonnet-4-6']",
+    "source_urls": []
+  },
+  "azure": {
+    "fingerprint": "d2624c79b25be1e6ddbb5d233b7e1d03f95350103f3afde8a1a2bfbcc8f4a70e",
+    "is_router": false,
+    "reason": "This provider is classified as a managed model-hosting platform, not a pure model router.",
+    "source_urls": []
+  },
+  "azure-cognitive-services": {
+    "fingerprint": "dd260cd58d8472775073b4dda24cec0986b856edc917fcfd9e8c72e5b280b7f9",
+    "is_router": false,
+    "reason": "This provider is classified as a managed model-hosting platform, not a pure model router.",
+    "source_urls": []
+  },
+  "baseten": {
+    "fingerprint": "321f4cfbeafd697a26cfd4bb1a684ce2e15ca2cb7fdb411c5458d16f4827db95",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['deepseek/deepseek-v4-pro-0813']",
+    "source_urls": []
+  },
+  "berget": {
+    "fingerprint": "d53caa2823b9a6e79d675258017715f1e502a94c7a6de441ce330e139373c5ca",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "blueclaw": {
+    "fingerprint": "8f2ab2b7ff9cbcb8a89751ff050cf11ad5df59dffaa69f9561ec251a3eff0254",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "cerebras": {
+    "fingerprint": "ead461e2b1a44b3833f71fa5da4aa15b9c3c82280e9a7984536f64a9154b1a75",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "chutes": {
+    "fingerprint": "a6757aece48851b4dcf75db6da08005e4232b223daa3124142b92eb9af19bf34",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "clarifai": {
+    "fingerprint": "f40cc12a6594465308b5afd185e7518ffb9e458174754a35266558270b1e2b34",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "cline-pass": {
+    "fingerprint": "7f777db39e867b578dc7fba9d422457808d51e65287920ed07b0367843a41f5f",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "cloudferro-sherlock": {
+    "fingerprint": "31684ce84959963c3c07d12ad013d7b0e133334781efa43bb2c277d333ace259",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "cloudflare-ai-gateway": {
+    "fingerprint": "c81ec321184524da64e53732082e07e8002a98d9a7b4d8c846a2391a1c5ad297",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-fable-5', 'anthropic/claude-haiku-4-5', 'anthropic/claude-opus-4-5', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-opus-4-8', 'anthropic/claude-opus-5', 'anthropic/claude-sonnet-4-5', 'anthropic/claude-sonnet-4-6', 'anthropic/claude-sonnet-5', 'openai/gpt-4', 'openai/gpt-4-turbo', 'openai/gpt-4.1', 'openai/gpt-4.1-mini', 'openai/gpt-4.1-nano', 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-5', 'openai/gpt-5-mini', 'openai/gpt-5-nano', 'openai/gpt-5-pro', 'openai/gpt-5.1', 'openai/gpt-5.2', 'openai/gpt-5.2-chat-latest', 'openai/gpt-5.2-pro', 'openai/gpt-5.3-chat-latest', 'openai/gpt-5.3-codex', 'openai/gpt-5.3-codex-spark', 'openai/gpt-5.4', 'openai/gpt-5.4-mini', 'openai/gpt-5.4-nano', 'openai/gpt-5.4-pro', 'openai/gpt-5.5', 'openai/gpt-5.5-pro', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra', 'openai/o1', 'openai/o1-pro', 'openai/o3', 'openai/o3-mini', 'openai/o3-pro', 'openai/o4-mini']",
+    "source_urls": []
+  },
+  "cloudflare-workers-ai": {
+    "fingerprint": "66f149bdc5d80150fb341ad94bd1a570d4592cbe3bd1428f2e1b375e92bdc4a8",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['deepseek/deepseek-v4-pro-0813']",
+    "source_urls": []
+  },
+  "cohere": {
+    "fingerprint": "679d3bde67ac376ccfdb59f406017b6fbd342a52e505ff481369f78e8c7f120c",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "coralbricks": {
+    "fingerprint": "a7ed7708b28d4dbe57faec9a397508e4a37cdc265c1ad1c155f717b4c5f28a43",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "cortecs": {
+    "fingerprint": "43540666d4743d2759219181f7bbc3f077bd218eb8d0adcf5c5ce873979b61ec",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-haiku-4-5', 'anthropic/claude-opus-4-5', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-opus-4-8', 'anthropic/claude-opus-5', 'anthropic/claude-sonnet-4-0', 'anthropic/claude-sonnet-4-5', 'anthropic/claude-sonnet-4-6', 'anthropic/claude-sonnet-5', 'openai/gpt-4.1', 'openai/gpt-4.1-mini', 'openai/gpt-4.1-nano', 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-5', 'openai/gpt-5-mini', 'openai/gpt-5-nano', 'openai/gpt-5.1', 'openai/gpt-5.4', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra', 'zhipuai/glm-5-turbo', 'zhipuai/glm-5v-turbo']",
+    "source_urls": []
+  },
+  "crof": {
+    "fingerprint": "78f5925c3b2c9d7d5e47e6a97c4ce2167ba4c822030a6c1b17c97202db6fc028",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "crossmodel": {
+    "fingerprint": "d811b833582a86d07b2c0fb1341e981d121261f69bbea82b1e6ad4fd142fb08e",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-fable-5', 'anthropic/claude-haiku-4-5', 'anthropic/claude-opus-4-7', 'anthropic/claude-opus-4-8', 'anthropic/claude-opus-5', 'anthropic/claude-sonnet-4-6', 'anthropic/claude-sonnet-5', 'google/gemini-3-flash-preview', 'openai/gpt-4o-mini', 'openai/gpt-5.4', 'openai/gpt-5.4-mini', 'openai/gpt-5.4-nano', 'openai/gpt-5.5', 'openai/gpt-5.5-pro', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra', 'zhipuai/glm-5-turbo']",
+    "source_urls": []
+  },
+  "crusoe": {
+    "fingerprint": "fe604c595393d0cb7d83426683ac93fef6bb94410964d320912de73d8e655afa",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "daoxe": {
+    "fingerprint": "386ea59ca3da63b36f574cc108259b0cab270aa4c32e602987b553045a8d3470",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-haiku-4-5-20251001', 'anthropic/claude-opus-4-8', 'anthropic/claude-sonnet-4-6', 'openai/gpt-5.4', 'openai/gpt-5.5']",
+    "source_urls": []
+  },
+  "databricks": {
+    "fingerprint": "f9e19705d3d00e1df649143675136502cfb91e653aed54cfb7ea7712a78b68bc",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-haiku-4-5', 'anthropic/claude-opus-4-1', 'anthropic/claude-opus-4-5', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-sonnet-4-5', 'anthropic/claude-sonnet-4-5-20250929', 'anthropic/claude-sonnet-4-6', 'google/gemini-3-flash-preview', 'google/gemini-3-pro-preview', 'openai/gpt-5', 'openai/gpt-5-mini', 'openai/gpt-5-nano', 'openai/gpt-5.1', 'openai/gpt-5.2', 'openai/gpt-5.4', 'openai/gpt-5.4-mini', 'openai/gpt-5.4-nano', 'openai/gpt-5.5', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra']",
+    "source_urls": []
+  },
+  "deepinfra": {
+    "fingerprint": "55c743a31c802c85800f717e5a5675b3ed30927660f21c5741de915935acea24",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['alibaba/qwen3-max', 'deepseek/deepseek-v4-pro-0813']",
+    "source_urls": []
+  },
+  "deepseek": {
+    "fingerprint": "61972eadf565fe2e6db02ab1c0cacef5becd96e26426d1ff9310d8dd001dfa2d",
+    "is_router": false,
+    "reason": "The provider is lab, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "digitalocean": {
+    "fingerprint": "77f1e0bbbac1e054132a29b1c1b93ec1e62119ad03f5636b57efd804a1cc1f5e",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-opus-5', 'anthropic/claude-sonnet-5', 'deepseek/deepseek-v4-pro-0813', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra']",
+    "source_urls": []
+  },
+  "dinference": {
+    "fingerprint": "b971907575769fcf63a2549da080a4faae75dfb64ffd95adbb719e76430beee4",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "ebcloud": {
+    "fingerprint": "f1b0ad48a9ec54cf3272a6bc6f8faf09591a86b1f7009b510b8f209872f2e28f",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "edenai": {
+    "fingerprint": "17c9614f96afe1f306839c592bf67697bb934b4fa465c4ac62779dd4e747c2e4",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['alibaba/qwen-max', 'alibaba/qwen-vl-max', 'alibaba/qwen-vl-plus', 'alibaba/qwen3-coder-flash', 'alibaba/qwen3-coder-plus', 'alibaba/qwen3-max', 'alibaba/qwq-plus', 'anthropic/claude-fable-5', 'anthropic/claude-opus-4-5', 'anthropic/claude-opus-4-5-20251101', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-opus-4-8', 'anthropic/claude-opus-5', 'anthropic/claude-sonnet-4-6', 'anthropic/claude-sonnet-5', 'deepseek/deepseek-v4-pro-0813', 'google/gemini-3-flash-preview', 'google/gemini-3-pro-image', 'google/gemini-3-pro-image-preview', 'google/lyria-3-clip-preview', 'mistral/magistral-medium-latest', 'mistral/mistral-medium-2505', 'openai/gpt-4', 'openai/gpt-4-turbo', 'openai/gpt-4.1', 'openai/gpt-4.1-mini', 'openai/gpt-4.1-nano', 'openai/gpt-4o', 'openai/gpt-4o-2024-08-06', 'openai/gpt-4o-2024-11-20', 'openai/gpt-4o-mini', 'openai/gpt-5', 'openai/gpt-5-mini', 'openai/gpt-5-nano', 'openai/gpt-5-pro', 'openai/gpt-5.1', 'openai/gpt-5.1-codex', 'openai/gpt-5.1-codex-max', 'openai/gpt-5.1-codex-mini', 'openai/gpt-5.2', 'openai/gpt-5.2-codex', 'openai/gpt-5.2-pro', 'openai/gpt-5.3-codex', 'openai/gpt-5.4', 'openai/gpt-5.4-mini', 'openai/gpt-5.4-nano', 'openai/gpt-5.4-pro', 'openai/gpt-5.5', 'openai/gpt-5.5-pro', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra', 'openai/o1', 'openai/o1-pro', 'openai/o3', 'openai/o3-mini', 'openai/o3-pro', 'openai/o4-mini', 'perplexity/sonar', 'perplexity/sonar-deep-research', 'perplexity/sonar-pro', 'perplexity/sonar-reasoning-pro', 'zhipuai/glm-5-turbo', 'zhipuai/glm-5v-turbo']",
+    "source_urls": []
+  },
+  "empiriolabs": {
+    "fingerprint": "01948aaf663dcea34d3f0402cda80be210172ef70da519e030dd07319b714d0a",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['alibaba/qwen3-max', 'deepseek/deepseek-v4-pro-0813', 'mistral/mistral-medium-2505', 'sakana/fugu-ultra']",
+    "source_urls": []
+  },
+  "evroc": {
+    "fingerprint": "8b94cf2947e8e8aefe86ced845129fd00f59785332e5fe7ef50c375c608b6d3a",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "fastrouter": {
+    "fingerprint": "e9dd87e2488b16eab3988c8385ab5d923a6a8d0d6ad30c3072256ed936f8ce56",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-opus-4-1-20250805', 'anthropic/claude-opus-4-8', 'anthropic/claude-sonnet-4-20250514', 'anthropic/claude-sonnet-4-6', 'google/gemini-3-pro-image-preview', 'openai/gpt-4.1', 'openai/gpt-5.3-codex', 'openai/gpt-5.4-mini', 'openai/gpt-5.4-nano', 'openai/gpt-5.5', 'openai/gpt-5.5-pro']",
+    "source_urls": []
+  },
+  "fireworks-ai": {
+    "fingerprint": "71ef8681704a91cef3fa944572851249a865f29597e6452a95782be615c45655",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['deepseek/deepseek-v4-pro-0813']",
+    "source_urls": []
+  },
+  "freemodel": {
+    "fingerprint": "f28589d0d19d74b27d7129cd7e929c5ce3a7f1dfab001519e27e556f678b42ce",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-fable-5', 'anthropic/claude-haiku-4-5-20251001', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-opus-4-8', 'anthropic/claude-sonnet-4-6', 'openai/gpt-5.3-codex', 'openai/gpt-5.4', 'openai/gpt-5.4-mini', 'openai/gpt-5.5']",
+    "source_urls": []
+  },
+  "friendli": {
+    "fingerprint": "1ca78f76d30a564d7b37a48ac84c4a35b14537c65e60eb11c584ec99224543b5",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "github-copilot": {
+    "fingerprint": "8c88a1c6163d5e62e406784e87fac6ce110709bb9dcec75eaa38784d5887bb9c",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-fable-5', 'anthropic/claude-haiku-4-5', 'anthropic/claude-opus-4-5', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-opus-4-8', 'anthropic/claude-opus-5', 'anthropic/claude-sonnet-4-0', 'anthropic/claude-sonnet-4-5', 'anthropic/claude-sonnet-4-6', 'anthropic/claude-sonnet-5', 'microsoft/mai-code-1-flash', 'openai/gpt-4.1', 'openai/gpt-5-mini', 'openai/gpt-5.2', 'openai/gpt-5.2-codex', 'openai/gpt-5.3-codex', 'openai/gpt-5.4', 'openai/gpt-5.4-mini', 'openai/gpt-5.4-nano', 'openai/gpt-5.5', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra']",
+    "source_urls": []
+  },
+  "gitlab": {
+    "fingerprint": "927dc52629037ae5ec863dceab690587e632b313d43e452de13fce335e75d67e",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-fable-5', 'anthropic/claude-opus-5', 'anthropic/claude-sonnet-5', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra']",
+    "source_urls": []
+  },
+  "gmicloud": {
+    "fingerprint": "3432c8b650a24c4f8d3b2bfcad49433eb8243a49281da38ef0eb46a74d58b5cf",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-opus-4-8', 'anthropic/claude-sonnet-4-6', 'openai/gpt-5.5']",
+    "source_urls": []
+  },
+  "google": {
+    "fingerprint": "45e088399e758fe3f488a395c1f83ca5ae689b6e10b915c637ad4383760e51ea",
+    "is_router": false,
+    "reason": "The provider is lab, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "google-vertex": {
+    "fingerprint": "25aebeace8ad9cad8915bd38a59aaa4c26779ffac7d0e498156b26a7e0870fbf",
+    "is_router": false,
+    "reason": "This provider is classified as a managed model-hosting platform, not a pure model router.",
+    "source_urls": []
+  },
+  "google-vertex-anthropic": {
+    "fingerprint": "7851c800004dede654316788cbc0fed71c61f17edc92eef6d66e1f8d30eaaa85",
+    "is_router": false,
+    "reason": "This provider is classified as a managed model-hosting platform, not a pure model router.",
+    "source_urls": []
+  },
+  "greenpt": {
+    "fingerprint": "f47943dc775ac52d81ee0051841002fcde45c8cefa971f41a03f4820e11094a2",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "groq": {
+    "fingerprint": "8b1fd49926f491fffbcf90b2aac4f930e73efa1bccced72df988da8ec8d73937",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "helicone": {
+    "fingerprint": "c7b2e0103cbd23aba2e62bd652850d72984d49772feb39938f846063c46cfa8a",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "hetzner": {
+    "fingerprint": "27a19fe8cb469ac3394df49893b5a76f760b3b82e3346e3d7d73289796855edc",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "hpc-ai": {
+    "fingerprint": "f35a59baa7a14b432724cbc5278a1256668d9edfcf439a5b8b6e43020c3b0e49",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-opus-4-7', 'openai/gpt-5.5']",
+    "source_urls": []
+  },
+  "huggingface": {
+    "fingerprint": "22576ae1d09478c981c8d6a5f6a0d078d29bc055c05ff131b24614ab52657934",
+    "is_router": false,
+    "reason": "This provider is classified as a managed model-hosting platform, not a pure model router.",
+    "source_urls": []
+  },
+  "hyper": {
+    "fingerprint": "6715c12d0341fd70027329eec5c3e1d2f0189b67a8b9d632fbb597508df8132f",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['deepseek/deepseek-v4-pro-0813']",
+    "source_urls": []
+  },
+  "impossibl": {
+    "fingerprint": "c127e4df4c299dd3e0717db5c7dfe464fd6b3152bbf7e78fe2004bfd32d269d7",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-fable-5', 'anthropic/claude-haiku-4-5', 'anthropic/claude-opus-4-5', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-opus-4-8', 'anthropic/claude-sonnet-4-5', 'anthropic/claude-sonnet-4-6', 'anthropic/claude-sonnet-5', 'openai/gpt-4-turbo', 'openai/gpt-4.1', 'openai/gpt-4.1-mini', 'openai/gpt-4.1-nano', 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-5', 'openai/gpt-5-codex', 'openai/gpt-5-mini', 'openai/gpt-5-nano', 'openai/gpt-5-pro', 'openai/gpt-5.1', 'openai/gpt-5.1-codex', 'openai/gpt-5.1-codex-mini', 'openai/gpt-5.2', 'openai/gpt-5.2-codex', 'openai/gpt-5.3-codex', 'openai/gpt-5.4', 'openai/gpt-5.4-mini', 'openai/gpt-5.4-nano', 'openai/gpt-5.4-pro', 'openai/gpt-5.5', 'openai/gpt-5.5-pro', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra', 'openai/o1', 'openai/o3', 'openai/o3-mini', 'openai/o4-mini', 'zhipuai/glm-5-turbo']",
+    "source_urls": []
+  },
+  "inceptron": {
+    "fingerprint": "72910de5e960c8e7f576f51a2d822af950cd7e9fc17bb80c38558745ace3fdf4",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "inferx": {
+    "fingerprint": "240adf3d575072ed7b3528f97102e3d87ffcbfb1d6ddae981a972c040567df36",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "infomaniak": {
+    "fingerprint": "4bbb33ccec511fd60c3a491f1fdf2cdb2055631bb42e094b2e49a30356513228",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "jalapeno": {
+    "fingerprint": "e386170a187ea8be310356a1c600a44481ee061656be4ebcd3f23f9dc3f1b14f",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "kenari": {
+    "fingerprint": "455404f6e39ccb5b4974094c075583149b6321f21334387877cbdeb4a3505218",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-fable-5', 'anthropic/claude-opus-4-7', 'anthropic/claude-opus-4-8', 'anthropic/claude-sonnet-5', 'openai/gpt-5.4-mini', 'openai/gpt-5.5', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra', 'openai/gpt-image-2']",
+    "source_urls": []
+  },
+  "kilo": {
+    "fingerprint": "7c8c82e4e70cc50e70f0ada4013e064ad22bfa381ed88c22476a6c0e0001ee37",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['alibaba/qwen-plus', 'alibaba/qwen3-coder-flash', 'alibaba/qwen3-coder-plus', 'alibaba/qwen3-max', 'anthropic/claude-fable-5', 'anthropic/claude-haiku-4-5', 'anthropic/claude-opus-4-1', 'anthropic/claude-opus-4-5', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-opus-4-8', 'anthropic/claude-opus-5', 'anthropic/claude-sonnet-4-5', 'anthropic/claude-sonnet-4-6', 'anthropic/claude-sonnet-5', 'deepseek/deepseek-v4-pro-0813', 'google/gemini-3-flash-preview', 'google/gemini-3-pro-image', 'google/gemini-3-pro-image-preview', 'google/lyria-3-clip-preview', 'google/lyria-3-pro-preview', 'minimax/MiniMax-M2-Her', 'openai/gpt-4', 'openai/gpt-4-turbo', 'openai/gpt-4.1', 'openai/gpt-4.1-mini', 'openai/gpt-4.1-nano', 'openai/gpt-4o', 'openai/gpt-4o-2024-05-13', 'openai/gpt-4o-2024-08-06', 'openai/gpt-4o-2024-11-20', 'openai/gpt-4o-mini', 'openai/gpt-5', 'openai/gpt-5-mini', 'openai/gpt-5-nano', 'openai/gpt-5-pro', 'openai/gpt-5.1', 'openai/gpt-5.1-codex', 'openai/gpt-5.1-codex-max', 'openai/gpt-5.1-codex-mini', 'openai/gpt-5.2', 'openai/gpt-5.2-codex', 'openai/gpt-5.2-pro', 'openai/gpt-5.3-codex', 'openai/gpt-5.4', 'openai/gpt-5.4-mini', 'openai/gpt-5.4-nano', 'openai/gpt-5.4-pro', 'openai/gpt-5.5', 'openai/gpt-5.5-pro', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra', 'openai/o1', 'openai/o1-pro', 'openai/o3', 'openai/o3-mini', 'openai/o3-pro', 'openai/o4-mini', 'sakana/fugu-ultra', 'zhipuai/glm-5-turbo', 'zhipuai/glm-5v-turbo']",
+    "source_urls": []
+  },
+  "kimi-for-coding": {
+    "fingerprint": "0018f4961bb930acae4878b64a3ccb39a8f86b6b7a93011c730bf9838180ce6c",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "lilac": {
+    "fingerprint": "2b4fe0de5aee9d9266c6c601fd056e172d4c7de02c78259fd38dd43e2c2fd9f0",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "llmgateway": {
+    "fingerprint": "9b9b115d990cc948d3c348e6465e99b2b18ff4e8614de6c4d9745240bb504576",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['alibaba/qwen-flash', 'alibaba/qwen-max', 'alibaba/qwen-omni-turbo', 'alibaba/qwen-plus', 'alibaba/qwen3-coder-flash', 'alibaba/qwen3-coder-plus', 'alibaba/qwen3-max', 'alibaba/qwen3-vl-plus', 'anthropic/claude-fable-5', 'anthropic/claude-haiku-4-5', 'anthropic/claude-haiku-4-5-20251001', 'anthropic/claude-opus-4-1-20250805', 'anthropic/claude-opus-4-5-20251101', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-opus-4-8', 'anthropic/claude-opus-5', 'anthropic/claude-sonnet-4-5', 'anthropic/claude-sonnet-4-5-20250929', 'anthropic/claude-sonnet-4-6', 'anthropic/claude-sonnet-5', 'google/gemini-3-flash-preview', 'openai/gpt-4', 'openai/gpt-4-turbo', 'openai/gpt-4.1', 'openai/gpt-4.1-mini', 'openai/gpt-4.1-nano', 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-5', 'openai/gpt-5-mini', 'openai/gpt-5-nano', 'openai/gpt-5-pro', 'openai/gpt-5.1', 'openai/gpt-5.1-codex', 'openai/gpt-5.1-codex-mini', 'openai/gpt-5.2', 'openai/gpt-5.2-codex', 'openai/gpt-5.2-pro', 'openai/gpt-5.3-codex', 'openai/gpt-5.4', 'openai/gpt-5.4-mini', 'openai/gpt-5.4-nano', 'openai/gpt-5.4-pro', 'openai/gpt-5.5', 'openai/gpt-5.5-pro', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra', 'openai/o1', 'openai/o3', 'openai/o3-mini', 'openai/o4-mini', 'perplexity/sonar', 'perplexity/sonar-pro', 'perplexity/sonar-reasoning-pro']",
+    "source_urls": []
+  },
+  "llmtr": {
+    "fingerprint": "054dade49cc42362c580ba0ad7646aee9f2fc9bb61342e7c9faaa8c03d6dd831",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['alibaba/qwen-flash', 'alibaba/qwen-plus', 'alibaba/qwen3-coder-flash', 'alibaba/qwen3-coder-plus', 'alibaba/qwen3-max', 'alibaba/qwen3-vl-plus', 'perplexity/sonar-deep-research', 'sakana/fugu-ultra', 'upstage/solar-pro2', 'upstage/solar-pro3', 'upstage/solar-pro4']",
+    "source_urls": []
+  },
+  "longcat": {
+    "fingerprint": "70269341aba2c67e62b0a56b1fafe0c610df660b9f6762bf7f8e9ab6c834be7c",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "merge-gateway": {
+    "fingerprint": "04b850907f7f4533b17cfda9db7e15cb7bb672fc2791239c767f3a1a78994770",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['alibaba/qwen-flash', 'alibaba/qwen-plus', 'alibaba/qwen3-coder-flash', 'alibaba/qwen3-coder-plus', 'alibaba/qwen3-max', 'alibaba/qwen3-vl-plus', 'anthropic/claude-3-7-sonnet-20250219', 'anthropic/claude-fable-5', 'anthropic/claude-haiku-4-5-20251001', 'anthropic/claude-opus-4-1-20250805', 'anthropic/claude-opus-4-20250514', 'anthropic/claude-opus-4-5-20251101', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-opus-4-8', 'anthropic/claude-opus-5', 'anthropic/claude-sonnet-4-20250514', 'anthropic/claude-sonnet-4-5-20250929', 'anthropic/claude-sonnet-4-6', 'anthropic/claude-sonnet-5', 'deepseek/deepseek-v4-pro-0813', 'google/gemini-3-flash-preview', 'google/gemini-3-pro-image', 'google/gemini-3-pro-preview', 'google/gemini-embedding-001', 'google/gemini-flash-latest', 'google/gemini-flash-lite-latest', 'mistral/devstral-medium-2507', 'mistral/magistral-medium-latest', 'mistral/mistral-medium-2505', 'openai/gpt-4', 'openai/gpt-4-turbo', 'openai/gpt-4.1', 'openai/gpt-4.1-mini', 'openai/gpt-4.1-nano', 'openai/gpt-4o', 'openai/gpt-4o-2024-05-13', 'openai/gpt-4o-2024-08-06', 'openai/gpt-4o-2024-11-20', 'openai/gpt-4o-mini', 'openai/gpt-5', 'openai/gpt-5-chat-latest', 'openai/gpt-5-mini', 'openai/gpt-5-nano', 'openai/gpt-5.1', 'openai/gpt-5.1-chat-latest', 'openai/gpt-5.2', 'openai/gpt-5.2-chat-latest', 'openai/gpt-5.3-chat-latest', 'openai/gpt-5.4', 'openai/gpt-5.4-mini', 'openai/gpt-5.4-nano', 'openai/gpt-5.5', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra', 'openai/o1', 'openai/o3', 'openai/o3-mini', 'openai/o4-mini', 'sakana/fugu-ultra', 'zhipuai/glm-5-turbo']",
+    "source_urls": []
+  },
+  "meta": {
+    "fingerprint": "9684281b0a092096dbb78b84e4d97be32854f5d0aa50be800b38ff7c76236713",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "minimax": {
+    "fingerprint": "fd0f26a59013fae0e69b8effa019ade2d4f6f50663e130a3b493262d5e279121",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "mistral": {
+    "fingerprint": "d81b53ff12f583c9f837fc173317e8647ea4e187b52e0156906e5307a00fe924",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "modal": {
+    "fingerprint": "ff72fd5be8e82e09b4cef3870508a28e775f27c59906d3288290a190fc520dcb",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "model-oracle-ai": {
+    "fingerprint": "ee2af95ebbf28f9e32f3db9b80123120181f64d2be2707533d4f615c15fd26a7",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-fable-5', 'anthropic/claude-haiku-4-5', 'anthropic/claude-opus-4-8', 'anthropic/claude-sonnet-5', 'openai/gpt-4.1', 'openai/gpt-4.1-mini', 'openai/gpt-5', 'openai/gpt-5.4', 'openai/gpt-5.4-mini', 'openai/gpt-5.4-nano', 'openai/gpt-5.5', 'openai/o4-mini']",
+    "source_urls": []
+  },
+  "modelis": {
+    "fingerprint": "ed37ed369bbade67946c961c9185d6237bcc475814a375491fed0fe13c0d4a54",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-fable-5', 'anthropic/claude-opus-4-8', 'anthropic/claude-sonnet-4-6']",
+    "source_urls": []
+  },
+  "moonshotai": {
+    "fingerprint": "8896ebc96b2bf1f8d417b63dff8a2a073c0d9d2ff2fc6d5c8a8560aa5f7a5158",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "moonshotai-cn": {
+    "fingerprint": "e1938442e8d95e6498937ef6ecc2b8f4df690c6f52f60f2709f595a29d5818c9",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "nano-gpt": {
+    "fingerprint": "4de4b54e8a9183df6ade322ac5f4cf78ae90cb12e13b3f186bc9f8e763072808",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['alibaba/qwen-max', 'alibaba/qwen-plus', 'alibaba/qwen-turbo', 'alibaba/qwen3-coder-flash', 'alibaba/qwen3-coder-plus', 'alibaba/qwen3-max', 'anthropic/claude-fable-5', 'anthropic/claude-haiku-4-5-20251001', 'anthropic/claude-opus-4-0', 'anthropic/claude-opus-4-1', 'anthropic/claude-opus-4-1-20250805', 'anthropic/claude-opus-4-20250514', 'anthropic/claude-opus-4-5-20251101', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-opus-4-8', 'anthropic/claude-opus-5', 'anthropic/claude-sonnet-4-0', 'anthropic/claude-sonnet-4-20250514', 'anthropic/claude-sonnet-4-5-20250929', 'anthropic/claude-sonnet-4-6', 'anthropic/claude-sonnet-5', 'deepseek/deepseek-v4-pro-0813', 'google/gemini-3-flash-preview', 'google/gemini-3-pro-image-preview', 'google/gemini-flash-latest', 'google/gemini-flash-lite-latest', 'minimax/MiniMax-M2-Her', 'openai/gpt-4-turbo', 'openai/gpt-4.1', 'openai/gpt-4.1-mini', 'openai/gpt-4.1-nano', 'openai/gpt-4o', 'openai/gpt-4o-2024-08-06', 'openai/gpt-4o-2024-11-20', 'openai/gpt-4o-mini', 'openai/gpt-5', 'openai/gpt-5-codex', 'openai/gpt-5-mini', 'openai/gpt-5-nano', 'openai/gpt-5-pro', 'openai/gpt-5.1', 'openai/gpt-5.1-codex', 'openai/gpt-5.1-codex-max', 'openai/gpt-5.1-codex-mini', 'openai/gpt-5.2', 'openai/gpt-5.2-codex', 'openai/gpt-5.3-codex', 'openai/gpt-5.4', 'openai/gpt-5.4-mini', 'openai/gpt-5.4-nano', 'openai/gpt-5.5', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra', 'openai/o1', 'openai/o1-pro', 'openai/o3', 'openai/o3-deep-research', 'openai/o3-mini', 'openai/o4-mini', 'openai/o4-mini-deep-research', 'perplexity/sonar', 'perplexity/sonar-deep-research', 'perplexity/sonar-pro', 'perplexity/sonar-reasoning-pro', 'sakana/fugu-ultra', 'upstage/solar-pro4', 'zhipuai/glm-5-turbo', 'zhipuai/glm-5v-turbo']",
+    "source_urls": []
+  },
+  "nearai": {
+    "fingerprint": "85e20544a968f0c7626cae758af644cadd1b5f79a502ab3c121fba7f39fbaf7a",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-haiku-4-5', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-sonnet-4-5', 'anthropic/claude-sonnet-4-6', 'google/gemini-3-pro-preview', 'openai/gpt-4.1', 'openai/gpt-4.1-mini', 'openai/gpt-4.1-nano', 'openai/gpt-5', 'openai/gpt-5-mini', 'openai/gpt-5-nano', 'openai/gpt-5.1', 'openai/gpt-5.2', 'openai/gpt-5.4', 'openai/gpt-5.4-mini', 'openai/gpt-5.4-nano', 'openai/gpt-5.5', 'openai/o3', 'openai/o3-mini', 'openai/o4-mini']",
+    "source_urls": []
+  },
+  "nebius": {
+    "fingerprint": "a0939ad2ee12b70fbfd1a5475384dc9eebc9d260e4164d96e3572ffa02068087",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "neon": {
+    "fingerprint": "301c75b46216f8e9b9395255f7596f239981e71e08dfddda3565ea7e81e9e2d4",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-fable-5', 'anthropic/claude-haiku-4-5', 'anthropic/claude-opus-4-1', 'anthropic/claude-opus-4-5', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-opus-4-8', 'anthropic/claude-opus-5', 'anthropic/claude-sonnet-4-5', 'anthropic/claude-sonnet-4-6', 'anthropic/claude-sonnet-5', 'google/gemini-3-flash-preview', 'openai/gpt-5', 'openai/gpt-5-mini', 'openai/gpt-5-nano', 'openai/gpt-5.1', 'openai/gpt-5.2', 'openai/gpt-5.3-codex', 'openai/gpt-5.4', 'openai/gpt-5.4-mini', 'openai/gpt-5.4-nano', 'openai/gpt-5.5', 'openai/gpt-5.5-pro', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra']",
+    "source_urls": []
+  },
+  "neuralwatt": {
+    "fingerprint": "2c36131821fdcc383d919fd4d11b197a3eb5c19bacbf0ff57fdf19f9130b43f4",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "novita-ai": {
+    "fingerprint": "744b0ae65a7bb0842ad0cfe0734f2e1779e7c6737ce6745582180311eb12bd83",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['xiaomi/mimo-v2-pro']",
+    "source_urls": []
+  },
+  "nvidia": {
+    "fingerprint": "ef6f589eddd2eb9c0a3f956067ccee0f20381ae7df0f38b4198ea9ae41190482",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "ofox": {
+    "fingerprint": "1d7c32e9aab8638b1b56e64ac14a2d3d152a52dcecdb23f450d300b375717d9b",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['alibaba/qwen-flash', 'alibaba/qwen-max', 'alibaba/qwen-plus', 'alibaba/qwen-turbo', 'alibaba/qwen-vl-max', 'alibaba/qwen3-coder-flash', 'alibaba/qwen3-coder-plus', 'alibaba/qwen3-max', 'anthropic/claude-fable-5', 'anthropic/claude-haiku-4-5', 'anthropic/claude-opus-4-5', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-opus-4-8', 'anthropic/claude-opus-5', 'anthropic/claude-sonnet-4-5', 'anthropic/claude-sonnet-4-6', 'anthropic/claude-sonnet-5', 'bytedance-seed/seed-1-6', 'bytedance-seed/seed-1-6-flash', 'bytedance-seed/seed-1-6-vision', 'bytedance-seed/seed-1-8', 'bytedance-seed/seed-character', 'bytedance-seed/seed-evolving', 'deepseek/deepseek-v4-pro-0813', 'google/gemini-3-flash-preview', 'minimax/MiniMax-M2-Her', 'openai/gpt-4.1', 'openai/gpt-4.1-mini', 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-5', 'openai/gpt-5-mini', 'openai/gpt-5-nano', 'openai/gpt-5.1', 'openai/gpt-5.1-codex-max', 'openai/gpt-5.1-codex-mini', 'openai/gpt-5.2', 'openai/gpt-5.2-codex', 'openai/gpt-5.3-codex', 'openai/gpt-5.4', 'openai/gpt-5.4-mini', 'openai/gpt-5.4-nano', 'openai/gpt-5.4-pro', 'openai/gpt-5.5', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra', 'zhipuai/glm-5-turbo', 'zhipuai/glm-5v-turbo']",
+    "source_urls": []
+  },
+  "ollama-cloud": {
+    "fingerprint": "5aec4824f73c81eb1bfbfee50abb7bf0c4d38de4b4e3eb8e3396d409ac2c903c",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "openai": {
+    "fingerprint": "54146fe0838e74d522cc7b2451d9d3e495c9514be2591a9e47b8626554dafdce",
+    "is_router": false,
+    "reason": "The provider is lab, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "opencode": {
+    "fingerprint": "9601add1591ecbd833b2811d6812cd59dace7591708063305a604364463a30a4",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-fable-5', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-8', 'anthropic/claude-opus-5', 'anthropic/claude-sonnet-5', 'openai/gpt-5.4', 'openai/gpt-5.5', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra']",
+    "source_urls": []
+  },
+  "opencode-go": {
+    "fingerprint": "79d1e72c2ea7b8c3066575d279a773776cee86db67bb675b11b88d3cdf6adf86",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['openai/gpt-5.6-luna']",
+    "source_urls": []
+  },
+  "openrouter": {
+    "fingerprint": "604e3fdb66c371493384db39495bcff58e17cb364b0cde8d8e10501c9ed594f9",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['alibaba/qwen-plus', 'alibaba/qwen3-coder-flash', 'alibaba/qwen3-coder-plus', 'alibaba/qwen3-max', 'anthropic/claude-fable-5', 'anthropic/claude-haiku-4-5', 'anthropic/claude-opus-4-1', 'anthropic/claude-opus-4-5', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-opus-4-8', 'anthropic/claude-opus-5', 'anthropic/claude-sonnet-4-5', 'anthropic/claude-sonnet-4-6', 'anthropic/claude-sonnet-5', 'deepseek/deepseek-v4-pro-0813', 'google/gemini-3-flash-preview', 'google/gemini-3-pro-image', 'google/gemini-3-pro-image-preview', 'google/lyria-3-clip-preview', 'google/lyria-3-pro-preview', 'minimax/MiniMax-M2-Her', 'openai/gpt-4', 'openai/gpt-4-turbo', 'openai/gpt-4.1', 'openai/gpt-4.1-mini', 'openai/gpt-4.1-nano', 'openai/gpt-4o', 'openai/gpt-4o-2024-05-13', 'openai/gpt-4o-2024-08-06', 'openai/gpt-4o-2024-11-20', 'openai/gpt-4o-mini', 'openai/gpt-5', 'openai/gpt-5-mini', 'openai/gpt-5-nano', 'openai/gpt-5-pro', 'openai/gpt-5.1', 'openai/gpt-5.1-codex', 'openai/gpt-5.1-codex-max', 'openai/gpt-5.1-codex-mini', 'openai/gpt-5.2', 'openai/gpt-5.2-codex', 'openai/gpt-5.2-pro', 'openai/gpt-5.3-codex', 'openai/gpt-5.4', 'openai/gpt-5.4-mini', 'openai/gpt-5.4-nano', 'openai/gpt-5.4-pro', 'openai/gpt-5.5', 'openai/gpt-5.5-pro', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra', 'openai/o1', 'openai/o1-pro', 'openai/o3', 'openai/o3-mini', 'openai/o3-pro', 'openai/o4-mini', 'sakana/fugu-ultra', 'zhipuai/glm-5-turbo', 'zhipuai/glm-5v-turbo']",
+    "source_urls": []
+  },
+  "orcarouter": {
+    "fingerprint": "ed8f658d521b20d8bd8d4a387effa25bd97ee1ebb62a2f4a896092bb7b528b68",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['alibaba/qwen3-max', 'anthropic/claude-haiku-4-5', 'anthropic/claude-opus-4-0', 'anthropic/claude-opus-4-1', 'anthropic/claude-opus-4-5', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-sonnet-4-0', 'anthropic/claude-sonnet-4-5', 'anthropic/claude-sonnet-4-6', 'google/gemini-3-flash-preview', 'google/gemini-3-pro-preview', 'google/gemini-flash-latest', 'google/gemini-flash-lite-latest', 'openai/gpt-4', 'openai/gpt-4-turbo', 'openai/gpt-4.1', 'openai/gpt-4.1-mini', 'openai/gpt-4.1-nano', 'openai/gpt-4o', 'openai/gpt-4o-2024-05-13', 'openai/gpt-4o-2024-08-06', 'openai/gpt-4o-2024-11-20', 'openai/gpt-4o-mini', 'openai/gpt-5', 'openai/gpt-5-chat-latest', 'openai/gpt-5-codex', 'openai/gpt-5-mini', 'openai/gpt-5-nano', 'openai/gpt-5-pro', 'openai/gpt-5.1', 'openai/gpt-5.1-chat-latest', 'openai/gpt-5.1-codex', 'openai/gpt-5.1-codex-max', 'openai/gpt-5.1-codex-mini', 'openai/gpt-5.2', 'openai/gpt-5.2-chat-latest', 'openai/gpt-5.2-codex', 'openai/gpt-5.2-pro', 'openai/gpt-5.3-chat-latest', 'openai/gpt-5.3-codex', 'openai/gpt-5.4', 'openai/gpt-5.4-mini', 'openai/gpt-5.4-nano', 'openai/gpt-5.4-pro', 'openai/gpt-5.5', 'openai/gpt-5.5-pro']",
+    "source_urls": []
+  },
+  "perplexity": {
+    "fingerprint": "f3f1e934cdb808e14dcb0b4d19c1cb9f1424103260facc2df4e3d02505ec33f4",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "perplexity-agent": {
+    "fingerprint": "7548951cff2ae0a9d21f7e1c6750e3e7aaeaea0e85cd1743d12b7a2499e672d3",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "pioneer": {
+    "fingerprint": "833c3a6b024ddda3d6648a5a736157fe54ba0f7faa461e0d7dffe6a22ea61845",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-3-7-sonnet-20250219', 'anthropic/claude-fable-5', 'anthropic/claude-haiku-4-5', 'anthropic/claude-opus-4-1', 'anthropic/claude-opus-4-5', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-opus-4-8', 'anthropic/claude-opus-5', 'anthropic/claude-sonnet-4-5', 'anthropic/claude-sonnet-4-6', 'anthropic/claude-sonnet-5', 'google/gemini-3-flash-preview', 'openai/gpt-4.1', 'openai/gpt-4.1-mini', 'openai/gpt-4.1-nano', 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-5-mini', 'openai/gpt-5-nano', 'openai/gpt-5.1', 'openai/gpt-5.3-codex', 'openai/gpt-5.4', 'openai/gpt-5.4-mini', 'openai/gpt-5.4-nano', 'openai/gpt-5.5', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra', 'sakana/fugu-ultra']",
+    "source_urls": []
+  },
+  "poe": {
+    "fingerprint": "9c68abca0998acb09ad6c3a45b1870558a675b302c2c5986f78c7945ad111bc4",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-opus-4-8', 'openai/gpt-5.5', 'openai/gpt-5.5-pro']",
+    "source_urls": []
+  },
+  "poolside": {
+    "fingerprint": "b753063ad838f430f32684e14b74333bcd3e49ba1f45da06c1591132ea863293",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "privatemode-ai": {
+    "fingerprint": "6d8c0db43b0addc593406470fbfb3f9df5b86ec317334b6a5b46cf2c720ffa58",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "qiniu-ai": {
+    "fingerprint": "d79b2de748ed93260079b94cd51835341f606155df3809eb1475dfbef59ce4db",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "qvac": {
+    "fingerprint": "9dfd8eb64ea3e660cbf6f55c3a8441aacfbf66e11fbf1b2f233acf8c4f9bf792",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "regolo-ai": {
+    "fingerprint": "40355187ab50315c6a9150e3af97305ac41394ea6fa43de0dcf13d3ddf8792d0",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "requesty": {
+    "fingerprint": "79b863202c2fffa6a5a6f2bbe94c36108e19a6b66ce98886084e54c4eebf5231",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['alibaba/qwen-max', 'alibaba/qwen-plus', 'alibaba/qwen-turbo', 'alibaba/qwen3-coder-flash', 'alibaba/qwen3-coder-plus', 'alibaba/qwen3-max', 'anthropic/claude-fable-5', 'anthropic/claude-haiku-4-5', 'anthropic/claude-opus-4-0', 'anthropic/claude-opus-4-1', 'anthropic/claude-opus-4-5', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-opus-4-8', 'anthropic/claude-opus-5', 'anthropic/claude-sonnet-4-0', 'anthropic/claude-sonnet-4-5', 'anthropic/claude-sonnet-4-6', 'anthropic/claude-sonnet-5', 'deepseek/deepseek-v4-pro-0813', 'google/gemini-3-flash-preview', 'google/gemini-3-pro-image', 'openai/gpt-4.1', 'openai/gpt-4.1-mini', 'openai/gpt-4.1-nano', 'openai/gpt-4o-2024-05-13', 'openai/gpt-4o-2024-08-06', 'openai/gpt-4o-2024-11-20', 'openai/gpt-4o-mini', 'openai/gpt-5', 'openai/gpt-5-codex', 'openai/gpt-5-mini', 'openai/gpt-5-nano', 'openai/gpt-5-pro', 'openai/gpt-5.1', 'openai/gpt-5.1-chat-latest', 'openai/gpt-5.1-codex', 'openai/gpt-5.2', 'openai/gpt-5.2-chat-latest', 'openai/gpt-5.2-codex', 'openai/gpt-5.3-chat-latest', 'openai/gpt-5.3-codex', 'openai/gpt-5.4', 'openai/gpt-5.4-mini', 'openai/gpt-5.4-nano', 'openai/gpt-5.4-pro', 'openai/gpt-5.5', 'openai/gpt-5.5-pro', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra', 'openai/o1', 'openai/o3', 'openai/o3-mini', 'openai/o3-pro', 'openai/o4-mini', 'perplexity/sonar', 'perplexity/sonar-pro', 'perplexity/sonar-reasoning-pro', 'sakana/fugu-ultra']",
+    "source_urls": []
+  },
+  "routing-run": {
+    "fingerprint": "c6ab1f27ee85fe91dbe2d68a75b08c68c74cb8f822eacc16ec1550c82e13234e",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-opus-4-8', 'anthropic/claude-sonnet-4-6', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra']",
+    "source_urls": []
+  },
+  "runinfra": {
+    "fingerprint": "7d6798cb52927dd60e34029c992c1118998af8ba743bd1c3232e76a7eca0d7a4",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "sakana": {
+    "fingerprint": "23f41fcde915d14fc3cce8afbba9c5220278fa60aa2c6ada2eeac4acbf78dda8",
+    "is_router": false,
+    "reason": "The provider is lab, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "salad-cloud": {
+    "fingerprint": "d2731adaf2818366e3cf60a5d10ec168827363a73412535a26eefdaa6eee6067",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "sap-ai-core": {
+    "fingerprint": "e5a1b5b8996d6875c1bafe5a964401844049d7ee3546a7d4b9a38dbf4ce35647",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-3-5-sonnet-20241022', 'anthropic/claude-3-7-sonnet-20250219', 'anthropic/claude-3-haiku-20240307', 'anthropic/claude-haiku-4-5', 'anthropic/claude-opus-4-20250514', 'anthropic/claude-opus-4-5', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-opus-4-8', 'anthropic/claude-sonnet-4-20250514', 'anthropic/claude-sonnet-4-5', 'anthropic/claude-sonnet-4-6', 'google/gemini-embedding-001', 'mistral/mistral-medium-2505', 'openai/gpt-4.1', 'openai/gpt-4.1-mini', 'openai/gpt-4.1-nano', 'openai/gpt-5', 'openai/gpt-5-mini', 'openai/gpt-5-nano', 'openai/gpt-5.2', 'openai/gpt-5.4', 'openai/gpt-5.5', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra', 'perplexity/sonar', 'perplexity/sonar-pro']",
+    "source_urls": []
+  },
+  "sarvam": {
+    "fingerprint": "56f4c9abd4231a169cd0c200ffa7d4447f89196dd3882178a3d015363b0745ae",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "scaleway": {
+    "fingerprint": "ac67cbcaee2bfcf4bfb6f2d0583244f3434931b01e6460099d7dc3ba0f075ce9",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "scnet-token-plan": {
+    "fingerprint": "f30f3c176e7e54176eae4d33c87561e5dcfb2275d94789ee801e4f4d67c52a49",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "scx": {
+    "fingerprint": "7d165e225300dc127eb9b565cfcb4203c65f58be4a1137d0151f18a6dfc0b461",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "siliconflow": {
+    "fingerprint": "089dc7664aef7f421fb46b8966a5d216132c1e6589fb02513bb30015f61722ab",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "siliconflow-cn": {
+    "fingerprint": "734eb542d26807835f6c547c5b528ab72d79ef72d57f67500b56f3839855785d",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "snowflake-cortex": {
+    "fingerprint": "f50a9c288212d3edfc4f5da16840218063f43f7e9e86b69872f19088412d93fe",
+    "is_router": false,
+    "reason": "This provider is classified as a managed model-hosting platform, not a pure model router.",
+    "source_urls": []
+  },
+  "stackit": {
+    "fingerprint": "ba1b293a180fa41f3bd3f472f58be1814abaecb57772cc80dc72cb8e4a68ad43",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "stepfun": {
+    "fingerprint": "9a6c1e54803cbe23caf930cb4f092ce62bc738c3dcf70c034139eefa5aa7e87a",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "stepfun-ai": {
+    "fingerprint": "6b30bd3fa9ba1c89c52489516709382f9246bd358b1084c82181aa2e3ed21b5b",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "stepfun-ai-step-plan": {
+    "fingerprint": "50cc9e64bf352be4c2c5504f56f189e5f4dfe05daa5cf27709e40a76c4d3e635",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "stepfun-step-plan": {
+    "fingerprint": "17998b4b95a9871698d88a1581f1478e434ca02eb0e41144edfd25bba3f7bd60",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "subconscious": {
+    "fingerprint": "85a05da6fa63c565d76fe1fc83d914cded6e788f7e8da2a12f9826634c3e5a83",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "synthetic": {
+    "fingerprint": "174fe2c21bb6571481cf8a8e07b3c4ecd877784a1ae8c85be781f0b6299fa8b6",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "tencent-token-plan": {
+    "fingerprint": "9102433ce4ba30e8b60f5c99d01e4a29fe78b2484264fd0b74d6ea19e2017e54",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "tencent-tokenhub": {
+    "fingerprint": "4caa0847634e2758edfea1cffa4cf30fd2be21b495ca74f0e60101afb2098d34",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "tensorx": {
+    "fingerprint": "aa312aedd2ccec4e8f8fb55e56b284824d0ee0931d7a70eab0bd8bd3afb62eb2",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['zhipuai/glm-5-turbo', 'zhipuai/glm-5v-turbo']",
+    "source_urls": []
+  },
+  "thinkingmachines": {
+    "fingerprint": "181a7c70b4dc169dc7cdbe37ec9507abed43fa7d2f82d9e9a0b4d460818c1a22",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "tinfoil": {
+    "fingerprint": "014cb08f425ecc5698ab889b877b4f90c6602e7fbdf2a4fbe7db69b7bdb91eca",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "togetherai": {
+    "fingerprint": "7d3be3834279b2f0cfbfee06102ad0ae24cdf7a70bc27691b53a92aa5bddbe47",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['deepseek/deepseek-v4-pro-0813']",
+    "source_urls": []
+  },
+  "umans-ai": {
+    "fingerprint": "51a1a1df9914cd9b574fc8b49955d22ed146475b357b8dcd721d3b9e607aa4b0",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['deepseek/deepseek-v4-pro-0813']",
+    "source_urls": []
+  },
+  "umans-ai-coding-plan": {
+    "fingerprint": "fb3fe34d47dfee2ce85627661597c4f3fb83ad461c5006a61e4a2f6f6da3e9f8",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['deepseek/deepseek-v4-pro-0813']",
+    "source_urls": []
+  },
+  "unorouter": {
+    "fingerprint": "88721fd21b852f7d687f870eb1f64f5d33f3cf511c3b8976831d34cf9ec6e9aa",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-haiku-4-5-20251001', 'anthropic/claude-opus-4-8', 'anthropic/claude-sonnet-5', 'openai/gpt-5.2', 'openai/gpt-5.4', 'openai/gpt-5.5']",
+    "source_urls": []
+  },
+  "upstage": {
+    "fingerprint": "9b4eba0a1579004df4f699abb58b8ef426564d7e3616e5c3b5ab0ff447edeeed",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "venice": {
+    "fingerprint": "7beb26d784d9bd7aa60e096affbdf41a23f9849e47ac94353e10616ed7e8125d",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-fable-5', 'anthropic/claude-opus-4-5', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-opus-4-8', 'anthropic/claude-opus-5', 'anthropic/claude-sonnet-4-5', 'anthropic/claude-sonnet-4-6', 'anthropic/claude-sonnet-5', 'deepseek/deepseek-v4-pro-0813', 'google/gemini-3-flash-preview', 'openai/gpt-4o-2024-11-20', 'openai/gpt-4o-mini', 'openai/gpt-5.2', 'openai/gpt-5.2-codex', 'openai/gpt-5.3-codex', 'openai/gpt-5.4', 'openai/gpt-5.4-mini', 'openai/gpt-5.4-pro', 'openai/gpt-5.5', 'openai/gpt-5.5-pro', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra', 'zhipuai/glm-5-turbo', 'zhipuai/glm-5v-turbo']",
+    "source_urls": []
+  },
+  "vercel": {
+    "fingerprint": "ef2f382bfb63c134ab2b63a0f7e5bc959d0748e722b7dcc28f866a46d266e588",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['alibaba/qwen3-coder-plus', 'alibaba/qwen3-max', 'anthropic/claude-3-haiku-20240307', 'anthropic/claude-fable-5', 'anthropic/claude-haiku-4-5', 'anthropic/claude-opus-4-20250514', 'anthropic/claude-opus-4-5', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-opus-4-8', 'anthropic/claude-opus-5', 'anthropic/claude-sonnet-4-20250514', 'anthropic/claude-sonnet-4-6', 'anthropic/claude-sonnet-5', 'deepseek/deepseek-v4-pro-0813', 'google/gemini-3-pro-image', 'google/gemini-embedding-001', 'google/gemini-embedding-2', 'google/gemini-omni-flash-preview', 'openai/gpt-5', 'openai/gpt-5-codex', 'openai/gpt-5-pro', 'openai/gpt-5.1-codex', 'openai/gpt-5.1-codex-max', 'openai/gpt-5.1-codex-mini', 'openai/gpt-5.2', 'openai/gpt-5.2-codex', 'openai/gpt-5.2-pro', 'openai/gpt-5.3-codex', 'openai/gpt-5.4', 'openai/gpt-5.4-mini', 'openai/gpt-5.4-nano', 'openai/gpt-5.4-pro', 'openai/gpt-5.5', 'openai/gpt-5.5-pro', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra', 'openai/gpt-image-1', 'openai/gpt-image-1.5', 'openai/gpt-image-2', 'openai/gpt-realtime-whisper', 'openai/o3-deep-research', 'openai/o3-pro', 'sakana/fugu-ultra', 'zhipuai/glm-5-turbo', 'zhipuai/glm-5v-turbo']",
+    "source_urls": []
+  },
+  "vivgrid": {
+    "fingerprint": "b2254f6e9690f89301003efc87fb3af449f58660bc2079826af55f117f7c7711",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['openai/gpt-5.5', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra']",
+    "source_urls": []
+  },
+  "vultr": {
+    "fingerprint": "78fcb277af83087e5ac17ea9559b69ef60c2075cba8dee5e9a38f6a7fa4447fc",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "wafer.ai": {
+    "fingerprint": "1ee1c3a94e076a83d1cd290358450b46284d21b06951a3e87ec6ff0559fede53",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "wandb": {
+    "fingerprint": "1c123cf2ccc69a89e589a101bba07e3ea8c76f29055eafe7fb706bcd94fc2548",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "watsonx": {
+    "fingerprint": "a35d50e6f016461ce5b6957f749a6758bd68c047fb6951c46a3a793cbecca6ef",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "xai": {
+    "fingerprint": "f914f7bfe9f6f4e51c34a82df2d74dbae389ac8957ddc2808376ece7f4527a6c",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "xiaomi": {
+    "fingerprint": "9ec2a8038aa553098da3b3944136ebee65f2ba8d2042b3f71fa87cb6ec0bc238",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "xiaomi-token-plan-ams": {
+    "fingerprint": "4e024368d5a18d0ee1a704890f5b67c76cb387960f9a2fba5dd7789d1614c8a8",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['xiaomi/mimo-v2-pro']",
+    "source_urls": []
+  },
+  "xiaomi-token-plan-cn": {
+    "fingerprint": "22ba892fcd54f53bc4f44cc9e2dbf7aff8c8498394d2ce108e02c3af07aa66d2",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['xiaomi/mimo-v2-pro']",
+    "source_urls": []
+  },
+  "xiaomi-token-plan-sgp": {
+    "fingerprint": "e42b22de33dba62cb8b1ee90928ceeca9eb0041ba987bf1a8a13d3e63a5f5604",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['xiaomi/mimo-v2-pro']",
+    "source_urls": []
+  },
+  "xpersona": {
+    "fingerprint": "60d10f706ef9167e1c79de35976baa50d13dba0cadb710c7fea4a42da18b83d1",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-fable-5', 'anthropic/claude-haiku-4-5', 'anthropic/claude-opus-4-8', 'anthropic/claude-sonnet-4-6', 'openai/gpt-5.4', 'openai/gpt-5.4-mini', 'openai/gpt-5.5', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra']",
+    "source_urls": []
+  },
+  "zai": {
+    "fingerprint": "2b116341c5378ca020b629663a499da4f3db41a977a720f0c2c45db4862232c0",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "zai-coding-plan": {
+    "fingerprint": "3af61a5aa9ded32bdc6ed14d05f50c90345d6cc767661f8f892b2c6663044667",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "zenifra": {
+    "fingerprint": "b087b587ec13200f20bab1d6a94837fb4417f123404aad23d4bfd8015b830330",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "zenmux": {
+    "fingerprint": "7490e9fbe027d62b77284a618297631a6868b8abc256a6f2cc5e58dfc2f8f4a9",
+    "is_router": true,
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-fable-5', 'anthropic/claude-opus-4-8', 'anthropic/claude-sonnet-5', 'openai/gpt-5.5', 'openai/gpt-5.5-instant', 'openai/gpt-5.5-pro', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra', 'xiaomi/mimo-v2-omni', 'xiaomi/mimo-v2-pro']",
+    "source_urls": []
+  },
+  "zhipuai": {
+    "fingerprint": "c179cbe3986240b5f4c398b8e238929570514c9a7502856ad9a038da4ca3386c",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "zhipuai-coding-plan": {
+    "fingerprint": "f398302e348aa3831f1e4bf3a40ad541a2a9fb5499555dbab47e4484d275a7d3",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  }
+}

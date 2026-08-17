@@ -42,32 +42,13 @@ FORCED_NON_ROUTER_PROVIDERS = frozenset(
     }
 )
 FORCED_NON_ROUTER_REASON = "This provider is classified as a managed model-hosting platform, not a pure model router."
-FORCED_ROUTER_PROVIDERS = frozenset(
-    {
-        "pioneer",
-    }
-)
+FORCED_ROUTER_PROVIDERS = frozenset({})
 FORCED_ROUTER_REASON = "This provider is classified as a model router."
 STATIC_FRONTIER_MODEL_LABS = frozenset(
     {
-        "alibaba",
-        "anthropic",
         "bytedance-seed",
-        "cohere",
-        "deepseek",
-        "google",
-        "meta",
         "microsoft",
-        "minimax",
-        "mistral",
-        "moonshotai",
-        "openai",
-        "perplexity",
-        "sakana",
         "upstage",
-        "xai",
-        "xiaomi",
-        "zhipuai",
     }
 )
 
@@ -87,6 +68,7 @@ NO_CLOSED_FRONTIER_REASON = (
 CLOSED_FRONTIER_REASON = (
     "The provider catalog has verified closed-source frontier models, so it is classified as a model router."
 )
+LAB_REASON = "The provider is lab, so it is not classified as a model router."
 
 
 class LinkAndTextParser(HTMLParser):
@@ -652,7 +634,7 @@ def is_generated_router_file(path: pathlib.Path) -> bool:
 def main() -> int:
     args = parse_args()
     repo_root = pathlib.Path(__file__).resolve().parents[2]
-    api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
+    api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()  # noqa: F841
     cache = {} if args.clear_cache else load_cache(repo_root)
     generated_slugs: set[str] = set()
     router_slugs: set[str] = set()
@@ -671,7 +653,7 @@ def main() -> int:
     for provider_file in provider_files:
         provider_slug = provider_file.parent.name
         try:
-            provider_document, provider_toml = read_provider_file(provider_file)
+            provider_document, provider_toml = read_provider_file(provider_file)  # noqa: RUF059
             if not provider_has_catalog_models(provider_file.parent / "models", provider_slug, repo_root / "models"):
                 skipped_count += 1
                 cache.pop(provider_slug, None)
@@ -708,69 +690,89 @@ def main() -> int:
                     }
                     catalog_count += 1
                 else:
-                    doc_value = provider_document.get("doc")
-                    doc_url = doc_value.strip() if isinstance(doc_value, str) else None
-                    api_value = provider_document.get("api")
-                    api_url = api_value.strip() if isinstance(api_value, str) else None
-                    context, source_urls = collect_document_context(doc_url, api_url)
-                    current_fingerprint = fingerprint(provider_toml, f"{catalog_signal}\n\n{context}")
-                    cached = cache.get(provider_slug)
-                    if (
-                        not args.clear_cache
-                        and isinstance(cached, dict)
-                        and cached.get("fingerprint") == current_fingerprint
-                        and isinstance(cached.get("is_router"), bool)
-                        and isinstance(cached.get("reason"), str)
-                    ):
+                    if provider_slug in FRONTIER_MODEL_LABS:
                         decision = {
-                            "is_router": cached["is_router"],
-                            "reason": cached["reason"],
+                            "is_router": False,
+                            "reason": LAB_REASON,
                         }
-                        cached_count += 1
-                    elif args.disable_ai or not api_key:
-                        failures.append(f"{provider_slug}: no usable cached decision and OPENROUTER_API_KEY is not set")
-                        continue
-                    else:
-                        decision = classify_provider(
-                            provider_slug,
-                            provider_toml,
-                            doc_url,
-                            api_url,
-                            context,
-                            args.ai_model,
-                            args.chat_url,
-                            api_key,
-                            args.debug,
-                            catalog_signal,
-                        )
-
-                        # if (
-                        #     not decision["is_router"]
-                        #     and model_signal["has_closed_frontier_models"]
-                        # ):
-                        #     decision = {
-                        #         "is_router": True,
-                        #         "reason": CLOSED_FRONTIER_REASON,
-                        #     }
-                        #     source_urls = []
-                        #     current_fingerprint = fingerprint(
-                        #         provider_toml, catalog_signal
-                        #     )
-                        #     cache[provider_slug] = {
-                        #         "fingerprint": current_fingerprint,
-                        #         "is_router": decision["is_router"],
-                        #         "reason": decision["reason"],
-                        #         "source_urls": source_urls,
-                        #     }
-                        #     catalog_count += 1
-
+                        source_urls = []
+                        current_fingerprint = fingerprint(provider_toml, catalog_signal)
                         cache[provider_slug] = {
                             "fingerprint": current_fingerprint,
                             "is_router": decision["is_router"],
                             "reason": decision["reason"],
                             "source_urls": source_urls,
                         }
-                        ai_count += 1
+                        catalog_count += 1
+                    else:
+                        decision = {
+                            "is_router": True,
+                            "reason": CLOSED_FRONTIER_REASON + str(model_signal["models"]),
+                        }
+                        source_urls = []
+                        current_fingerprint = fingerprint(provider_toml, catalog_signal)
+                        cache[provider_slug] = {
+                            "fingerprint": current_fingerprint,
+                            "is_router": decision["is_router"],
+                            "reason": decision["reason"],
+                            "source_urls": source_urls,
+                        }
+                        catalog_count += 1
+
+                        # ####
+                        # doc_value = provider_document.get("doc")
+                        # doc_url = (
+                        #     doc_value.strip() if isinstance(doc_value, str) else None
+                        # )
+                        # api_value = provider_document.get("api")
+                        # api_url = (
+                        #     api_value.strip() if isinstance(api_value, str) else None
+                        # )
+                        # context, source_urls = collect_document_context(
+                        #     doc_url, api_url
+                        # )
+                        # current_fingerprint = fingerprint(
+                        #     provider_toml, f"{catalog_signal}\n\n{context}"
+                        # )
+                        # cached = cache.get(provider_slug)
+                        # if (
+                        #     not args.clear_cache
+                        #     and isinstance(cached, dict)
+                        #     and cached.get("fingerprint") == current_fingerprint
+                        #     and isinstance(cached.get("is_router"), bool)
+                        #     and isinstance(cached.get("reason"), str)
+                        # ):
+                        #     decision = {
+                        #         "is_router": cached["is_router"],
+                        #         "reason": cached["reason"],
+                        #     }
+                        #     cached_count += 1
+                        # elif args.disable_ai or not api_key:
+                        #     failures.append(
+                        #         f"{provider_slug}: no usable cached decision and OPENROUTER_API_KEY is not set"
+                        #     )
+                        #     continue
+                        # else:
+                        #     decision = classify_provider(
+                        #         provider_slug,
+                        #         provider_toml,
+                        #         doc_url,
+                        #         api_url,
+                        #         context,
+                        #         args.ai_model,
+                        #         args.chat_url,
+                        #         api_key,
+                        #         args.debug,
+                        #         catalog_signal,
+                        #     )
+
+                        #     cache[provider_slug] = {
+                        #         "fingerprint": current_fingerprint,
+                        #         "is_router": decision["is_router"],
+                        #         "reason": decision["reason"],
+                        #         "source_urls": source_urls,
+                        #     }
+                        #     ai_count += 1
 
             if not args.dry_run:
                 args.output_dir.mkdir(parents=True, exist_ok=True)
