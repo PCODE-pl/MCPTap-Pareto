@@ -342,6 +342,23 @@ def provider_has_base_models(provider_models_dir: pathlib.Path) -> bool:
     return False
 
 
+def provider_has_catalog_models(
+    provider_models_dir: pathlib.Path,
+    provider_slug: str,
+    models_dir: pathlib.Path,
+) -> bool:
+    if provider_has_base_models(provider_models_dir):
+        return True
+    if not provider_models_dir.is_dir():
+        return False
+    canonical_provider_dir = models_dir / provider_slug
+    for model_file in sorted(provider_models_dir.rglob("*.toml")):
+        relative_model_path = model_file.relative_to(provider_models_dir)
+        if (canonical_provider_dir / relative_model_path).is_file():
+            return True
+    return False
+
+
 def inspect_frontier_models(provider_models_dir: pathlib.Path, models_dir: pathlib.Path) -> dict[str, bool | list[str]]:
     closed_frontier_models: set[str] = set()
     if not provider_models_dir.is_dir():
@@ -641,10 +658,10 @@ def main() -> int:
         provider_slug = provider_file.parent.name
         try:
             provider_document, provider_toml = read_provider_file(provider_file)
-            if not provider_has_base_models(provider_file.parent / "models"):
+            if not provider_has_catalog_models(provider_file.parent / "models", provider_slug, repo_root / "models"):
                 skipped_count += 1
                 cache.pop(provider_slug, None)
-                print(f"SKIP {provider_slug}: no model uses base_model")
+                print(f"SKIP {provider_slug}: no base_model or canonical model match")
                 continue
             generated_slugs.add(provider_slug)
             forced_decision = forced_provider_decision(provider_slug)

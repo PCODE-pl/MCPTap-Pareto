@@ -17,19 +17,19 @@ ROUTER_PROVIDERS = {
     "abacus",
     "aihubmix",
     "edenai",
+    "github-copilot",
+    "gitlab",
     "kilo",
     "nano-gpt",
     "openrouter",
-    "requesty",
-    "gitlab",
     "pioneer",
+    "requesty",
     "vercel",
 }
 NON_ROUTER_PROVIDERS = {
     "amazon-bedrock",
     "anthropic",
     "deepseek",
-    "github-copilot",
     "google",
     "hpc-ai",
     "huggingface",
@@ -173,10 +173,17 @@ class CollectRoutersTest(unittest.TestCase):
 
     def test_provider_has_base_models_requires_base_model_field(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
-            model_dir = pathlib.Path(temporary_directory) / "models"
+            root = pathlib.Path(temporary_directory)
+            model_dir = root / "models"
             model_dir.mkdir()
             (model_dir / "open-model.toml").write_text('name = "Open model"\nopen_weights = true\n', encoding="utf-8")
             self.assertFalse(collect_routers.provider_has_base_models(model_dir))
+            catalog_models = root / "catalog-models" / "example"
+            catalog_models.mkdir(parents=True)
+            (catalog_models / "open-model.toml").write_text(
+                'name = "Inline model"\nopen_weights = true\n', encoding="utf-8"
+            )
+            self.assertTrue(collect_routers.provider_has_catalog_models(model_dir, "example", root / "catalog-models"))
             (model_dir / "relayed-model.toml").write_text(
                 'base_model = "anthropic/claude-opus-4-8"\n', encoding="utf-8"
             )
