@@ -4045,9 +4045,9 @@
         "deepseek/deepseek-v4-flash": {
           "is_thinking": true,
           "cost": {
-            "input": 0.0826,
-            "output": 0.1652,
-            "cache_read": 0.01652
+            "input": 0.0798,
+            "output": 0.1596,
+            "cache_read": 0.01596
           }
         }
       },
@@ -4584,9 +4584,9 @@
         "deepseek/deepseek-v4-pro": {
           "is_thinking": true,
           "cost": {
-            "input": 0.66,
-            "output": 1.98,
-            "cache_read": 0.022
+            "input": 1.44,
+            "output": 2.88,
+            "cache_read": 0.1215
           }
         }
       },
@@ -6747,9 +6747,9 @@
         "moonshotai/kimi-k2.6": {
           "is_thinking": true,
           "cost": {
-            "input": 0.95,
-            "output": 4,
-            "cache_read": 0.16
+            "input": 0.5605,
+            "output": 2.36,
+            "cache_read": 0.0944
           }
         }
       },
