@@ -73,14 +73,14 @@ jobs:
 
       - name: Commit changed catalog and generated data
         run: |
-          if test -z "$(git status --porcelain -- models providers pareto.json)"; then
+          if test -z "$(git status --porcelain -- models providers pareto.json .requesty_ai_mapping_cache.json)"; then
             echo "Catalog and generated data are unchanged."
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A -- models providers pareto.json
+          git add -A -- models providers pareto.json .requesty_ai_mapping_cache.json
           git commit -m "chore: sync upstream catalog and generated data"
 
           max_attempts=3
