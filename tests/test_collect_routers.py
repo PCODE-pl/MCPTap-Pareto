@@ -14,6 +14,7 @@ import tomllib
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[1]
 SCRIPT_PATH = REPO_ROOT / ".github" / "scripts" / "collect_routers.py"
 ROUTER_PROVIDERS = {
+    "abacus",
     "aihubmix",
     "edenai",
     "nano-gpt",
