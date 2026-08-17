@@ -64,17 +64,12 @@ class CollectRoutersTest(unittest.TestCase):
         self.assertIn("Do not use a provider name, slug, or memorized label", system_prompt)
         self.assertNotIn("Amazon Bedrock", system_prompt)
 
-    def test_ai_decisions_create_toml_for_router_and_non_router_providers(self):
+    @unittest.skipUnless(
+        os.environ.get("OPENROUTER_API_KEY"),
+        "OPENROUTER_API_KEY is required for the live AI integration test",
+    )
+    def test_real_ai_classifies_curated_providers_and_writes_tomls(self):
         provider_slugs = sorted(EXPECTED_DECISIONS)
-
-        def fake_context(doc_url):
-            return f"Evidence for {doc_url}", [doc_url] if doc_url else []
-
-        def fake_classify(provider_slug, *_args, **_kwargs):
-            return {
-                "is_router": EXPECTED_DECISIONS[provider_slug],
-                "reason": f"Test evidence for {provider_slug}.",
-            }
 
         with tempfile.TemporaryDirectory() as temporary_directory:
             output_dir = pathlib.Path(temporary_directory) / "routers"
@@ -84,16 +79,13 @@ class CollectRoutersTest(unittest.TestCase):
                 str(REPO_ROOT / "providers"),
                 "--output-dir",
                 str(output_dir),
+                "--clear-cache",
             ]
             for provider_slug in provider_slugs:
                 argv.extend(("--provider", provider_slug))
 
             with (
                 mock.patch.object(sys, "argv", argv),
-                mock.patch.dict(os.environ, {"OPENROUTER_API_KEY": "test-key"}),
-                mock.patch.object(collect_routers, "collect_document_context", fake_context),
-                mock.patch.object(collect_routers, "classify_provider", fake_classify),
-                mock.patch.object(collect_routers, "load_cache", return_value={}),
                 mock.patch.object(collect_routers, "save_cache"),
             ):
                 self.assertEqual(collect_routers.main(), 0)
@@ -103,7 +95,7 @@ class CollectRoutersTest(unittest.TestCase):
                 self.assertTrue(output_path.is_file(), output_path)
                 document = tomllib.loads(output_path.read_text(encoding="utf-8"))
                 self.assertEqual(document["is_router"], expected_is_router)
-                self.assertEqual(document["reason"], f"Test evidence for {provider_slug}.")
+                self.assertTrue(document["reason"].strip())
 
 
 if __name__ == "__main__":
