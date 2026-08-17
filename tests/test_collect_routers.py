@@ -17,6 +17,7 @@ ROUTER_PROVIDERS = {
     "abacus",
     "aihubmix",
     "edenai",
+    "kilo",
     "nano-gpt",
     "openrouter",
     "requesty",

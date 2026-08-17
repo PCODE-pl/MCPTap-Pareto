@@ -254,7 +254,7 @@ def collect_document_context(doc_url: str | None, api_url: str | None = None) ->
                             known_urls.add(api_host_url)
                     except (OSError, ValueError, urllib.error.URLError):
                         pass
-        except Exception:
+        except Exception:  # noqa: BLE001, S110
             pass
 
     if not doc_url:
