@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from __future__ import annotations
 
 import importlib.util
@@ -63,6 +64,22 @@ class CollectRoutersTest(unittest.TestCase):
         self.assertIn("underlying model inference", system_prompt)
         self.assertIn("Do not use a provider name, slug, or memorized label", system_prompt)
         self.assertNotIn("Amazon Bedrock", system_prompt)
+
+    def test_debug_usage_reports_openrouter_cost(self):
+        debug_text = collect_routers.usage_debug_text(
+            "demo",
+            {
+                "prompt_tokens": 1000,
+                "completion_tokens": 250,
+                "total_tokens": 1250,
+                "cost": "0.0012345",
+                "cost_details": {"upstream_inference_cost": 0.0012},
+            },
+        )
+        self.assertIn("prompt_tokens: 1000", debug_text)
+        self.assertIn("completion_tokens: 250", debug_text)
+        self.assertIn("cost_usd: $0.00123450 (usage.cost)", debug_text)
+        self.assertIn("upstream_inference_cost_usd: $0.00120000", debug_text)
 
     @unittest.skipUnless(
         os.environ.get("OPENROUTER_API_KEY"),

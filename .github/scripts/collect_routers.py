@@ -333,6 +333,53 @@ def parse_ai_decision(content: str) -> dict[str, bool | str]:
     }
 
 
+def format_cost(value: Any) -> str | None:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)):
+        return f"${value:.8f}"
+    if isinstance(value, str):
+        try:
+            return f"${float(value):.8f}"
+        except ValueError:
+            return None
+    return None
+
+
+def usage_debug_text(provider_slug: str, usage: Any) -> str:
+    lines = [f"=== OpenRouter AI usage: {provider_slug} ==="]
+    if not isinstance(usage, dict):
+        lines.append("usage: unavailable")
+        lines.append("cost_usd: unavailable")
+        lines.append("=== End OpenRouter AI usage ===")
+        return "\n".join(lines)
+
+    for key in ("prompt_tokens", "completion_tokens", "total_tokens"):
+        if key in usage:
+            lines.append(f"{key}: {usage[key]}")
+
+    reported_cost = None
+    reported_cost_source = None
+    for key in ("cost", "total_cost", "total_cost_usd"):
+        reported_cost = format_cost(usage.get(key))
+        if reported_cost is not None:
+            reported_cost_source = key
+            break
+    if reported_cost is None:
+        lines.append("cost_usd: unavailable (response did not include a total cost)")
+    else:
+        lines.append(f"cost_usd: {reported_cost} (usage.{reported_cost_source})")
+
+    cost_details = usage.get("cost_details")
+    if isinstance(cost_details, dict):
+        upstream_cost = format_cost(cost_details.get("upstream_inference_cost"))
+        if upstream_cost is not None:
+            lines.append(f"upstream_inference_cost_usd: {upstream_cost}")
+
+    lines.append("=== End OpenRouter AI usage ===")
+    return "\n".join(lines)
+
+
 def classify_provider(
     provider_slug: str,
     provider_toml: str,
@@ -372,6 +419,8 @@ def classify_provider(
     try:
         with urllib.request.urlopen(request, timeout=90) as response:
             result = json.load(response)
+        if debug:
+            print(usage_debug_text(provider_slug, result.get("usage")), file=sys.stderr)
         content = result["choices"][0]["message"]["content"]
     except (OSError, KeyError, IndexError, TypeError, json.JSONDecodeError) as exc:
         raise RuntimeError(f"AI classification request failed: {exc}") from exc
