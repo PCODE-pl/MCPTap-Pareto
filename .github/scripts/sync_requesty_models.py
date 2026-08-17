@@ -100,7 +100,7 @@ def fetch_models(api_url: str) -> list[dict[str, Any]]:
         raise RuntimeError("Requesty API returned invalid JSON") from exc
 
     if not isinstance(payload, dict) or not isinstance(payload.get("data"), list):
-        raise RuntimeError("Requesty API response does not contain a data list")
+        raise TypeError("Requesty API response does not contain a data list")
     return [record for record in payload["data"] if isinstance(record, dict)]
 
 
@@ -162,34 +162,33 @@ def resolve_base_model(
     # 5. Meta prefix / suffix normalization
     if lab_lower == "meta":
         clean_name = norm_name
-        if clean_name.startswith("meta-"):
-            clean_name = clean_name[5:]
-        if clean_name.endswith("-turbo"):
-            clean_name = clean_name[:-6]
+        clean_name = clean_name.removeprefix("meta-")
+        clean_name = clean_name.removesuffix("-turbo")
         candidate = f"meta/{clean_name}"
         if candidate in canonical_ids:
             return candidate
 
     # 6. xAI fast variants mapping (e.g. grok-4-fast -> grok-4.1-fast)
-    if lab_lower == "xai":
-        if norm_name in [
+    if lab_lower == "xai" and (
+        norm_name
+        in [
             "grok-4-fast",
             "grok-4-1-fast-reasoning",
             "grok-4-1-fast-non-reasoning",
-        ]:
-            if "xai/grok-4.1-fast" in canonical_ids:
-                return "xai/grok-4.1-fast"
+        ]
+        and "xai/grok-4.1-fast" in canonical_ids
+    ):
+        return "xai/grok-4.1-fast"
 
     # 7. NVIDIA normalization and aliases
     if lab_lower == "nvidia" or "nemotron" in norm_name:
         clean_nv = norm_name
-        if clean_nv.startswith("nvidia-"):
-            clean_nv = clean_nv[7:]
+        clean_nv = clean_nv.removeprefix("nvidia-")
         if f"nvidia/{clean_nv}" in canonical_ids:
             return f"nvidia/{clean_nv}"
         # Strip size suffixes (-30b-a3b, -nvfp4, etc.)
-        stripped = re.sub(r"-\d+b(?:-a\d+b)?(?:-instruct|-chat)?$", "", clean_nv, flags=re.I)
-        stripped = re.sub(r"-nvfp\d+$", "", stripped, flags=re.I)
+        stripped = re.sub(r"-\d+b(?:-a\d+b)?(?:-instruct|-chat)?$", "", clean_nv, flags=re.IGNORECASE)
+        stripped = re.sub(r"-nvfp\d+$", "", stripped, flags=re.IGNORECASE)
         if f"nvidia/{stripped}" in canonical_ids:
             return f"nvidia/{stripped}"
         if "nemotron-lightning-3.5" in stripped:
@@ -226,7 +225,7 @@ def load_ai_cache(repo_root: pathlib.Path) -> dict[str, str | None]:
         data = json.loads(cache_path.read_text(encoding="utf-8"))
         if isinstance(data, dict):
             return {str(k): v if isinstance(v, str) or v is None else None for k, v in data.items()}
-    except Exception:
+    except Exception:  # noqa: BLE001, S110
         pass
     return {}
 
@@ -238,7 +237,7 @@ def save_ai_cache(repo_root: pathlib.Path, cache: dict[str, str | None]) -> None
             json.dumps(cache, indent=2, ensure_ascii=False) + "\n",
             encoding="utf-8",
         )
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001
         print(f"Warning: Failed to save AI mapping cache: {exc}", file=sys.stderr)
 
 
@@ -335,7 +334,7 @@ def query_openrouter_for_mappings(
                     else:
                         validated[k] = None
                 return validated
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001
         print(f"Warning: OpenRouter AI mapping query failed: {exc}", file=sys.stderr)
 
     return {}

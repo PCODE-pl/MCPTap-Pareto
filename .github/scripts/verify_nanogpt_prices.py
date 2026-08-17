@@ -71,7 +71,7 @@ def fetch_models(api_url: str) -> dict[str, dict[str, Any]]:
         raise RuntimeError("NanoGPT API returned invalid JSON") from exc
 
     if not isinstance(payload, dict) or not isinstance(payload.get("data"), list):
-        raise RuntimeError("NanoGPT API response does not contain a data list")
+        raise TypeError("NanoGPT API response does not contain a data list")
 
     models: dict[str, dict[str, Any]] = {}
     for record in payload["data"]:
@@ -117,9 +117,9 @@ def api_price_per_million(value: Any, unit: Any = "per_million_tokens") -> Decim
     if price is None:
         return None
     if unit in {"per_token", "per-token"}:
-        return price * Decimal("1000000")
+        return price * Decimal(1000000)
     if unit in {"per_1k_tokens", "per_1k", "per-1k-tokens"}:
-        return price * Decimal("1000")
+        return price * Decimal(1000)
     return price
 
 
@@ -177,7 +177,7 @@ def prices_equal(field: str, local: Decimal | None, remote: Decimal | None) -> b
         return True
     if field in {"cache_read", "cache_write"} and {local, remote} == {
         None,
-        Decimal("0"),
+        Decimal(0),
     }:
         return True
     if local is None or remote is None:
@@ -222,7 +222,9 @@ def compare_costs(
     return differences
 
 
-def load_local_models(provider_dir: pathlib.Path) -> tuple[dict[str, dict[str, Any]], list[str]]:
+def load_local_models(
+    provider_dir: pathlib.Path,
+) -> tuple[dict[str, dict[str, Any]], list[str]]:
     models: dict[str, dict[str, Any]] = {}
     errors: list[str] = []
     if not provider_dir.is_dir():
