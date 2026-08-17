@@ -1,0 +1,20 @@
+#  Ruff configuration matching VSCode charliermarsh.ruff extension behavior.
+#
+# VSCode settings (user settings.json):
+#   - editor.formatOnSave: true
+#   - editor.defaultFormatter: charliermarsh.ruff
+#   - editor.codeActionsOnSave: source.organizeImports: "always"
+#   - ruff.lint.enable: true
+#
+# The extension runs "ruff format" + "ruff check --fix" on save.
+# Pre-commit hooks (wrap_hook_ruff.sh) replicate this behavior.
+
+line-length = 120
+
+[lint]
+select = ["E", "F", "W", "Q", "I"]
+ignore = ["E203", "E501"]
+
+[format]
+quote-style = "double"
+indent-style = "space"
