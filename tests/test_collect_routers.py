@@ -25,6 +25,7 @@ ROUTER_PROVIDERS = {
     "openrouter",
     "pioneer",
     "requesty",
+    "tensorx",
     "vercel",
 }
 NON_ROUTER_PROVIDERS = {
@@ -38,7 +39,6 @@ NON_ROUTER_PROVIDERS = {
     "meta",
     "nvidia",
     "openai",
-    "tensorx",
     "wafer.ai",
     "watsonx",
     "xiaomi",
@@ -361,7 +361,11 @@ class CollectRoutersTest(unittest.TestCase):
                 output_path = output_dir / f"{provider_slug}.toml"
                 self.assertTrue(output_path.is_file(), output_path)
                 document = tomllib.loads(output_path.read_text(encoding="utf-8"))
-                self.assertEqual(document["is_router"], expected_is_router)
+                self.assertEqual(
+                    document["is_router"],
+                    expected_is_router,
+                    f"Unexpected router classification for provider {provider_slug}",
+                )
                 self.assertTrue(document["reason"].strip())
 
 
