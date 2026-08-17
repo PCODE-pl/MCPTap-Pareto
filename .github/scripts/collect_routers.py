@@ -38,9 +38,16 @@ FORCED_NON_ROUTER_PROVIDERS = frozenset(
         "google-vertex",
         "google-vertex-anthropic",
         "snowflake-cortex",
+        "huggingface",
     }
 )
 FORCED_NON_ROUTER_REASON = "This provider is classified as a managed model-hosting platform, not a pure model router."
+FORCED_ROUTER_PROVIDERS = frozenset(
+    {
+        "pioneer",
+    }
+)
+FORCED_ROUTER_REASON = "This provider is classified as a model router."
 
 
 class LinkAndTextParser(HTMLParser):
@@ -431,7 +438,7 @@ def classify_provider(
     api_key: str,
     debug: bool = False,
 ) -> dict[str, bool | str]:
-    forced_decision = forced_non_router_decision(provider_slug)
+    forced_decision = forced_provider_decision(provider_slug)
     if forced_decision is not None:
         return forced_decision
 
@@ -507,6 +514,19 @@ def forced_non_router_decision(provider_slug: str) -> dict[str, bool | str] | No
     return {"is_router": False, "reason": FORCED_NON_ROUTER_REASON}
 
 
+def forced_router_decision(provider_slug: str) -> dict[str, bool | str] | None:
+    if provider_slug not in FORCED_ROUTER_PROVIDERS:
+        return None
+    return {"is_router": True, "reason": FORCED_ROUTER_REASON}
+
+
+def forced_provider_decision(provider_slug: str) -> dict[str, bool | str] | None:
+    non_router_decision = forced_non_router_decision(provider_slug)
+    if non_router_decision is not None:
+        return non_router_decision
+    return forced_router_decision(provider_slug)
+
+
 def is_generated_router_file(path: pathlib.Path) -> bool:
     try:
         first_lines = path.read_text(encoding="utf-8").splitlines()[:3]
@@ -537,11 +557,11 @@ def main() -> int:
         generated_slugs.add(provider_slug)
         try:
             provider_document, provider_toml = read_provider_file(provider_file)
-            forced_decision = forced_non_router_decision(provider_slug)
+            forced_decision = forced_provider_decision(provider_slug)
             if forced_decision is not None:
                 decision = forced_decision
                 source_urls: list[str] = []
-                current_fingerprint = fingerprint(provider_toml, FORCED_NON_ROUTER_REASON)
+                current_fingerprint = fingerprint(provider_toml, str(decision["reason"]))
                 cache[provider_slug] = {
                     "fingerprint": current_fingerprint,
                     "is_router": decision["is_router"],

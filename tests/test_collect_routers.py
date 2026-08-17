@@ -21,12 +21,20 @@ ROUTER_PROVIDERS = {
     "nano-gpt",
     "openrouter",
     "requesty",
+    "gitlab",
+    "pioneer",
 }
 NON_ROUTER_PROVIDERS = {
     "amazon-bedrock",
     "anthropic",
     "deepseek",
+    "github-copilot",
     "google",
+    "hpc-ai",
+    "huggingface",
+    "llama",
+    "meta",
+    "nvidia",
     "openai",
 }
 EXPECTED_DECISIONS = {
@@ -75,6 +83,7 @@ class CollectRoutersTest(unittest.TestCase):
             "google-vertex",
             "google-vertex-anthropic",
             "snowflake-cortex",
+            "huggingface",
         }
         self.assertEqual(collect_routers.FORCED_NON_ROUTER_PROVIDERS, expected)
         for provider_slug in expected:
@@ -99,6 +108,31 @@ class CollectRoutersTest(unittest.TestCase):
             )
         self.assertFalse(decision["is_router"])
 
+    def test_forced_router_providers_are_always_routers(self):
+        expected = {"pioneer"}
+        self.assertEqual(collect_routers.FORCED_ROUTER_PROVIDERS, expected)
+        for provider_slug in expected:
+            decision = collect_routers.forced_router_decision(provider_slug)
+            self.assertEqual(decision["is_router"], True)
+            self.assertTrue(decision["reason"].strip())
+        self.assertIsNone(collect_routers.forced_router_decision("openrouter"))
+        with mock.patch.object(
+            collect_routers.urllib.request,
+            "urlopen",
+            side_effect=AssertionError("forced providers must not call AI"),
+        ):
+            decision = collect_routers.classify_provider(
+                "pioneer",
+                'name = "Pioneer"\n',
+                None,
+                None,
+                "",
+                "model",
+                "https://example.invalid",
+                "[REDACTED]",
+            )
+        self.assertTrue(decision["is_router"])
+
     def test_debug_usage_reports_openrouter_cost(self):
         debug_text = collect_routers.usage_debug_text(
             "demo",
@@ -120,7 +154,10 @@ class CollectRoutersTest(unittest.TestCase):
             root = pathlib.Path(temporary_directory)
             provider_root = root / "providers"
             output_dir = root / "routers"
-            for provider_slug in collect_routers.FORCED_NON_ROUTER_PROVIDERS:
+            forced_provider_slugs = (
+                collect_routers.FORCED_NON_ROUTER_PROVIDERS | collect_routers.FORCED_ROUTER_PROVIDERS
+            )
+            for provider_slug in forced_provider_slugs:
                 provider_dir = provider_root / provider_slug
                 provider_dir.mkdir(parents=True)
                 (provider_dir / "provider.toml").write_text(f'name = "{provider_slug}"\n', encoding="utf-8")
@@ -131,7 +168,7 @@ class CollectRoutersTest(unittest.TestCase):
                 "--output-dir",
                 str(output_dir),
             ]
-            for provider_slug in sorted(collect_routers.FORCED_NON_ROUTER_PROVIDERS):
+            for provider_slug in sorted(forced_provider_slugs):
                 argv.extend(("--provider", provider_slug))
 
             with (
@@ -146,10 +183,12 @@ class CollectRoutersTest(unittest.TestCase):
             ):
                 self.assertEqual(collect_routers.main(), 0)
 
-            for provider_slug in collect_routers.FORCED_NON_ROUTER_PROVIDERS:
+            for provider_slug in forced_provider_slugs:
                 document = tomllib.loads((output_dir / f"{provider_slug}.toml").read_text(encoding="utf-8"))
-                self.assertFalse(document["is_router"])
-                self.assertIn("managed model-hosting platform", document["reason"])
+                expected_decision = collect_routers.forced_provider_decision(provider_slug)
+                self.assertIsNotNone(expected_decision)
+                self.assertEqual(document["is_router"], expected_decision["is_router"])
+                self.assertEqual(document["reason"], expected_decision["reason"])
 
     @unittest.skipUnless(
         os.environ.get("OPENROUTER_API_KEY"),
