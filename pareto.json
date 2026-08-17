@@ -908,7 +908,7 @@
         }
       },
       "cloudflare-ai-gateway": {
-        "anthropic/claude-opus-4-7": {
+        "anthropic/claude-opus-4.7": {
           "is_thinking": true,
           "cost": {
             "input": 5,
@@ -1502,7 +1502,7 @@
         }
       },
       "cloudflare-ai-gateway": {
-        "anthropic/claude-opus-4-8": {
+        "anthropic/claude-opus-4.8": {
           "is_thinking": true,
           "cost": {
             "input": 5,
@@ -2614,7 +2614,7 @@
         }
       },
       "cloudflare-ai-gateway": {
-        "anthropic/claude-sonnet-4-6": {
+        "anthropic/claude-sonnet-4.6": {
           "is_thinking": true,
           "cost": {
             "input": 3,
@@ -3910,6 +3910,15 @@
           }
         }
       },
+      "jalapeno": {
+        "DeepSeek-V4-Flash": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.14,
+            "output": 0.28
+          }
+        }
+      },
       "kenari": {
         "deepseek-v4-flash": {
           "is_thinking": true,
@@ -4455,6 +4464,15 @@
             "input": 1.74,
             "output": 3.48,
             "cache_read": 0.145
+          }
+        }
+      },
+      "jalapeno": {
+        "DeepSeek-V4-Pro": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.6,
+            "output": 3.38
           }
         }
       },
@@ -7183,6 +7201,15 @@
           }
         }
       },
+      "jalapeno": {
+        "Kimi-K2.7-Code": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.95,
+            "output": 4.0
+          }
+        }
+      },
       "kenari": {
         "kimi-k2-7-code": {
           "is_thinking": true,
@@ -7767,6 +7794,15 @@
             "input": 3.0,
             "output": 15.0,
             "cache_read": 0.3
+          }
+        }
+      },
+      "jalapeno": {
+        "Kimi-K3": {
+          "is_thinking": true,
+          "cost": {
+            "input": 3.0,
+            "output": 15.0
           }
         }
       },
@@ -10321,6 +10357,27 @@
           }
         }
       },
+      "sap-ai-core": {
+        "gpt-5.6-luna": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.0,
+            "output": 6.0,
+            "cache_read": 0.1,
+            "tiers": [
+              {
+                "tier": {
+                  "type": "context",
+                  "size": 272000
+                },
+                "input": 2.0,
+                "output": 9.0,
+                "cache_read": 0.2
+              }
+            ]
+          }
+        }
+      },
       "snowflake-cortex": {
         "openai-gpt-5.6-luna": {
           "is_thinking": true,
@@ -11079,6 +11136,27 @@
           }
         }
       },
+      "sap-ai-core": {
+        "gpt-5.6-sol": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5.0,
+            "output": 30.0,
+            "cache_read": 0.5,
+            "tiers": [
+              {
+                "tier": {
+                  "type": "context",
+                  "size": 272000
+                },
+                "input": 10.0,
+                "output": 45.0,
+                "cache_read": 1.0
+              }
+            ]
+          }
+        }
+      },
       "snowflake-cortex": {
         "openai-gpt-5.6-sol": {
           "is_thinking": true,
@@ -11793,6 +11871,27 @@
           "cost": {
             "input": 1.5,
             "output": 9.0
+          }
+        }
+      },
+      "sap-ai-core": {
+        "gpt-5.6-terra": {
+          "is_thinking": true,
+          "cost": {
+            "input": 2.5,
+            "output": 15.0,
+            "cache_read": 0.25,
+            "tiers": [
+              {
+                "tier": {
+                  "type": "context",
+                  "size": 272000
+                },
+                "input": 5.0,
+                "output": 22.5,
+                "cache_read": 0.5
+              }
+            ]
           }
         }
       },
@@ -12996,9 +13095,9 @@
         "glm-5.2": {
           "is_thinking": true,
           "cost": {
-            "input": 0.5,
-            "output": 2.2,
-            "cache_read": 0.08
+            "input": 0.3,
+            "output": 1.05,
+            "cache_read": 0.05
           }
         }
       },
@@ -13258,6 +13357,15 @@
             "output": 2.9,
             "cache_read": 0.17,
             "cache_write": 0
+          }
+        }
+      },
+      "jalapeno": {
+        "GLM-5.2": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.4,
+            "output": 4.4
           }
         }
       },
