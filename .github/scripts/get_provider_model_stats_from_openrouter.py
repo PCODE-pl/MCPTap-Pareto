@@ -17,7 +17,8 @@ from typing import Any
 import tomllib
 
 DEFAULT_API_URL = "https://openrouter.ai/api/v1/models"
-DEFAULT_AI_MODEL = "google/gemini-2.5-flash"
+# DEFAULT_AI_MODEL = "google/gemini-2.5-flash"
+DEFAULT_AI_MODEL = "meta-llama/llama-3.3-70b-instruct"
 OPENROUTER_CHAT_URL = "https://openrouter.ai/api/v1/chat/completions"
 CACHE_FILE_NAME = ".openrouter_provider_mapping_cache.json"
 STATS_KEYS = (
@@ -148,14 +149,14 @@ def fetch_model_endpoints(api_url: str, model_id: str) -> list[dict[str, Any]]:
         raise RuntimeError(f"OpenRouter endpoint returned invalid JSON for {model_id}") from exc
 
     if not isinstance(payload, dict):
-        raise RuntimeError(f"OpenRouter endpoint response is not an object for {model_id}")
+        raise TypeError(f"OpenRouter endpoint response is not an object for {model_id}")
     data = payload.get("data")
     if isinstance(data, dict):
         endpoints = data.get("endpoints")
     else:
         endpoints = data
     if not isinstance(endpoints, list):
-        raise RuntimeError(f"OpenRouter endpoint response has no endpoints list for {model_id}")
+        raise TypeError(f"OpenRouter endpoint response has no endpoints list for {model_id}")
     return [endpoint for endpoint in endpoints if isinstance(endpoint, dict)]
 
 
@@ -240,7 +241,7 @@ def query_provider_mappings(
             data = json.load(response)
         content = data["choices"][0]["message"]["content"]
         parsed = json.loads(content)
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001
         print(f"Warning: AI provider mapping failed: {exc}", file=sys.stderr)
         return {}
 
@@ -255,14 +256,14 @@ def query_provider_mappings(
 def select_endpoint(endpoints: list[dict[str, Any]]) -> dict[str, Any] | None:
     if not endpoints:
         return None
-    return sorted(
+    return min(
         endpoints,
         key=lambda item: (
             str(item.get("provider_name", "")).lower(),
             str(item.get("name", "")).lower(),
             str(item.get("tag", "")).lower(),
         ),
-    )[0]
+    )
 
 
 def extract_stats(endpoint: dict[str, Any]) -> dict[str, Any]:
@@ -339,7 +340,7 @@ def main() -> int:
         # Prefer a source model ID identical to the canonical model ID when available.
         source_entry = next(
             (entry for entry in entries if entry["model_id"] == canonical_model),
-            sorted(entries, key=lambda entry: entry["model_id"])[0],
+            min(entries, key=lambda entry: entry["model_id"]),
         )
         source_model_id = source_entry["model_id"]
         for endpoint in endpoint_cache.get(source_model_id, []):

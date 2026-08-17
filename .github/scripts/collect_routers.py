@@ -323,7 +323,7 @@ def parse_ai_decision(content: str) -> dict[str, bool | str]:
     except json.JSONDecodeError as exc:
         raise ValueError("AI response is not valid JSON") from exc
     if not isinstance(value, dict) or not isinstance(value.get("is_router"), bool):
-        raise ValueError("AI response must contain a boolean is_router field")
+        raise TypeError("AI response must contain a boolean is_router field")
     reason = value.get("reason")
     if not isinstance(reason, str) or not reason.strip():
         raise ValueError("AI response must contain a non-empty reason string")
@@ -445,7 +445,7 @@ def save_cache(repo_root: pathlib.Path, cache: dict[str, dict[str, Any]]) -> Non
 
 
 def fingerprint(provider_toml: str, context: str) -> str:
-    return hashlib.sha256(f"{PROMPT_VERSION}\n{provider_toml}\n\n{context}".encode("utf-8")).hexdigest()
+    return hashlib.sha256(f"{PROMPT_VERSION}\n{provider_toml}\n\n{context}".encode()).hexdigest()
 
 
 def toml_string(value: str) -> str:

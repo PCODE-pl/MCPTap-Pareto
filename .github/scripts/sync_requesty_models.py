@@ -25,6 +25,7 @@ TOKENS_PER_MILLION = 1_000_000
 PRICE_DECIMALS = 1_000_000
 AUTO_SOURCE_MARKER = "# mcp-tap-auto-source = requesty"
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
+# DEFAULT_AI_MODEL = "google/gemini-2.5-flash"
 DEFAULT_AI_MODEL = "meta-llama/llama-3.3-70b-instruct"
 CACHE_FILE_NAME = ".requesty_ai_mapping_cache.json"
 
