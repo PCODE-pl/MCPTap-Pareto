@@ -10,6 +10,7 @@ import json
 import os
 import pathlib
 import re
+import sys
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -117,6 +118,11 @@ def parse_args() -> argparse.Namespace:
         "--dry-run",
         action="store_true",
         help="Classify providers without writing or removing files",
+    )
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Print the complete AI prompt before each classification request",
     )
     parser.add_argument(
         "--provider",
@@ -282,6 +288,7 @@ def classify_provider(
     model: str,
     chat_url: str,
     api_key: str,
+    debug: bool = False,
 ) -> dict[str, bool | str]:
     payload = {
         "model": model,
@@ -289,6 +296,16 @@ def classify_provider(
         "response_format": {"type": "json_object"},
         "temperature": 0.0,
     }
+    if debug:
+        print(
+            f"\n=== OpenRouter AI request: {provider_slug} ===\n"
+            f"URL: {chat_url}\n"
+            f"Model: {model}\n"
+            "Messages:\n"
+            f"{json.dumps(payload['messages'], indent=2, ensure_ascii=False)}\n"
+            "=== End OpenRouter AI request ===",
+            file=sys.stderr,
+        )
     request = urllib.request.Request(
         chat_url,
         data=json.dumps(payload).encode("utf-8"),
@@ -395,6 +412,7 @@ def main() -> int:
                     args.ai_model,
                     args.chat_url,
                     api_key,
+                    args.debug,
                 )
                 cache[provider_slug] = {
                     "fingerprint": current_fingerprint,
