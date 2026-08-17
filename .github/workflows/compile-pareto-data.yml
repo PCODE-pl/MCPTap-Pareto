@@ -16,7 +16,7 @@ permissions:
 
 concurrency:
   group: compile-pareto-data-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   compile:
@@ -82,4 +82,26 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A -- models providers pareto.json
           git commit -m "chore: sync upstream catalog and generated data"
-          git push origin HEAD:${GITHUB_REF_NAME}
+
+          max_attempts=3
+          for attempt in $(seq 1 "$max_attempts"); do
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then
+              echo "Catalog and generated data pushed successfully."
+              exit 0
+            fi
+
+            if test "$attempt" -eq "$max_attempts"; then
+              echo "Unable to push after ${max_attempts} attempts."
+              exit 1
+            fi
+
+            echo "Remote branch advanced during push; rebasing and retrying."
+            git fetch --no-tags origin "${GITHUB_REF_NAME}"
+            if ! GIT_EDITOR=: git rebase "origin/${GITHUB_REF_NAME}"; then
+              echo "Automatic rebase failed; refusing to overwrite remote changes."
+              git rebase --abort || true
+              git status --short
+              exit 1
+            fi
+            sleep $((attempt * 2))
+          done
