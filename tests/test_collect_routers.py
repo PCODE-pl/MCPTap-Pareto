@@ -21,6 +21,7 @@ ROUTER_PROVIDERS = {
     "gitlab",
     "kilo",
     "nano-gpt",
+    "opencode",
     "openrouter",
     "pioneer",
     "requesty",
@@ -170,6 +171,13 @@ class CollectRoutersTest(unittest.TestCase):
         user_prompt = messages[1]["content"]
         self.assertIn("closed-source frontier models", user_prompt)
         self.assertIn("not sufficient", messages[0]["content"])
+
+    def test_frontier_model_labs_include_catalog_dirs_and_static_fallbacks(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            labs_dir = pathlib.Path(temporary_directory) / "labs"
+            (labs_dir / "catalog-lab").mkdir(parents=True)
+            discovered = collect_routers.discover_frontier_model_labs(labs_dir, {"catalog-lab", "legacy-lab"})
+        self.assertEqual(discovered, {"catalog-lab", "legacy-lab"})
 
     def test_provider_has_base_models_requires_base_model_field(self):
         with tempfile.TemporaryDirectory() as temporary_directory:

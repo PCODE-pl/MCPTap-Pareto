@@ -48,7 +48,7 @@ FORCED_ROUTER_PROVIDERS = frozenset(
     }
 )
 FORCED_ROUTER_REASON = "This provider is classified as a model router."
-FRONTIER_MODEL_LABS = frozenset(
+STATIC_FRONTIER_MODEL_LABS = frozenset(
     {
         "alibaba",
         "anthropic",
@@ -70,8 +70,22 @@ FRONTIER_MODEL_LABS = frozenset(
         "zhipuai",
     }
 )
+
+
+def discover_frontier_model_labs(
+    labs_dir: pathlib.Path,
+    static_labs: set[str] | frozenset[str] = STATIC_FRONTIER_MODEL_LABS,
+) -> frozenset[str]:
+    catalog_labs = {path.name for path in labs_dir.iterdir() if path.is_dir()} if labs_dir.is_dir() else set()
+    return frozenset(catalog_labs | set(static_labs))
+
+
+FRONTIER_MODEL_LABS = discover_frontier_model_labs(pathlib.Path(__file__).resolve().parents[2] / "labs")
 NO_CLOSED_FRONTIER_REASON = (
     "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router."
+)
+CLOSED_FRONTIER_REASON = (
+    "The provider catalog has verified closed-source frontier models, so it is classified as a model router."
 )
 
 
@@ -729,6 +743,27 @@ def main() -> int:
                             args.debug,
                             catalog_signal,
                         )
+
+                        # if (
+                        #     not decision["is_router"]
+                        #     and model_signal["has_closed_frontier_models"]
+                        # ):
+                        #     decision = {
+                        #         "is_router": True,
+                        #         "reason": CLOSED_FRONTIER_REASON,
+                        #     }
+                        #     source_urls = []
+                        #     current_fingerprint = fingerprint(
+                        #         provider_toml, catalog_signal
+                        #     )
+                        #     cache[provider_slug] = {
+                        #         "fingerprint": current_fingerprint,
+                        #         "is_router": decision["is_router"],
+                        #         "reason": decision["reason"],
+                        #         "source_urls": source_urls,
+                        #     }
+                        #     catalog_count += 1
+
                         cache[provider_slug] = {
                             "fingerprint": current_fingerprint,
                             "is_router": decision["is_router"],
