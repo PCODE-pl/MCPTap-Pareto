@@ -18,7 +18,8 @@ from typing import Any
 
 import tomllib
 
-DEFAULT_AI_MODEL = "google/gemini-2.5-flash"
+# DEFAULT_AI_MODEL = "google/gemini-2.5-flash"
+DEFAULT_AI_MODEL = "meta-llama/llama-3.3-70b-instruct"
 DEFAULT_CHAT_URL = "https://openrouter.ai/api/v1/chat/completions"
 CACHE_FILE_NAME = ".collect_routers_ai_cache.json"
 AUTO_SOURCE_MARKER = "# mcp-tap-auto-source = collect_routers"
@@ -134,7 +135,7 @@ def read_provider_file(path: pathlib.Path) -> tuple[dict[str, Any], str]:
     raw = path.read_text(encoding="utf-8")
     document = tomllib.loads(raw)
     if not isinstance(document, dict):
-        raise ValueError("provider.toml root must be a TOML table")
+        raise TypeError("provider.toml root must be a TOML table")
     return document, raw
 
 
@@ -267,7 +268,10 @@ def parse_ai_decision(content: str) -> dict[str, bool | str]:
     reason = value.get("reason")
     if not isinstance(reason, str) or not reason.strip():
         raise ValueError("AI response must contain a non-empty reason string")
-    return {"is_router": value["is_router"], "reason": reason.strip()[:MAX_REASON_LENGTH]}
+    return {
+        "is_router": value["is_router"],
+        "reason": reason.strip()[:MAX_REASON_LENGTH],
+    }
 
 
 def classify_provider(
@@ -322,15 +326,15 @@ def save_cache(repo_root: pathlib.Path, cache: dict[str, dict[str, Any]]) -> Non
 
 
 def fingerprint(provider_toml: str, context: str) -> str:
-    return hashlib.sha256(f"{provider_toml}\n\n{context}".encode("utf-8")).hexdigest()
+    return hashlib.sha256(f"{provider_toml}\n\n{context}".encode()).hexdigest()
 
 
 def toml_string(value: str) -> str:
     return json.dumps(value, ensure_ascii=False)
 
 
-def render_router_toml(reason: str) -> str:
-    return f"{AUTO_SOURCE_MARKER}\nreason = {toml_string(reason)}\n"
+def render_router_toml(is_router: bool, reason: str) -> str:
+    return f"{AUTO_SOURCE_MARKER}\nis_router = {str(is_router).lower()}\nreason = {toml_string(reason)}\n"
 
 
 def is_generated_router_file(path: pathlib.Path) -> bool:
@@ -400,19 +404,17 @@ def main() -> int:
                 }
                 ai_count += 1
 
+            if not args.dry_run:
+                args.output_dir.mkdir(parents=True, exist_ok=True)
+                (args.output_dir / f"{provider_slug}.toml").write_text(
+                    render_router_toml(bool(decision["is_router"]), str(decision["reason"])),
+                    encoding="utf-8",
+                )
             if bool(decision["is_router"]):
                 router_slugs.add(provider_slug)
-                if not args.dry_run:
-                    args.output_dir.mkdir(parents=True, exist_ok=True)
-                    (args.output_dir / f"{provider_slug}.toml").write_text(
-                        render_router_toml(str(decision["reason"])), encoding="utf-8"
-                    )
                 print(f"ROUTER {provider_slug}: {decision['reason']}")
             else:
                 print(f"NOT ROUTER {provider_slug}: {decision['reason']}")
-                output_path = args.output_dir / f"{provider_slug}.toml"
-                if not args.dry_run and is_generated_router_file(output_path):
-                    output_path.unlink()
         except (OSError, ValueError, RuntimeError, tomllib.TOMLDecodeError) as exc:
             failures.append(f"{provider_slug}: {exc}")
 
