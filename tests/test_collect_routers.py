@@ -82,6 +82,22 @@ class CollectRoutersTest(unittest.TestCase):
             self.assertEqual(decision["is_router"], False)
             self.assertTrue(decision["reason"].strip())
         self.assertIsNone(collect_routers.forced_non_router_decision("openrouter"))
+        with mock.patch.object(
+            collect_routers.urllib.request,
+            "urlopen",
+            side_effect=AssertionError("forced providers must not call AI"),
+        ):
+            decision = collect_routers.classify_provider(
+                "amazon-bedrock",
+                'name = "Amazon Bedrock"\n',
+                None,
+                None,
+                "",
+                "model",
+                "https://example.invalid",
+                "[REDACTED]",
+            )
+        self.assertFalse(decision["is_router"])
 
     def test_debug_usage_reports_openrouter_cost(self):
         debug_text = collect_routers.usage_debug_text(

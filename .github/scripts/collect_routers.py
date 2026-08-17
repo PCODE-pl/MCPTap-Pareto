@@ -431,6 +431,10 @@ def classify_provider(
     api_key: str,
     debug: bool = False,
 ) -> dict[str, bool | str]:
+    forced_decision = forced_non_router_decision(provider_slug)
+    if forced_decision is not None:
+        return forced_decision
+
     payload = {
         "model": model,
         "messages": build_prompt(provider_slug, provider_toml, doc_url, api_url, context),
