@@ -171,6 +171,17 @@ class CollectRoutersTest(unittest.TestCase):
         self.assertIn("closed-source frontier models", user_prompt)
         self.assertIn("not sufficient", messages[0]["content"])
 
+    def test_provider_has_base_models_requires_base_model_field(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            model_dir = pathlib.Path(temporary_directory) / "models"
+            model_dir.mkdir()
+            (model_dir / "open-model.toml").write_text('name = "Open model"\nopen_weights = true\n', encoding="utf-8")
+            self.assertFalse(collect_routers.provider_has_base_models(model_dir))
+            (model_dir / "relayed-model.toml").write_text(
+                'base_model = "anthropic/claude-opus-4-8"\n', encoding="utf-8"
+            )
+            self.assertTrue(collect_routers.provider_has_base_models(model_dir))
+
     def test_debug_usage_reports_openrouter_cost(self):
         debug_text = collect_routers.usage_debug_text(
             "demo",
@@ -199,6 +210,10 @@ class CollectRoutersTest(unittest.TestCase):
                 provider_dir = provider_root / provider_slug
                 provider_dir.mkdir(parents=True)
                 (provider_dir / "provider.toml").write_text(f'name = "{provider_slug}"\n', encoding="utf-8")
+                (provider_dir / "models").mkdir()
+                (provider_dir / "models" / "model.toml").write_text(
+                    'base_model = "anthropic/claude-opus-4-8"\n', encoding="utf-8"
+                )
             argv = [
                 str(SCRIPT_PATH),
                 "--provider-dir",
@@ -266,6 +281,40 @@ class CollectRoutersTest(unittest.TestCase):
             document = tomllib.loads((output_dir / "open-only.toml").read_text(encoding="utf-8"))
             self.assertFalse(document["is_router"])
             self.assertIn("closed-source frontier", document["reason"])
+
+    def test_main_skips_provider_without_base_models(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = pathlib.Path(temporary_directory)
+            provider_dir = root / "providers" / "no-base-model"
+            provider_dir.mkdir(parents=True)
+            (provider_dir / "provider.toml").write_text('name = "No Base Model"\n', encoding="utf-8")
+            model_dir = provider_dir / "models"
+            model_dir.mkdir()
+            (model_dir / "standalone.toml").write_text(
+                'name = "Standalone model"\nopen_weights = true\n',
+                encoding="utf-8",
+            )
+            output_dir = root / "routers"
+            argv = [
+                str(SCRIPT_PATH),
+                "--provider-dir",
+                str(root / "providers"),
+                "--output-dir",
+                str(output_dir),
+            ]
+            with (
+                mock.patch.object(sys, "argv", argv),
+                mock.patch.object(collect_routers, "load_cache", return_value={}),
+                mock.patch.object(collect_routers, "save_cache"),
+                mock.patch.object(
+                    collect_routers,
+                    "collect_document_context",
+                    side_effect=AssertionError("providers without base_model must be skipped"),
+                ),
+            ):
+                self.assertEqual(collect_routers.main(), 0)
+
+            self.assertFalse((output_dir / "no-base-model.toml").exists())
 
     @unittest.skipUnless(
         os.environ.get("OPENROUTER_API_KEY"),

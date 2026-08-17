@@ -329,6 +329,19 @@ def collect_document_context(doc_url: str | None, api_url: str | None = None) ->
     return "\n\n".join(sections), source_urls
 
 
+def provider_has_base_models(provider_models_dir: pathlib.Path) -> bool:
+    if not provider_models_dir.is_dir():
+        return False
+    for model_file in sorted(provider_models_dir.rglob("*.toml")):
+        try:
+            provider_model = tomllib.loads(model_file.read_text(encoding="utf-8"))
+        except (OSError, tomllib.TOMLDecodeError):
+            continue
+        if isinstance(provider_model.get("base_model"), str):
+            return True
+    return False
+
+
 def inspect_frontier_models(provider_models_dir: pathlib.Path, models_dir: pathlib.Path) -> dict[str, bool | list[str]]:
     closed_frontier_models: set[str] = set()
     if not provider_models_dir.is_dir():
@@ -617,6 +630,7 @@ def main() -> int:
     ai_count = 0
     forced_count = 0
     catalog_count = 0
+    skipped_count = 0
 
     provider_files = list_provider_files(args.provider_dir)
     if args.providers:
@@ -625,9 +639,14 @@ def main() -> int:
 
     for provider_file in provider_files:
         provider_slug = provider_file.parent.name
-        generated_slugs.add(provider_slug)
         try:
             provider_document, provider_toml = read_provider_file(provider_file)
+            if not provider_has_base_models(provider_file.parent / "models"):
+                skipped_count += 1
+                cache.pop(provider_slug, None)
+                print(f"SKIP {provider_slug}: no model uses base_model")
+                continue
+            generated_slugs.add(provider_slug)
             forced_decision = forced_provider_decision(provider_slug)
             if forced_decision is not None:
                 decision = forced_decision
@@ -725,6 +744,7 @@ def main() -> int:
     print("\nRouter classification summary")
     print("=============================")
     print(f"Providers inspected: {len(provider_files)}")
+    print(f"Providers skipped without base_model: {skipped_count}")
     print(f"Classified as routers: {len(router_slugs)}")
     print(f"Decisions from cache: {cached_count}")
     print(f"Decisions forced by policy: {forced_count}")
