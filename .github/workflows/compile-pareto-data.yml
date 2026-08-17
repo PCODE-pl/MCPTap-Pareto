@@ -36,18 +36,21 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Sync Requesty model prices
+        run: python .github/scripts/sync_requesty_models.py
+
       - name: Compile Pareto data
         run: python .github/scripts/compile_pareto_data.py
 
-      - name: Commit changed Pareto data
+      - name: Commit changed Pareto and Requesty data
         run: |
-          if git diff --quiet -- pareto.json; then
-            echo "pareto.json is unchanged."
+          if test -z "$(git status --porcelain -- pareto.json providers/requesty/models)"; then
+            echo "Pareto and Requesty data are unchanged."
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add pareto.json
-          git commit -m "chore: update Pareto data"
+          git add -A -- pareto.json providers/requesty/models
+          git commit -m "chore: update Pareto and Requesty data"
           git push origin HEAD:${GITHUB_REF_NAME}
