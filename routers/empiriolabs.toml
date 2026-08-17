@@ -1,0 +1,3 @@
+# mcp-tap-auto-source = collect_routers
+is_router = true
+reason = "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['alibaba/qwen3-max', 'deepseek/deepseek-v4-pro-0813', 'mistral/mistral-medium-2505', 'sakana/fugu-ultra']"

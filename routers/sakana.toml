@@ -1,0 +1,3 @@
+# mcp-tap-auto-source = collect_routers
+is_router = false
+reason = "The provider is lab, so it is not classified as a model router."
