@@ -36,19 +36,41 @@ jobs:
           set -euo pipefail
 
           git fetch --no-tags https://github.com/anomalyco/models.dev.git dev
+          merge_base="$(git merge-base HEAD FETCH_HEAD)"
+          applied=0
+          skipped=0
 
-          if git diff --quiet HEAD...FETCH_HEAD -- models providers; then
-            echo "No upstream models/providers changes."
-          else
-            patch_file="$RUNNER_TEMP/models-dev-catalog.patch"
-            git diff --binary HEAD...FETCH_HEAD -- models providers > "$patch_file"
-            if ! git apply --index "$patch_file"; then
-              echo "Upstream catalog sync could not be applied without overwriting fork changes."
-              git status --short -- models providers
-              exit 1
+          while IFS= read -r -d '' path; do
+            # Never overwrite a path changed by the fork. Apply upstream changes
+            # only when the fork still has the merge-base version.
+            fork_changed=false
+            if ! git diff --quiet "$merge_base" HEAD -- "$path"; then
+              fork_changed=true
             fi
-            echo "Applied upstream changes limited to models/ and providers/."
-          fi
+            if git ls-files --others --exclude-standard -- "$path" | grep -q .; then
+              fork_changed=true
+            fi
+
+            if [ "$fork_changed" = true ]; then
+              echo "Skipped upstream change for fork-modified path: $path"
+              skipped=$((skipped + 1))
+              continue
+            fi
+
+            if git cat-file -e "FETCH_HEAD:$path" 2>/dev/null; then
+              git checkout FETCH_HEAD -- "$path"
+            elif git ls-files --error-unmatch -- "$path" >/dev/null 2>&1; then
+              git rm -f -- "$path"
+            else
+              echo "Skipped upstream deletion of non-tracked path: $path"
+              skipped=$((skipped + 1))
+              continue
+            fi
+            applied=$((applied + 1))
+          done < <(git diff --name-only -z "$merge_base" FETCH_HEAD -- models providers)
+
+          echo "Applied upstream catalog paths: $applied"
+          echo "Skipped fork-modified paths: $skipped"
 
       - name: Set up Python
         uses: actions/setup-python@v5
