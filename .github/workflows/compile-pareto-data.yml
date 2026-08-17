@@ -38,39 +38,27 @@ jobs:
           git fetch --no-tags https://github.com/anomalyco/models.dev.git dev
           merge_base="$(git merge-base HEAD FETCH_HEAD)"
           applied=0
-          skipped=0
+          removed=0
+          missing=0
 
           while IFS= read -r -d '' path; do
-            # Never overwrite a path changed by the fork. Apply upstream changes
-            # only when the fork still has the merge-base version.
-            fork_changed=false
-            if ! git diff --quiet "$merge_base" HEAD -- "$path"; then
-              fork_changed=true
-            fi
-            if git ls-files --others --exclude-standard -- "$path" | grep -q .; then
-              fork_changed=true
-            fi
-
-            if [ "$fork_changed" = true ]; then
-              echo "Skipped upstream change for fork-modified path: $path"
-              skipped=$((skipped + 1))
-              continue
-            fi
-
+            # Upstream is authoritative for every path it changed. This intentionally
+            # overwrites fork changes in the same path and removes upstream deletions.
             if git cat-file -e "FETCH_HEAD:$path" 2>/dev/null; then
               git checkout FETCH_HEAD -- "$path"
+              applied=$((applied + 1))
             elif git ls-files --error-unmatch -- "$path" >/dev/null 2>&1; then
               git rm -f -- "$path"
+              removed=$((removed + 1))
             else
-              echo "Skipped upstream deletion of non-tracked path: $path"
-              skipped=$((skipped + 1))
-              continue
+              echo "Upstream path is already absent locally: $path"
+              missing=$((missing + 1))
             fi
-            applied=$((applied + 1))
           done < <(git diff --name-only -z "$merge_base" FETCH_HEAD -- models providers)
 
           echo "Applied upstream catalog paths: $applied"
-          echo "Skipped fork-modified paths: $skipped"
+          echo "Removed upstream catalog paths: $removed"
+          echo "Already absent locally: $missing"
 
       - name: Set up Python
         uses: actions/setup-python@v5
