@@ -29,7 +29,7 @@ MAX_PAGE_TEXT = 12_000
 MAX_RELATED_LINKS = 3
 MAX_REASON_LENGTH = 1_000
 MARKDOWN_LINK_RE = re.compile(r"\[([^\]]+)\]\((https?://[^)\s]+)\)")
-PROMPT_VERSION = "router-classification-v2"
+PROMPT_VERSION = "router-classification-v3"
 
 
 class LinkAndTextParser(HTMLParser):
@@ -278,10 +278,8 @@ def build_prompt(provider_slug: str, provider_toml: str, doc_url: str | None, co
         "requests, perform routing/fallback/load balancing, and forward inference "
         "to independently hosted providers. Hosting the gateway control plane is "
         "not the same as hosting the underlying models.\n"
-        "Important calibration: Amazon Bedrock is MANAGED_MODEL_PLATFORM and must "
-        "be classified as is_router=false. It serves Amazon and third-party models "
-        "as AWS-managed inference and supports model customization/deployment; its "
-        "multi-model API does not make it a pure router.\n"
+        "Do not use a provider name, slug, or memorized label as the classification. "
+        "Every provider must be judged from its own provider.toml and documentation.\n"
         "AI model aggregation, unified gateway, or smart routing language is strong "
         "evidence for is_router=true only when the documentation also indicates "
         "that the underlying inference is performed by external providers.\n"
