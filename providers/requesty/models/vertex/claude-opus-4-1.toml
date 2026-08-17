@@ -1,0 +1,10 @@
+# mcp-tap-auto-source = requesty
+base_model = "anthropic/claude-opus-4-1"
+reasoning = true
+reasoning_options = []
+
+[cost]
+input = 15.0
+output = 75.0
+cache_read = 1.5
+cache_write = 18.75

@@ -1,0 +1,8 @@
+# mcp-tap-auto-source = requesty
+base_model = "meta/muse-glimmer-30b"
+reasoning = true
+reasoning_options = []
+
+[cost]
+input = 0
+output = 0

@@ -1,0 +1,8 @@
+# mcp-tap-auto-source = requesty
+base_model = "mistral/codestral-latest"
+reasoning = false
+
+[cost]
+input = 0.33
+output = 0.9900000000000001
+cache_read = 0.33

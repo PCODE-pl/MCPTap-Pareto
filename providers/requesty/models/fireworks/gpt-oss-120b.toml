@@ -1,0 +1,9 @@
+# mcp-tap-auto-source = requesty
+base_model = "openai/gpt-oss-120b"
+reasoning = true
+reasoning_options = []
+
+[cost]
+input = 0.15
+output = 0.6
+cache_read = 0.015

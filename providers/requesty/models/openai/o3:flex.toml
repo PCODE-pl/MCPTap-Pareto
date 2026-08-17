@@ -1,0 +1,9 @@
+# mcp-tap-auto-source = requesty
+base_model = "openai/o3"
+reasoning = true
+reasoning_options = []
+
+[cost]
+input = 1.0
+output = 4.0
+cache_read = 0.25

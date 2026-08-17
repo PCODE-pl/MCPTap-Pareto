@@ -1,0 +1,13 @@
+# mcp-tap-auto-source = requesty
+base_model = "sakana/fugu-ultra"
+reasoning = false
+
+[cost]
+input = 5.0
+output = 30.0
+cache_read = 0.5
+
+[[cost.tiers]]
+tier = { type = "context", size = 272000 }
+input = 10.0
+output = 45.0

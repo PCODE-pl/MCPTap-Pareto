@@ -1,0 +1,15 @@
+# mcp-tap-auto-source = requesty
+base_model = "google/gemini-3.1-pro-preview"
+reasoning = true
+reasoning_options = []
+
+[cost]
+input = 1.0
+output = 6.0
+cache_read = 0.09999999999999999
+cache_write = 2.75
+
+[[cost.tiers]]
+tier = { type = "context", size = 200000 }
+input = 2.0
+output = 9.0

@@ -1,0 +1,15 @@
+# mcp-tap-auto-source = requesty
+base_model = "anthropic/claude-sonnet-4-5"
+reasoning = true
+reasoning_options = []
+
+[cost]
+input = 3.0
+output = 15.0
+cache_read = 0.3
+cache_write = 3.75
+
+[[cost.tiers]]
+tier = { type = "context", size = 200000 }
+input = 6.0
+output = 22.5

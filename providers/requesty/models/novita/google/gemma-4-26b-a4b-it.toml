@@ -1,0 +1,9 @@
+# mcp-tap-auto-source = requesty
+base_model = "google/gemma-4-26b-a4b-it"
+reasoning = true
+reasoning_options = []
+
+[cost]
+input = 0.13
+output = 0.39999999999999997
+cache_read = 0.13

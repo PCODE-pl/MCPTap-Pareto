@@ -1,0 +1,9 @@
+# mcp-tap-auto-source = requesty
+base_model = "alibaba/qwen-turbo"
+reasoning = false
+
+[cost]
+input = 0.049999999999999996
+output = 0.19999999999999998
+cache_read = 0.049999999999999996
+cache_write = 0.049999999999999996

@@ -1,0 +1,9 @@
+# mcp-tap-auto-source = requesty
+base_model = "xiaomi/mimo-v2.5"
+reasoning = true
+reasoning_options = []
+
+[cost]
+input = 0.39999999999999997
+output = 2.0
+cache_read = 0.08

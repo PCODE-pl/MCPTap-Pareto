@@ -1,0 +1,10 @@
+# mcp-tap-auto-source = requesty
+base_model = "moonshotai/kimi-k2.5"
+reasoning = true
+reasoning_options = []
+
+[cost]
+input = 0.72
+output = 3.5999999999999996
+cache_read = 0.72
+cache_write = 0.72

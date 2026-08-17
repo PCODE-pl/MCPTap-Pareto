@@ -1,0 +1,8 @@
+# mcp-tap-auto-source = requesty
+base_model = "perplexity/sonar-reasoning-pro"
+reasoning = false
+
+[cost]
+input = 2.0
+output = 8.0
+cache_read = 2.0

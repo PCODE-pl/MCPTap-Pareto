@@ -1,0 +1,14 @@
+# mcp-tap-auto-source = requesty
+base_model = "xai/grok-4.1-fast"
+reasoning = false
+
+[cost]
+input = 3.0
+output = 15.0
+cache_read = 0.75
+cache_write = 3.0
+
+[[cost.tiers]]
+tier = { type = "context", size = 128000 }
+input = 6.0
+output = 30.0

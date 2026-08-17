@@ -1,0 +1,13 @@
+# mcp-tap-auto-source = requesty
+base_model = "google/gemini-3.1-flash-image"
+reasoning = true
+reasoning_options = []
+
+[cost]
+input = 0.5
+output = 2.0
+
+[[cost.tiers]]
+tier = { type = "context", size = 200000 }
+input = 0.5
+output = 2.0

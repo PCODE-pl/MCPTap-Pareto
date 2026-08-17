@@ -1,0 +1,9 @@
+# mcp-tap-auto-source = requesty
+base_model = "openai/o4-mini"
+reasoning = true
+reasoning_options = []
+
+[cost]
+input = 1.21
+output = 4.84
+cache_read = 0.3025

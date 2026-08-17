@@ -1,0 +1,8 @@
+# mcp-tap-auto-source = requesty
+base_model = "alibaba/qwen3-coder-480b-a35b-instruct"
+reasoning = false
+
+[cost]
+input = 0.39999999999999997
+output = 1.5999999999999999
+cache_read = 0.39999999999999997

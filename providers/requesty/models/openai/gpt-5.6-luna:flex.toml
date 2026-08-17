@@ -1,0 +1,14 @@
+# mcp-tap-auto-source = requesty
+base_model = "openai/gpt-5.6-luna"
+reasoning = true
+reasoning_options = []
+
+[cost]
+input = 0.09999999999999999
+output = 0.6
+cache_read = 0.01
+
+[[cost.tiers]]
+tier = { type = "context", size = 272000 }
+input = 0.19999999999999998
+output = 0.8999999999999999

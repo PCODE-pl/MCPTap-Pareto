@@ -1,0 +1,17 @@
+# mcp-tap-auto-source = requesty
+base_model = "alibaba/qwen3-max"
+reasoning = false
+
+[cost]
+input = 0.861
+output = 3.4410000000000003
+
+[[cost.tiers]]
+tier = { type = "context", size = 32678 }
+input = 1.434
+output = 5.735
+
+[[cost.tiers]]
+tier = { type = "context", size = 131072 }
+input = 2.151
+output = 8.602

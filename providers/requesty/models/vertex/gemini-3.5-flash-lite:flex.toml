@@ -1,0 +1,9 @@
+# mcp-tap-auto-source = requesty
+base_model = "google/gemini-3.5-flash-lite"
+reasoning = true
+reasoning_options = []
+
+[cost]
+input = 0.15
+output = 1.25
+cache_read = 0.015

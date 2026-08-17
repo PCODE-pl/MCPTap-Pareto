@@ -1,0 +1,9 @@
+# mcp-tap-auto-source = requesty
+base_model = "mistral/mistral-small-2603"
+reasoning = true
+reasoning_options = []
+
+[cost]
+input = 0.165
+output = 0.66
+cache_read = 0.165

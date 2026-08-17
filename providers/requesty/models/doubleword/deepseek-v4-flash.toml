@@ -1,0 +1,8 @@
+# mcp-tap-auto-source = requesty
+base_model = "deepseek/deepseek-v4-flash"
+reasoning = true
+reasoning_options = []
+
+[cost]
+input = 0.14
+output = 0.28

@@ -1,0 +1,8 @@
+# mcp-tap-auto-source = requesty
+base_model = "minimax/MiniMax-M2.5"
+reasoning = true
+reasoning_options = []
+
+[cost]
+input = 0.36
+output = 1.44

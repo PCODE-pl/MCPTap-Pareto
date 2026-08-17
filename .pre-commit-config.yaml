@@ -1,0 +1,118 @@
+# See https://pre-commit.com for more information
+#
+# All hooks are wrapped by shared wrappers (wrap_hook_exec.sh,
+# wrap_hook.sh, wrap_hook_python.sh, wrap_hook_ruff.sh) which centrally log each
+# run to .hooks_log directory (see hook_logger.sh for details).
+repos:
+  - repo: local
+    hooks:
+      # - id: markdownlint
+      #   name: Markdown lint check
+      #   description: >-
+      #     Runs ``markdownlint`` on committed Markdown files.
+      #   entry: ../mcp-tap-extras/hooks/wrap_hook.sh
+      #     --hook-id markdownlint
+      #     --stages pre-commit
+      #     --real-entry ../mcp-tap-extras/hooks/markdownlint.sh
+      #     --
+      #   language: system
+      #   fail_fast: true
+      #   #always_run: true
+      #   pass_filenames: false
+      #   stages: [pre-commit]
+
+      - id: ruff-check
+        name: Ruff linter check
+        description: >-
+          Runs ``ruff check --fix`` on committed Python files.  Auto-fixes
+          lint issues and organizes imports.  Uses the
+          repository-local ruff.toml.
+        entry: ../mcp-tap-extras/hooks/wrap_hook_ruff.sh
+          --hook-id ruff-check
+          --stages pre-commit
+          --mode check
+          --
+        language: system
+        pass_filenames: true
+        fail_fast: true
+        #require_serial: true
+        types: [python]
+        stages: [pre-commit]
+
+      - id: ruff-format
+        name: Ruff format check
+        description: >-
+          Runs ``ruff format`` on committed Python files.  Auto-formats
+          code in-place.  Uses the repository-local ruff.toml.
+        entry: ../mcp-tap-extras/hooks/wrap_hook_ruff.sh
+          --hook-id ruff-format
+          --stages pre-commit
+          --mode format
+          --
+        language: system
+        pass_filenames: true
+        fail_fast: true
+        #require_serial: true
+        types: [python]
+        stages: [pre-commit]
+
+      - id: forbidden-phrases
+        name: Forbidden phrases check
+        description: >-
+          Ensures that committed files do not contain any forbidden phrases
+          (a static blacklist plus dynamically discovered filenames from the
+          sibling energetic_tools/ directory).
+        entry: ../mcp-tap-extras/hooks/wrap_hook.sh
+          --hook-id forbidden-phrases
+          --stages pre-commit
+          --real-entry ../mcp-tap-extras/hooks/check_forbidden_phrases.sh
+          --
+        language: system
+        pass_filenames: true
+        fail_fast: true
+        #require_serial: true
+        types: [text]
+        stages: [pre-commit]
+
+      - id: no-polish-text
+        name: No Polish text check
+        description: >-
+          Detects Polish-language text in committed files. Uses a fast
+          diacritic-based shortcut and the ``lingua-language-detector``
+          library for diacritic-less Polish. ``lingua`` is installed in
+          the shared pre-commit venv.
+        entry: ../mcp-tap-extras/hooks/wrap_hook_python.sh
+          --hook-id no-polish-text
+          --stages pre-commit
+          --real-entry ../mcp-tap-extras/hooks/check_polish_text.py
+          --
+        language: system
+        pass_filenames: true
+        fail_fast: true
+        #require_serial: true
+        types: [text]
+        stages: [pre-commit]
+
+      # - id: stabilize-tests
+      #   name: Stabilize tests
+      #   description: >-
+      #     Runs the full shared test suite.
+      #   entry: ../mcp-tap-extras/hooks/wrap_hook.sh
+      #     --hook-id stabilize-tests
+      #     --stages pre-commit
+      #     --real-entry ../mcp-tap-extras/hooks/stabilize_tests.sh
+      #     --
+      #   language: system
+      #   fail_fast: true
+      #   #always_run: true
+      #   pass_filenames: false
+      #   stages: [pre-commit]
+
+      - id: append-pre-commit-hooks-to-message
+        name: Append pre-commit hook list to commit message
+        entry: ../mcp-tap-extras/hooks/append_pre_commit_hooks_to_message.py
+        language: system
+        always_run: true
+        pass_filenames: false
+        stages: [post-commit]
+        require_serial: true

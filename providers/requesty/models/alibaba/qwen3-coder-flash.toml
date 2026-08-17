@@ -1,0 +1,14 @@
+# mcp-tap-auto-source = requesty
+base_model = "alibaba/qwen3-coder-flash"
+reasoning = false
+
+[cost]
+input = 0.3
+output = 1.5
+cache_read = 0.08
+cache_write = 0.3
+
+[[cost.tiers]]
+tier = { type = "context", size = 32000 }
+input = 0.5
+output = 2.5
