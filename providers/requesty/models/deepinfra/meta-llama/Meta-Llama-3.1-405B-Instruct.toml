@@ -1,8 +1,0 @@
-# mcp-tap-auto-source = requesty
-base_model = "meta/llama-3.1-8b-instruct"
-reasoning = false
-
-[cost]
-input = 0.7999999999999999
-output = 0.7999999999999999
-cache_read = 0.7999999999999999

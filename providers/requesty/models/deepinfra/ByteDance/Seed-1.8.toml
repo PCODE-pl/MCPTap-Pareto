@@ -1,9 +1,0 @@
-# mcp-tap-auto-source = requesty
-base_model = "bytedance-seed/seed-1-8"
-reasoning = true
-reasoning_options = []
-
-[cost]
-input = 0.25
-output = 2.0
-cache_read = 0.049999999999999996

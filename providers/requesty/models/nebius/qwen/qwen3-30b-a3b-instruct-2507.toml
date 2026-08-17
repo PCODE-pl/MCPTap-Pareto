@@ -1,9 +1,0 @@
-# mcp-tap-auto-source = requesty
-base_model = "alibaba/qwen3-30b-a3b"
-reasoning = true
-reasoning_options = []
-
-[cost]
-input = 0.09999999999999999
-output = 0.3
-cache_read = 0.09999999999999999

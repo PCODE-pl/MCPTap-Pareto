@@ -1,9 +1,0 @@
-# mcp-tap-auto-source = requesty
-base_model = "thinkingmachines/inkling"
-reasoning = true
-reasoning_options = []
-
-[cost]
-input = 1.87
-output = 4.68
-cache_read = 0.374
