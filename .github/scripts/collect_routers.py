@@ -418,9 +418,10 @@ def main() -> int:
 
     if not args.dry_run:
         save_cache(repo_root, cache)
-        for stale_path in args.output_dir.glob("*.toml"):
-            if stale_path.stem not in generated_slugs and is_generated_router_file(stale_path):
-                stale_path.unlink()
+        if not args.providers:
+            for stale_path in args.output_dir.glob("*.toml"):
+                if stale_path.stem not in generated_slugs and is_generated_router_file(stale_path):
+                    stale_path.unlink()
 
     print("\nRouter classification summary")
     print("=============================")
