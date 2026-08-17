@@ -42,8 +42,8 @@ jobs:
           else
             patch_file="$RUNNER_TEMP/models-dev-catalog.patch"
             git diff --binary HEAD...FETCH_HEAD -- models providers > "$patch_file"
-            if ! git apply --3way --index "$patch_file"; then
-              echo "Upstream catalog sync conflicted with fork changes."
+            if ! git apply --index "$patch_file"; then
+              echo "Upstream catalog sync could not be applied without overwriting fork changes."
               git status --short -- models providers
               exit 1
             fi
