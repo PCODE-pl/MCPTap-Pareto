@@ -66,6 +66,22 @@ class CollectRoutersTest(unittest.TestCase):
         self.assertIn("underlying inference", system_prompt)
         self.assertNotIn("Amazon Bedrock", system_prompt)
 
+    def test_forced_managed_providers_are_always_not_routers(self):
+        expected = {
+            "azure",
+            "azure-cognitive-services",
+            "amazon-bedrock",
+            "google-vertex",
+            "google-vertex-anthropic",
+            "snowflake-cortex",
+        }
+        self.assertEqual(collect_routers.FORCED_NON_ROUTER_PROVIDERS, expected)
+        for provider_slug in expected:
+            decision = collect_routers.forced_non_router_decision(provider_slug)
+            self.assertEqual(decision["is_router"], False)
+            self.assertTrue(decision["reason"].strip())
+        self.assertIsNone(collect_routers.forced_non_router_decision("openrouter"))
+
     def test_debug_usage_reports_openrouter_cost(self):
         debug_text = collect_routers.usage_debug_text(
             "demo",
@@ -81,6 +97,42 @@ class CollectRoutersTest(unittest.TestCase):
         self.assertIn("completion_tokens: 250", debug_text)
         self.assertIn("cost_usd: $0.00123450 (usage.cost)", debug_text)
         self.assertIn("upstream_inference_cost_usd: $0.00120000", debug_text)
+
+    def test_main_writes_forced_decisions_without_ai_or_documentation(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = pathlib.Path(temporary_directory)
+            provider_root = root / "providers"
+            output_dir = root / "routers"
+            for provider_slug in collect_routers.FORCED_NON_ROUTER_PROVIDERS:
+                provider_dir = provider_root / provider_slug
+                provider_dir.mkdir(parents=True)
+                (provider_dir / "provider.toml").write_text(f'name = "{provider_slug}"\n', encoding="utf-8")
+            argv = [
+                str(SCRIPT_PATH),
+                "--provider-dir",
+                str(provider_root),
+                "--output-dir",
+                str(output_dir),
+            ]
+            for provider_slug in sorted(collect_routers.FORCED_NON_ROUTER_PROVIDERS):
+                argv.extend(("--provider", provider_slug))
+
+            with (
+                mock.patch.object(sys, "argv", argv),
+                mock.patch.object(collect_routers, "load_cache", return_value={}),
+                mock.patch.object(collect_routers, "save_cache"),
+                mock.patch.object(
+                    collect_routers,
+                    "collect_document_context",
+                    side_effect=AssertionError("forced providers must skip documentation"),
+                ),
+            ):
+                self.assertEqual(collect_routers.main(), 0)
+
+            for provider_slug in collect_routers.FORCED_NON_ROUTER_PROVIDERS:
+                document = tomllib.loads((output_dir / f"{provider_slug}.toml").read_text(encoding="utf-8"))
+                self.assertFalse(document["is_router"])
+                self.assertIn("managed model-hosting platform", document["reason"])
 
     @unittest.skipUnless(
         os.environ.get("OPENROUTER_API_KEY"),

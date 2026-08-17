@@ -30,6 +30,17 @@ MAX_RELATED_LINKS = 3
 MAX_REASON_LENGTH = 1_000
 MARKDOWN_LINK_RE = re.compile(r"\[([^\]]+)\]\((https?://[^)\s]+)\)")
 PROMPT_VERSION = "router-classification-v4"
+FORCED_NON_ROUTER_PROVIDERS = frozenset(
+    {
+        "azure",
+        "azure-cognitive-services",
+        "amazon-bedrock",
+        "google-vertex",
+        "google-vertex-anthropic",
+        "snowflake-cortex",
+    }
+)
+FORCED_NON_ROUTER_REASON = "This provider is classified as a managed model-hosting platform, not a pure model router."
 
 
 class LinkAndTextParser(HTMLParser):
@@ -486,6 +497,12 @@ def render_router_toml(is_router: bool, reason: str) -> str:
     return f"{AUTO_SOURCE_MARKER}\nis_router = {str(is_router).lower()}\nreason = {toml_string(reason)}\n"
 
 
+def forced_non_router_decision(provider_slug: str) -> dict[str, bool | str] | None:
+    if provider_slug not in FORCED_NON_ROUTER_PROVIDERS:
+        return None
+    return {"is_router": False, "reason": FORCED_NON_ROUTER_REASON}
+
+
 def is_generated_router_file(path: pathlib.Path) -> bool:
     try:
         first_lines = path.read_text(encoding="utf-8").splitlines()[:3]
@@ -504,6 +521,7 @@ def main() -> int:
     failures: list[str] = []
     cached_count = 0
     ai_count = 0
+    forced_count = 0
 
     provider_files = list_provider_files(args.provider_dir)
     if args.providers:
@@ -515,47 +533,60 @@ def main() -> int:
         generated_slugs.add(provider_slug)
         try:
             provider_document, provider_toml = read_provider_file(provider_file)
-            doc_value = provider_document.get("doc")
-            doc_url = doc_value.strip() if isinstance(doc_value, str) else None
-            api_value = provider_document.get("api")
-            api_url = api_value.strip() if isinstance(api_value, str) else None
-            context, source_urls = collect_document_context(doc_url, api_url)
-            current_fingerprint = fingerprint(provider_toml, context)
-            cached = cache.get(provider_slug)
-            if (
-                not args.clear_cache
-                and isinstance(cached, dict)
-                and cached.get("fingerprint") == current_fingerprint
-                and isinstance(cached.get("is_router"), bool)
-                and isinstance(cached.get("reason"), str)
-            ):
-                decision = {
-                    "is_router": cached["is_router"],
-                    "reason": cached["reason"],
-                }
-                cached_count += 1
-            elif args.disable_ai or not api_key:
-                failures.append(f"{provider_slug}: no usable cached decision and OPENROUTER_API_KEY is not set")
-                continue
-            else:
-                decision = classify_provider(
-                    provider_slug,
-                    provider_toml,
-                    doc_url,
-                    api_url,
-                    context,
-                    args.ai_model,
-                    args.chat_url,
-                    api_key,
-                    args.debug,
-                )
+            forced_decision = forced_non_router_decision(provider_slug)
+            if forced_decision is not None:
+                decision = forced_decision
+                source_urls: list[str] = []
+                current_fingerprint = fingerprint(provider_toml, FORCED_NON_ROUTER_REASON)
                 cache[provider_slug] = {
                     "fingerprint": current_fingerprint,
                     "is_router": decision["is_router"],
                     "reason": decision["reason"],
                     "source_urls": source_urls,
                 }
-                ai_count += 1
+                forced_count += 1
+            else:
+                doc_value = provider_document.get("doc")
+                doc_url = doc_value.strip() if isinstance(doc_value, str) else None
+                api_value = provider_document.get("api")
+                api_url = api_value.strip() if isinstance(api_value, str) else None
+                context, source_urls = collect_document_context(doc_url, api_url)
+                current_fingerprint = fingerprint(provider_toml, context)
+                cached = cache.get(provider_slug)
+                if (
+                    not args.clear_cache
+                    and isinstance(cached, dict)
+                    and cached.get("fingerprint") == current_fingerprint
+                    and isinstance(cached.get("is_router"), bool)
+                    and isinstance(cached.get("reason"), str)
+                ):
+                    decision = {
+                        "is_router": cached["is_router"],
+                        "reason": cached["reason"],
+                    }
+                    cached_count += 1
+                elif args.disable_ai or not api_key:
+                    failures.append(f"{provider_slug}: no usable cached decision and OPENROUTER_API_KEY is not set")
+                    continue
+                else:
+                    decision = classify_provider(
+                        provider_slug,
+                        provider_toml,
+                        doc_url,
+                        api_url,
+                        context,
+                        args.ai_model,
+                        args.chat_url,
+                        api_key,
+                        args.debug,
+                    )
+                    cache[provider_slug] = {
+                        "fingerprint": current_fingerprint,
+                        "is_router": decision["is_router"],
+                        "reason": decision["reason"],
+                        "source_urls": source_urls,
+                    }
+                    ai_count += 1
 
             if not args.dry_run:
                 args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -583,6 +614,7 @@ def main() -> int:
     print(f"Providers inspected: {len(provider_files)}")
     print(f"Classified as routers: {len(router_slugs)}")
     print(f"Decisions from cache: {cached_count}")
+    print(f"Decisions forced by policy: {forced_count}")
     print(f"Decisions from AI: {ai_count}")
     print(f"Failures: {len(failures)}")
     if failures:
