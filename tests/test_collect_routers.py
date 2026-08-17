@@ -23,6 +23,7 @@ ROUTER_PROVIDERS = {
     "requesty",
     "gitlab",
     "pioneer",
+    "vercel",
 }
 NON_ROUTER_PROVIDERS = {
     "amazon-bedrock",
@@ -36,6 +37,12 @@ NON_ROUTER_PROVIDERS = {
     "meta",
     "nvidia",
     "openai",
+    "tensorx",
+    "wafer.ai",
+    "watsonx",
+    "xiaomi",
+    "zai",
+    "zhipuai",
 }
 EXPECTED_DECISIONS = {
     **dict.fromkeys(ROUTER_PROVIDERS, True),
@@ -133,6 +140,37 @@ class CollectRoutersTest(unittest.TestCase):
             )
         self.assertTrue(decision["is_router"])
 
+    def test_frontier_model_detection_excludes_open_weights(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = pathlib.Path(temporary_directory)
+            provider_models = root / "providers" / "example" / "models"
+            models_root = root / "models"
+            provider_models.mkdir(parents=True)
+            (models_root / "anthropic").mkdir(parents=True)
+            (models_root / "openai").mkdir(parents=True)
+            (models_root / "anthropic" / "claude-opus-4-8.toml").write_text("open_weights = false\n", encoding="utf-8")
+            (models_root / "openai" / "gpt-oss-120b.toml").write_text("open_weights = true\n", encoding="utf-8")
+            (provider_models / "claude.toml").write_text('base_model = "anthropic/claude-opus-4-8"\n', encoding="utf-8")
+            (provider_models / "gpt-oss.toml").write_text('base_model = "openai/gpt-oss-120b"\n', encoding="utf-8")
+
+            signal = collect_routers.inspect_frontier_models(provider_models, models_root)
+
+        self.assertTrue(signal["has_closed_frontier_models"])
+        self.assertEqual(signal["models"], ["anthropic/claude-opus-4-8"])
+
+    def test_prompt_includes_closed_frontier_model_signal(self):
+        messages = collect_routers.build_prompt(
+            "example-provider",
+            'name = "Example Provider"\n',
+            None,
+            None,
+            "Example documentation evidence.",
+            "closed-source frontier models: anthropic/claude-opus-4-8",
+        )
+        user_prompt = messages[1]["content"]
+        self.assertIn("closed-source frontier models", user_prompt)
+        self.assertIn("not sufficient", messages[0]["content"])
+
     def test_debug_usage_reports_openrouter_cost(self):
         debug_text = collect_routers.usage_debug_text(
             "demo",
@@ -189,6 +227,45 @@ class CollectRoutersTest(unittest.TestCase):
                 self.assertIsNotNone(expected_decision)
                 self.assertEqual(document["is_router"], expected_decision["is_router"])
                 self.assertEqual(document["reason"], expected_decision["reason"])
+
+    def test_main_rejects_provider_without_closed_frontier_models(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = pathlib.Path(temporary_directory)
+            provider_root = root / "providers" / "open-only"
+            models_root = root / "models" / "openai"
+            provider_root.mkdir(parents=True)
+            models_root.mkdir(parents=True)
+            (provider_root / "provider.toml").write_text('name = "Open Only"\n', encoding="utf-8")
+            (provider_root / "models").mkdir()
+            (provider_root / "models" / "gpt-oss.toml").write_text(
+                'base_model = "openai/gpt-oss-120b"\n', encoding="utf-8"
+            )
+            (models_root / "gpt-oss-120b.toml").write_text("open_weights = true\n", encoding="utf-8")
+            output_dir = root / "routers"
+            argv = [
+                str(SCRIPT_PATH),
+                "--provider-dir",
+                str(root / "providers"),
+                "--output-dir",
+                str(output_dir),
+                "--provider",
+                "open-only",
+            ]
+            with (
+                mock.patch.object(sys, "argv", argv),
+                mock.patch.object(collect_routers, "load_cache", return_value={}),
+                mock.patch.object(collect_routers, "save_cache"),
+                mock.patch.object(
+                    collect_routers,
+                    "collect_document_context",
+                    side_effect=AssertionError("no-frontier providers must skip AI"),
+                ),
+            ):
+                self.assertEqual(collect_routers.main(), 0)
+
+            document = tomllib.loads((output_dir / "open-only.toml").read_text(encoding="utf-8"))
+            self.assertFalse(document["is_router"])
+            self.assertIn("closed-source frontier", document["reason"])
 
     @unittest.skipUnless(
         os.environ.get("OPENROUTER_API_KEY"),
