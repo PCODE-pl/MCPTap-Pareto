@@ -143,7 +143,7 @@
           "cost": {
             "input": 1.25,
             "output": 3.75,
-            "cache_read": 0.125,
+            "cache_read": 0.25,
             "cache_write": 3.125
           }
         }
@@ -13700,13 +13700,6 @@
             "output": 4.4,
             "cache_read": 0.26
           }
-        },
-        "z-ai/glm-5.2:free": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0
-          }
         }
       },
       "lilac": {
@@ -13858,9 +13851,9 @@
         "z-ai/glm-5.2": {
           "is_thinking": true,
           "cost": {
-            "input": 0.476,
-            "output": 1.496,
-            "cache_read": 0.0884
+            "input": 1.19,
+            "output": 3.74,
+            "cache_read": 0.221
           }
         },
         "z-ai/glm-5.2:free": {
