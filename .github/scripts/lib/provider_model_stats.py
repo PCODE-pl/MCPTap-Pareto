@@ -54,7 +54,11 @@ def load_provider_models(
     return by_base_model, errors
 
 
-def load_router_providers_from_models_dir_struct(routers_dir: pathlib.Path) -> tuple[set[str], list[str]]:
+def load_router_providers_from_models_dir_struct(
+    routers_dir: pathlib.Path,
+    *,
+    excluded_provider: str | None = None,
+) -> tuple[set[str], list[str]]:
     routers: set[str] = set()
     errors: list[str] = []
     for router_file in sorted(routers_dir.glob("*.toml")):
@@ -63,7 +67,7 @@ def load_router_providers_from_models_dir_struct(routers_dir: pathlib.Path) -> t
         except (OSError, UnicodeDecodeError, tomllib.TOMLDecodeError) as exc:
             errors.append(f"{router_file}: {exc}")
             continue
-        if router_file.stem != "openrouter" and document.get("router_providers_from_models_dir_struct") is True:
+        if router_file.stem != excluded_provider and document.get("router_providers_from_models_dir_struct") is True:
             routers.add(router_file.stem)
     return routers, errors
 
@@ -121,8 +125,12 @@ def write_synthetic_stats(
     stats_dir: pathlib.Path,
     synthetic_dir: pathlib.Path,
     dry_run: bool,
+    excluded_provider: str | None = None,
 ) -> tuple[int, list[str], list[str]]:
-    structural_routers, errors = load_router_providers_from_models_dir_struct(routers_dir)
+    structural_routers, errors = load_router_providers_from_models_dir_struct(
+        routers_dir,
+        excluded_provider=excluded_provider,
+    )
     routers, router_errors = load_routers(routers_dir)
     errors.extend(router_errors)
     collisions: list[str] = []

@@ -20,7 +20,7 @@ SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from lib.provider_model_stats import (  # noqa: E402
+from lib.provider_model_stats import (  # noqa: E402 # type: ignore
     load_provider_models,
     load_router_providers_from_models_dir_struct,  # noqa: F401
     load_routers,  # noqa: F401
@@ -382,6 +382,7 @@ def main() -> int:
         stats_dir=args.output_dir,
         synthetic_dir=args.synthetic_output_dir,
         dry_run=args.dry_run,
+        excluded_provider="openrouter",
     )
 
     print("OpenRouter provider model stats")

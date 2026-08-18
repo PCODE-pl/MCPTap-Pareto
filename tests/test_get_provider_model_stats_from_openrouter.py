@@ -52,7 +52,8 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
             (routers_dir / "invalid.toml").write_text("[invalid\n", encoding="utf-8")
 
             structured, structured_errors = get_provider_model_stats.load_router_providers_from_models_dir_struct(
-                routers_dir
+                routers_dir,
+                excluded_provider="openrouter",
             )
             routers, router_errors = get_provider_model_stats.load_routers(routers_dir)
 
@@ -60,6 +61,20 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
         self.assertEqual(routers, {"fast-router"})
         self.assertEqual(len(structured_errors), 1)
         self.assertEqual(len(router_errors), 1)
+
+    def test_excludes_the_collector_provider_dynamically(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            routers_dir = pathlib.Path(temporary_directory)
+            write_router(routers_dir, "openrouter", is_router=True, structured_models=True)
+            write_router(routers_dir, "vercel", is_router=True, structured_models=True)
+
+            structured, errors = get_provider_model_stats.load_router_providers_from_models_dir_struct(
+                routers_dir,
+                excluded_provider="vercel",
+            )
+
+        self.assertEqual(structured, {"openrouter"})
+        self.assertEqual(errors, [])
 
     def test_router_uses_matching_model_path_component_and_rebuilds_synthetic_output(self):
         with tempfile.TemporaryDirectory() as temporary_directory:

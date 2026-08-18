@@ -17,7 +17,7 @@ SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from lib.provider_model_stats import (  # noqa: E402
+from lib.provider_model_stats import (  # noqa: E402 # type: ignore
     load_provider_models,
     parse_base_model,
     safe_relative_path,
@@ -202,6 +202,7 @@ def main() -> int:
         stats_dir=args.output_dir,
         synthetic_dir=args.synthetic_output_dir,
         dry_run=args.dry_run,
+        excluded_provider="vercel",
     )
 
     print("Vercel AI Gateway provider model stats")
