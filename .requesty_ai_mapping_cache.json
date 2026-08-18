@@ -48,7 +48,7 @@
   "inclusionai/ling-2.6-1t": null,
   "deepseek/deepseek-r1-turbo": null,
   "inclusionai/ling-2.6-flash": null,
-  "deepseek/deepseek-v3-turbo": null,
+  "deepseek/deepseek-v3-turbo": "deepseek/deepseek-v3",
   "meta/llama-4-maverick-17b-128e-instruct": "meta/llama-4-maverick-17b-instruct",
   "deepseek/deepseek_v3": "deepseek/deepseek-v3",
   "sao10k/l3-8b-stheno-v3.2": null,
@@ -71,5 +71,6 @@
   "nvidia/nemotron-3-nano-omni": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
   "minimax/minimax-m2": "minimax/MiniMax-M2",
   "minimax/minimax-m2.5-highspeed": "minimax/MiniMax-M2.5-highspeed",
-  "deepinfra/tbd": null
+  "deepinfra/tbd": null,
+  "alibaba/tbd": null
 }
