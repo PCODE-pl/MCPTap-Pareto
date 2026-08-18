@@ -60,46 +60,6 @@ class VercelStatsTest(unittest.TestCase):
             },
         )
 
-    def test_builds_one_raw_stats_file_per_vercel_endpoint(self):
-        models = {
-            "alibaba/qwen3.5-plus": [
-                {"path": "providers/vercel/models/alibaba/qwen3.5-plus.toml", "model_id": "alibaba/qwen3.5-plus"}
-            ]
-        }
-        endpoints = {
-            "alibaba/qwen3.5-plus": [
-                {
-                    "provider_name": "alibaba",
-                    "uptime_last_15m": 100,
-                    "uptime_last_1h": 100,
-                    "uptime_last_1d": 99.5,
-                    "latency_last_1h": {"p50": 919, "p95": 1946.2},
-                    "throughput_last_1h": {"p50": 161, "p95": 189.7},
-                },
-                {
-                    "provider_name": "vertex",
-                    "uptime_last_15m": 99.2,
-                    "uptime_last_1h": 99.7,
-                    "uptime_last_1d": 99.9,
-                    "latency_last_1h": {"p50": 800, "p95": 1800},
-                    "throughput_last_1h": {"p50": 150, "p95": 180},
-                },
-            ]
-        }
-
-        outputs, collisions, unmatched = get_provider_model_stats.build_outputs(models, endpoints)
-
-        self.assertEqual(collisions, [])
-        self.assertEqual(unmatched, [])
-        self.assertEqual(
-            outputs["alibaba/models/alibaba/qwen3.5-plus.json"],
-            get_provider_model_stats.extract_stats(endpoints["alibaba/qwen3.5-plus"][0]),
-        )
-        self.assertEqual(
-            outputs["vertex/models/alibaba/qwen3.5-plus.json"],
-            get_provider_model_stats.extract_stats(endpoints["alibaba/qwen3.5-plus"][1]),
-        )
-
     def test_parse_vercel_response_requires_endpoints_list(self):
         with self.assertRaises(TypeError):
             get_provider_model_stats.parse_vercel_response(

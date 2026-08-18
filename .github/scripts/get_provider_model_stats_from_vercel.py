@@ -107,19 +107,6 @@ def extract_stats(endpoint: dict[str, Any]) -> dict[str, Any]:
     return {key: endpoint[key] for key in VERCEL_STATS_KEYS if key in endpoint}
 
 
-def build_outputs(
-    models: dict[str, list[dict[str, str]]],
-    endpoint_cache: dict[str, list[dict[str, Any]]],
-) -> tuple[dict[str, dict[str, Any]], list[str], list[str]]:
-    outputs, collisions, unmatched_providers, _ = build_provider_outputs(
-        models,
-        endpoint_cache,
-        resolve_provider=lambda provider_name: provider_name,
-        extract_stats=extract_stats,
-    )
-    return outputs, collisions, unmatched_providers
-
-
 def main() -> int:
     args = parse_args()
     repo_root = pathlib.Path(__file__).resolve().parents[2]
