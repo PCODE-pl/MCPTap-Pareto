@@ -1,3 +1,5 @@
 # mcp-tap-auto-source = collect_routers
 is_router = true
 reason = "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-fable-5', 'anthropic/claude-haiku-4-5', 'anthropic/claude-opus-4-5', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-opus-4-8', 'anthropic/claude-opus-5', 'anthropic/claude-sonnet-4-0', 'anthropic/claude-sonnet-4-5', 'anthropic/claude-sonnet-4-6', 'anthropic/claude-sonnet-5', 'microsoft/mai-code-1-flash', 'openai/gpt-4.1', 'openai/gpt-5-mini', 'openai/gpt-5.2', 'openai/gpt-5.2-codex', 'openai/gpt-5.3-codex', 'openai/gpt-5.4', 'openai/gpt-5.4-mini', 'openai/gpt-5.4-nano', 'openai/gpt-5.5', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra']"
+router_providers_from_models_dir_struct = false
+router_providers_from_models_prefixes = false

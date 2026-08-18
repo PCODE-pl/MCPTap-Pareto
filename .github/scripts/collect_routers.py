@@ -69,6 +69,25 @@ CLOSED_FRONTIER_REASON = (
     "The provider catalog has verified closed-source frontier models, so it is classified as a model router."
 )
 LAB_REASON = "The provider is lab, so it is not classified as a model router."
+ROUTER_PROVIDERS_FROM_MODELS_DIR_STRUCT = frozenset(
+    {
+        "anyapi",
+        "crossmodel",
+        "edenai",
+        "fastrouter",
+        "impossibl",
+        "kilo",
+        "merge-gateway",
+        "nano-gpt",
+        "ofox",
+        "openrouter",
+        "orcarouter",
+        "requesty",
+        "vercel",
+        "zenmux",
+    }
+)
+ROUTER_PROVIDERS_FROM_MODELS_PREFIXES = frozenset({})
 
 
 class LinkAndTextParser(HTMLParser):
@@ -600,8 +619,13 @@ def toml_string(value: str) -> str:
     return json.dumps(value, ensure_ascii=False)
 
 
-def render_router_toml(is_router: bool, reason: str) -> str:
-    return f"{AUTO_SOURCE_MARKER}\nis_router = {str(is_router).lower()}\nreason = {toml_string(reason)}\n"
+def render_router_toml(
+    is_router: bool,
+    reason: str,
+    router_providers_from_models_dir_struct: bool,
+    router_providers_from_models_prefixes: bool,
+) -> str:
+    return f"{AUTO_SOURCE_MARKER}\nis_router = {str(is_router).lower()}\nreason = {toml_string(reason)}\nrouter_providers_from_models_dir_struct = {str(router_providers_from_models_dir_struct).lower()}\nrouter_providers_from_models_prefixes = {str(router_providers_from_models_prefixes).lower()}\n"
 
 
 def forced_non_router_decision(provider_slug: str) -> dict[str, bool | str] | None:
@@ -659,6 +683,7 @@ def main() -> int:
                 cache.pop(provider_slug, None)
                 print(f"SKIP {provider_slug}: no base_model or canonical model match")
                 continue
+
             generated_slugs.add(provider_slug)
             forced_decision = forced_provider_decision(provider_slug)
             if forced_decision is not None:
@@ -777,7 +802,12 @@ def main() -> int:
             if not args.dry_run:
                 args.output_dir.mkdir(parents=True, exist_ok=True)
                 (args.output_dir / f"{provider_slug}.toml").write_text(
-                    render_router_toml(bool(decision["is_router"]), str(decision["reason"])),
+                    render_router_toml(
+                        bool(decision["is_router"]),
+                        str(decision["reason"]),
+                        bool(provider_slug in ROUTER_PROVIDERS_FROM_MODELS_DIR_STRUCT),
+                        bool(provider_slug in ROUTER_PROVIDERS_FROM_MODELS_PREFIXES),
+                    ),
                     encoding="utf-8",
                 )
             if bool(decision["is_router"]):
