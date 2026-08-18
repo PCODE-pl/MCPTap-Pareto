@@ -81,6 +81,19 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def parse_openrouter_response(payload: object, model_id: str) -> list[dict[str, Any]]:
+    if not isinstance(payload, dict):
+        raise TypeError(f"OpenRouter endpoint response is not an object for {model_id}")
+    data = payload.get("data")
+    if isinstance(data, dict):
+        endpoints = data.get("endpoints")
+    else:
+        endpoints = data
+    if not isinstance(endpoints, list):
+        raise TypeError(f"OpenRouter endpoint response has no endpoints list for {model_id}")
+    return [endpoint for endpoint in endpoints if isinstance(endpoint, dict)]
+
+
 def fetch_model_endpoints(api_url: str, model_id: str) -> list[dict[str, Any]]:
     encoded_model_id = urllib.parse.quote(model_id, safe="/")
     url = f"{api_url.rstrip('/')}/{encoded_model_id}/endpoints"
@@ -94,16 +107,7 @@ def fetch_model_endpoints(api_url: str, model_id: str) -> list[dict[str, Any]]:
         headers=headers,
         error_context=f"OpenRouter endpoint request failed for {model_id}",
     )
-    if not isinstance(payload, dict):
-        raise TypeError(f"OpenRouter endpoint response is not an object for {model_id}")
-    data = payload.get("data")
-    if isinstance(data, dict):
-        endpoints = data.get("endpoints")
-    else:
-        endpoints = data
-    if not isinstance(endpoints, list):
-        raise TypeError(f"OpenRouter endpoint response has no endpoints list for {model_id}")
-    return [endpoint for endpoint in endpoints if isinstance(endpoint, dict)]
+    return parse_openrouter_response(payload, model_id)
 
 
 def select_endpoint(endpoints: list[dict[str, Any]]) -> dict[str, Any] | None:

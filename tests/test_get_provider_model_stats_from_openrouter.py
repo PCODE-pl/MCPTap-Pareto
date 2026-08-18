@@ -71,6 +71,13 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
         self.assertIs(get_provider_model_stats.query_provider_mappings, query_provider_mappings)
         self.assertEqual(query_provider_mappings([], {}, "model", "key"), {})
 
+    def test_parse_openrouter_response_requires_endpoints_list(self):
+        with self.assertRaises(TypeError):
+            get_provider_model_stats.parse_openrouter_response(
+                {"data": {"id": "meta-llama/llama-3.3-70b-instruct"}},
+                "meta-llama/llama-3.3-70b-instruct",
+            )
+
     def test_provider_resolver_is_shared_with_library(self):
         from lib.provider_model_stats import (
             load_providers,
