@@ -40,7 +40,11 @@ from lib.provider_model_stats import (  # noqa: E402 # type: ignore
     write_synthetic_stats,  # noqa: F401
 )
 
-DEFAULT_API_URL = "https://openrouter.ai/api/v1/models"
+REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
+API_URL = "https://openrouter.ai/api/v1/models"
+MODELS_DIR = REPO_ROOT / "providers" / "openrouter" / "models"
+OUTPUT_DIR = REPO_ROOT / "stats" / "openrouter"
+SYNTHETIC_OUTPUT_DIR = REPO_ROOT / "stats" / "_synthetic" / "openrouter"
 OPENROUTER_CHAT_URL = "https://openrouter.ai/api/v1/chat/completions"
 CACHE_FILE_NAME = ".openrouter_provider_mapping_cache.json"
 STATS_KEYS = (
@@ -53,31 +57,7 @@ STATS_KEYS = (
 
 
 def parse_args() -> argparse.Namespace:
-    repo_root = pathlib.Path(__file__).resolve().parents[2]
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--api-url",
-        default=os.environ.get("OPENROUTER_MODELS_URL", DEFAULT_API_URL),
-        help="OpenRouter models API base URL",
-    )
-    parser.add_argument(
-        "--models-dir",
-        type=pathlib.Path,
-        default=repo_root / "providers" / "openrouter" / "models",
-        help="Directory containing OpenRouter provider model TOMLs",
-    )
-    parser.add_argument(
-        "--output-dir",
-        type=pathlib.Path,
-        default=repo_root / "stats" / "openrouter",
-        help="Output directory for provider/model JSON files",
-    )
-    parser.add_argument(
-        "--synthetic-output-dir",
-        type=pathlib.Path,
-        default=repo_root / "stats" / "_synthetic" / "openrouter",
-        help="Output directory for synthetic provider/model JSON files",
-    )
     parser.add_argument(
         "--ai-model",
         default=os.environ.get("OPENROUTER_AI_MODEL", DEFAULT_AI_MODEL),
@@ -145,14 +125,13 @@ def extract_stats(endpoint: dict[str, Any]) -> dict[str, Any]:
 
 def main() -> int:
     args = parse_args()
-    repo_root = pathlib.Path(__file__).resolve().parents[2]
-    providers = load_providers(repo_root / DEFAULT_PROVIDER_DIR)
-    cache = {} if args.clear_cache else load_mapping_cache(repo_root, CACHE_FILE_NAME)
+    providers = load_providers(REPO_ROOT / DEFAULT_PROVIDER_DIR)
+    cache = {} if args.clear_cache else load_mapping_cache(REPO_ROOT, CACHE_FILE_NAME)
     api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
 
     models, parse_errors, endpoint_cache, api_errors = collect_model_endpoints(
-        models_dir=args.models_dir,
-        api_url=args.api_url,
+        models_dir=MODELS_DIR,
+        api_url=API_URL,
         fetch_model_endpoints=fetch_model_endpoints,
     )
     source_model_ids = sorted({entry["model_id"] for entries in models.values() for entry in entries})
@@ -192,7 +171,7 @@ def main() -> int:
         )
 
     if not args.dry_run and cache:
-        save_mapping_cache(repo_root, cache, CACHE_FILE_NAME)
+        save_mapping_cache(REPO_ROOT, cache, CACHE_FILE_NAME)
 
     outputs, output_collisions, unmatched_providers, multiple_endpoints = build_provider_outputs(
         models,
@@ -203,10 +182,10 @@ def main() -> int:
     )
     written, synthetic_written, synthetic_errors, synthetic_collisions = write_collected_outputs(
         outputs=outputs,
-        output_dir=args.output_dir,
-        providers_dir=repo_root / DEFAULT_PROVIDER_DIR,
-        routers_dir=repo_root / DEFAULT_ROUTERS_DIR,
-        synthetic_dir=args.synthetic_output_dir,
+        output_dir=OUTPUT_DIR,
+        providers_dir=REPO_ROOT / DEFAULT_PROVIDER_DIR,
+        routers_dir=REPO_ROOT / DEFAULT_ROUTERS_DIR,
+        synthetic_dir=SYNTHETIC_OUTPUT_DIR,
         excluded_provider="openrouter",
         dry_run=args.dry_run,
     )
