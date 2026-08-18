@@ -61,7 +61,7 @@ def parse_args() -> argparse.Namespace:
         help="OpenRouter models API base URL",
     )
     parser.add_argument(
-        "--openrouter-models-dir",
+        "--models-dir",
         type=pathlib.Path,
         default=repo_root / "providers" / "openrouter" / "models",
         help="Directory containing OpenRouter provider model TOMLs",
@@ -151,7 +151,7 @@ def main() -> int:
     api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
 
     models, parse_errors, endpoint_cache, api_errors = collect_model_endpoints(
-        models_dir=args.openrouter_models_dir,
+        models_dir=args.models_dir,
         api_url=args.api_url,
         fetch_model_endpoints=fetch_model_endpoints,
     )
