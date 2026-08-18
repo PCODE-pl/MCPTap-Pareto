@@ -69,24 +69,6 @@ CLOSED_FRONTIER_REASON = (
     "The provider catalog has verified closed-source frontier models, so it is classified as a model router."
 )
 LAB_REASON = "The provider is lab, so it is not classified as a model router."
-ROUTER_PROVIDERS_FROM_MODELS_DIR_STRUCT = frozenset(
-    {
-        "anyapi",
-        "crossmodel",
-        "edenai",
-        "fastrouter",
-        "impossibl",
-        "kilo",
-        "merge-gateway",
-        "nano-gpt",
-        "ofox",
-        "openrouter",
-        "orcarouter",
-        "requesty",
-        "vercel",
-        "zenmux",
-    }
-)
 ROUTER_PROVIDERS_FROM_MODELS_PREFIXES = frozenset({})
 
 
@@ -195,6 +177,49 @@ def parse_args() -> argparse.Namespace:
 
 def list_provider_files(provider_dir: pathlib.Path) -> list[pathlib.Path]:
     return sorted(provider_dir.glob("*/provider.toml"))
+
+
+def base_model_provider(value: object) -> str | None:
+    if not isinstance(value, str):
+        return None
+    provider, separator, model = value.strip().partition("/")
+    if not separator or not provider or not model:
+        return None
+    return provider
+
+
+def model_directory_base_model_providers(models_provider_dir: pathlib.Path) -> set[str]:
+    providers: set[str] = set()
+    for model_file in sorted(models_provider_dir.rglob("*.toml")):
+        try:
+            document = tomllib.loads(model_file.read_text(encoding="utf-8"))
+        except (OSError, UnicodeDecodeError, tomllib.TOMLDecodeError):
+            continue
+        provider = base_model_provider(document.get("base_model"))
+        if provider is not None:
+            providers.add(provider)
+    return providers
+
+
+def discover_router_providers_from_models_dir_struct(providers_dir: pathlib.Path) -> frozenset[str]:
+    discovered: set[str] = set()
+    for provider_dir in sorted(path for path in providers_dir.iterdir() if path.is_dir()):
+        models_dir = provider_dir / "models"
+        if not models_dir.is_dir():
+            continue
+        structured_directory_count = 0
+        has_ambiguous_directory = False
+        for models_provider_dir in sorted(path for path in models_dir.iterdir() if path.is_dir()):
+            base_model_providers = model_directory_base_model_providers(models_provider_dir)
+            if not base_model_providers:
+                continue
+            if len(base_model_providers) > 1:
+                has_ambiguous_directory = True
+                break
+            structured_directory_count += 1
+        if not has_ambiguous_directory and structured_directory_count >= 3:
+            discovered.add(provider_dir.name)
+    return frozenset(discovered)
 
 
 def read_provider_file(path: pathlib.Path) -> tuple[dict[str, Any], str]:
@@ -670,6 +695,7 @@ def main() -> int:
     skipped_count = 0
 
     provider_files = list_provider_files(args.provider_dir)
+    structured_model_providers = discover_router_providers_from_models_dir_struct(args.provider_dir)
     if args.providers:
         selected = set(args.providers)
         provider_files = [path for path in provider_files if path.parent.name in selected]
@@ -805,7 +831,7 @@ def main() -> int:
                     render_router_toml(
                         bool(decision["is_router"]),
                         str(decision["reason"]),
-                        bool(provider_slug in ROUTER_PROVIDERS_FROM_MODELS_DIR_STRUCT),
+                        bool(provider_slug in structured_model_providers),
                         bool(provider_slug in ROUTER_PROVIDERS_FROM_MODELS_PREFIXES),
                     ),
                     encoding="utf-8",

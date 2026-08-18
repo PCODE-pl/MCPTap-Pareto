@@ -197,6 +197,47 @@ class CollectRoutersTest(unittest.TestCase):
             )
             self.assertTrue(collect_routers.provider_has_base_models(model_dir))
 
+    def test_discovers_structured_model_provider_directories_from_base_models(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            providers_dir = pathlib.Path(temporary_directory) / "providers"
+
+            structured_dir = providers_dir / "managed-platform" / "models"
+            for nested_provider, base_model in (
+                ("alpha", "anthropic/claude-opus-4-8"),
+                ("beta", "openai/gpt-5.4"),
+                ("gamma", "google/gemini-3.5-flash"),
+            ):
+                model_file = structured_dir / nested_provider / "model.toml"
+                model_file.parent.mkdir(parents=True, exist_ok=True)
+                model_file.write_text(f'base_model = "{base_model}"\n', encoding="utf-8")
+            missing_base_model = structured_dir / "missing" / "model.toml"
+            missing_base_model.parent.mkdir()
+            missing_base_model.write_text('name = "Inline model"\n', encoding="utf-8")
+            invalid_utf8_model = structured_dir / "invalid" / "model.toml"
+            invalid_utf8_model.parent.mkdir()
+            invalid_utf8_model.write_bytes(b"\xff")
+
+            mixed_dir = providers_dir / "mixed" / "models"
+            for nested_provider, base_models in (
+                ("alpha", ("anthropic/claude-opus-4-8",)),
+                ("beta", ("openai/gpt-5.4", "anthropic/claude-sonnet-4-6")),
+                ("gamma", ("google/gemini-3.5-flash",)),
+            ):
+                for index, base_model in enumerate(base_models):
+                    model_file = mixed_dir / nested_provider / f"model-{index}.toml"
+                    model_file.parent.mkdir(parents=True, exist_ok=True)
+                    model_file.write_text(f'base_model = "{base_model}"\n', encoding="utf-8")
+
+            too_few_dir = providers_dir / "too-few" / "models"
+            for nested_provider in ("alpha", "beta"):
+                model_file = too_few_dir / nested_provider / "model.toml"
+                model_file.parent.mkdir(parents=True, exist_ok=True)
+                model_file.write_text('base_model = "openai/gpt-5.4"\n', encoding="utf-8")
+
+            discovered = collect_routers.discover_router_providers_from_models_dir_struct(providers_dir)
+
+        self.assertEqual(discovered, {"managed-platform"})
+
     def test_debug_usage_reports_openrouter_cost(self):
         debug_text = collect_routers.usage_debug_text(
             "demo",
