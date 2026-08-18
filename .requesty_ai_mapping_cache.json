@@ -9,7 +9,7 @@
   "alibaba/qwen2.5-72b-instruct": null,
   "moonshot/kimi k2.5": "moonshotai/kimi-k2.5",
   "meta/meta-llama-3.1-70b-instruct": "meta/llama-3.1-8b-instruct",
-  "bytedance/seed-1.8": null,
+  "bytedance/seed-1.8": "bytedance-seed/seed-1-8",
   "meta/llama-3.2-90b-vision-instruct": null,
   "deepseek/deepseek-r1-distill-llama-70b": null,
   "alibaba/qwen3.5-2b": null,
