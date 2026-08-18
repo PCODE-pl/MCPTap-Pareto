@@ -17,6 +17,8 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from lib.provider_model_stats import (  # noqa: E402 # type: ignore
+    DEFAULT_PROVIDER_DIR,
+    DEFAULT_ROUTERS_DIR,
     build_provider_outputs,
     collect_model_endpoints,
     fetch_json,
@@ -52,18 +54,6 @@ def parse_args() -> argparse.Namespace:
         type=pathlib.Path,
         default=repo_root / "providers" / "vercel" / "models",
         help="Directory containing Vercel provider model TOMLs",
-    )
-    parser.add_argument(
-        "--provider-dir",
-        type=pathlib.Path,
-        default=repo_root / "providers",
-        help="Root directory containing provider model TOMLs for synthetic stats",
-    )
-    parser.add_argument(
-        "--routers-dir",
-        type=pathlib.Path,
-        default=repo_root / "routers",
-        help="Directory containing router TOML files for synthetic stats",
     )
     parser.add_argument(
         "--output-dir",
@@ -132,6 +122,7 @@ def build_outputs(
 
 def main() -> int:
     args = parse_args()
+    repo_root = pathlib.Path(__file__).resolve().parents[2]
     models, parse_errors, endpoint_cache, api_errors = collect_model_endpoints(
         models_dir=args.models_dir,
         api_url=args.api_url,
@@ -148,8 +139,8 @@ def main() -> int:
     written, synthetic_written, synthetic_errors, synthetic_collisions = write_collected_outputs(
         outputs=outputs,
         output_dir=args.output_dir,
-        providers_dir=args.provider_dir,
-        routers_dir=args.routers_dir,
+        providers_dir=repo_root / DEFAULT_PROVIDER_DIR,
+        routers_dir=repo_root / DEFAULT_ROUTERS_DIR,
         synthetic_dir=args.synthetic_output_dir,
         excluded_provider="vercel",
         dry_run=args.dry_run,

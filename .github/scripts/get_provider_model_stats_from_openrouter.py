@@ -18,6 +18,8 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from lib.provider_model_stats import (  # noqa: E402 # type: ignore
+    DEFAULT_PROVIDER_DIR,
+    DEFAULT_ROUTERS_DIR,
     build_provider_outputs,
     collect_model_endpoints,
     fetch_json,
@@ -59,12 +61,6 @@ def parse_args() -> argparse.Namespace:
         help="OpenRouter models API base URL",
     )
     parser.add_argument(
-        "--provider-dir",
-        type=pathlib.Path,
-        default=repo_root / "providers",
-        help="Root directory containing provider.toml files",
-    )
-    parser.add_argument(
         "--openrouter-models-dir",
         type=pathlib.Path,
         default=repo_root / "providers" / "openrouter" / "models",
@@ -75,12 +71,6 @@ def parse_args() -> argparse.Namespace:
         type=pathlib.Path,
         default=repo_root / "stats" / "openrouter",
         help="Output directory for provider/model JSON files",
-    )
-    parser.add_argument(
-        "--routers-dir",
-        type=pathlib.Path,
-        default=repo_root / "routers",
-        help="Directory containing router TOML files",
     )
     parser.add_argument(
         "--synthetic-output-dir",
@@ -177,7 +167,7 @@ def extract_stats(endpoint: dict[str, Any]) -> dict[str, Any]:
 def main() -> int:
     args = parse_args()
     repo_root = pathlib.Path(__file__).resolve().parents[2]
-    providers = load_providers(args.provider_dir)
+    providers = load_providers(repo_root / DEFAULT_PROVIDER_DIR)
     cache = {} if args.clear_cache else load_mapping_cache(repo_root)
     api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
 
@@ -235,8 +225,8 @@ def main() -> int:
     written, synthetic_written, synthetic_errors, synthetic_collisions = write_collected_outputs(
         outputs=outputs,
         output_dir=args.output_dir,
-        providers_dir=args.provider_dir,
-        routers_dir=args.routers_dir,
+        providers_dir=repo_root / DEFAULT_PROVIDER_DIR,
+        routers_dir=repo_root / DEFAULT_ROUTERS_DIR,
         synthetic_dir=args.synthetic_output_dir,
         excluded_provider="openrouter",
         dry_run=args.dry_run,

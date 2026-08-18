@@ -15,6 +15,8 @@ from typing import Any
 import tomllib
 
 DEFAULT_PROVIDER_MAPPING_CHAT_URL = "https://openrouter.ai/api/v1/chat/completions"
+DEFAULT_PROVIDER_DIR = "providers"
+DEFAULT_ROUTERS_DIR = "routers"
 
 
 def parse_base_model(value: object) -> tuple[str, str] | None:
