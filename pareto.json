@@ -266,6 +266,102 @@
       }
     }
   },
+  "alibaba/qwen3.8-2.4t-a95b": {
+    "accuracy": 71.9,
+    "providers": {
+      "cortecs": {
+        "qwen3.8-2.4t-a95b": {
+          "is_thinking": true,
+          "cost": {
+            "input": 2.5,
+            "output": 6,
+            "cache_read": 0.625
+          }
+        }
+      },
+      "deepinfra": {
+        "Qwen/Qwen3.8-2.4T-A95B": {
+          "is_thinking": true,
+          "cost": {
+            "input": 2,
+            "output": 6,
+            "cache_read": 0.2
+          }
+        }
+      },
+      "edenai": {
+        "qwen/qwen3.8-2.4t-a95b": {
+          "is_thinking": true,
+          "cost": {
+            "input": 2,
+            "output": 6,
+            "cache_read": 0.25,
+            "cache_write": 2.5
+          }
+        }
+      },
+      "huggingface": {
+        "Qwen/Qwen3.8-2.4T-A95B": {
+          "is_thinking": true,
+          "cost": {
+            "input": 2.5,
+            "output": 6.25
+          }
+        }
+      },
+      "kilo": {
+        "qwen/qwen3.8-2.4t-a95b": {
+          "is_thinking": true,
+          "cost": {
+            "input": 2,
+            "output": 6,
+            "cache_read": 0.25,
+            "cache_write": 2.5
+          }
+        }
+      },
+      "openrouter": {
+        "qwen/qwen3.8-2.4t-a95b": {
+          "is_thinking": true,
+          "cost": {
+            "input": 2,
+            "output": 6,
+            "cache_read": 0.25
+          }
+        }
+      },
+      "runinfra": {
+        "Inferact/Qwen3.8-2.4T-A95B-NVFP4": {
+          "is_thinking": true,
+          "cost": {
+            "input": 2.0,
+            "output": 6.0,
+            "cache_read": 0.2
+          }
+        }
+      },
+      "venice": {
+        "qwen-3-8-2-4t-a95b": {
+          "is_thinking": true,
+          "cost": {
+            "input": 2.5,
+            "output": 7.5,
+            "cache_read": 0.3125
+          }
+        }
+      },
+      "vercel": {
+        "alibaba/qwen3.8-2.4t-a95b": {
+          "is_thinking": true,
+          "cost": {
+            "input": 2,
+            "output": 6,
+            "cache_read": 0.2
+          }
+        }
+      }
+    }
+  },
   "alibaba/qwen3.8-max": {
     "accuracy": 71.8,
     "providers": {
@@ -4054,9 +4150,9 @@
         "deepseek/deepseek-v4-flash": {
           "is_thinking": true,
           "cost": {
-            "input": 0.0686,
-            "output": 0.1372,
-            "cache_read": 0.01372
+            "input": 0.0826,
+            "output": 0.1652,
+            "cache_read": 0.01652
           }
         }
       },
@@ -6413,6 +6509,128 @@
       }
     }
   },
+  "meta/muse-spark-1.2": {
+    "accuracy": 72.2,
+    "providers": {
+      "abacus": {
+        "muse-spark-1.2": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.25,
+            "output": 4.25,
+            "cache_read": 0.15
+          }
+        }
+      },
+      "empiriolabs": {
+        "muse-spark-1-2": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.25,
+            "output": 4.25,
+            "cache_read": 1
+          }
+        }
+      },
+      "kilo": {
+        "meta/muse-spark-1.2": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.25,
+            "output": 4.25,
+            "cache_read": 0.15
+          }
+        }
+      },
+      "llmgateway": {
+        "muse-spark-1.2": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.25,
+            "output": 4.25,
+            "cache_read": 0.15
+          }
+        }
+      },
+      "llmtr": {
+        "meta/muse-spark-1.2-contributor": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.1,
+            "output": 0.2
+          }
+        }
+      },
+      "merge-gateway": {
+        "meta/muse-spark-1.2": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.25,
+            "output": 4.25,
+            "cache_read": 0.15
+          }
+        }
+      },
+      "meta": {
+        "muse-spark-1.2": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.25,
+            "output": 4.25,
+            "cache_read": 0.15
+          }
+        },
+        "muse-spark-1.2-contributor": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.1,
+            "output": 0.2,
+            "cache_read": 0.002
+          }
+        }
+      },
+      "nano-gpt": {
+        "meta/muse-spark-1.2": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.25,
+            "output": 4.25,
+            "cache_read": 0.15
+          }
+        }
+      },
+      "opencode": {
+        "muse-spark-1.2": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.25,
+            "output": 4.25,
+            "cache_read": 0.15
+          }
+        }
+      },
+      "openrouter": {
+        "meta/muse-spark-1.2": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.25,
+            "output": 4.25,
+            "cache_read": 0.15
+          }
+        }
+      },
+      "vercel": {
+        "meta/muse-spark-1.2": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.25,
+            "output": 4.25,
+            "cache_read": 0.15
+          }
+        }
+      }
+    }
+  },
   "moonshotai/kimi-k2.6": {
     "accuracy": 61.8,
     "providers": {
@@ -6775,9 +6993,9 @@
         "moonshotai/kimi-k2.6": {
           "is_thinking": true,
           "cost": {
-            "input": 0.5605,
-            "output": 2.36,
-            "cache_read": 0.0944
+            "input": 0.95,
+            "output": 4,
+            "cache_read": 0.16
           }
         }
       },
@@ -13574,9 +13792,9 @@
         "z-ai/glm-5.2": {
           "is_thinking": true,
           "cost": {
-            "input": 0.462,
-            "output": 1.452,
-            "cache_read": 0.0858
+            "input": 0.5,
+            "output": 3.15,
+            "cache_read": 0.115
           }
         },
         "z-ai/glm-5.2:free": {
