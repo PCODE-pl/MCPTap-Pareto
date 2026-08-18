@@ -3922,9 +3922,9 @@
         "deepseek/deepseek-v4-flash": {
           "is_thinking": true,
           "cost": {
-            "input": 0.22,
-            "output": 0.66,
-            "cache_read": 0.007
+            "input": 0.44,
+            "output": 1.32,
+            "cache_read": 0.014
           }
         }
       },
@@ -4488,9 +4488,9 @@
         "deepseek/deepseek-v4-pro": {
           "is_thinking": true,
           "cost": {
-            "input": 0.66,
-            "output": 1.98,
-            "cache_read": 0.022
+            "input": 1.32,
+            "output": 3.96,
+            "cache_read": 0.044
           }
         }
       },
@@ -13828,9 +13828,9 @@
         "z-ai/glm-5.2": {
           "is_thinking": true,
           "cost": {
-            "input": 1.19,
-            "output": 3.74,
-            "cache_read": 0.221
+            "input": 0.49,
+            "output": 1.54,
+            "cache_read": 0.091
           }
         }
       },
