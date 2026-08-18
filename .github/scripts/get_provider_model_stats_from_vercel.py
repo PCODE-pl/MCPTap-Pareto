@@ -7,16 +7,14 @@ import argparse
 import os
 import pathlib
 import sys
-import urllib.error
 import urllib.parse
-import urllib.request
 from typing import Any
 
 SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from lib.provider_model_stats import (  # noqa: E402 # type: ignore
+from lib.provider_model_stats import (  # noqa: E402
     DEFAULT_AI_MODEL,
     DEFAULT_PROVIDER_DIR,
     DEFAULT_ROUTERS_DIR,
@@ -24,17 +22,12 @@ from lib.provider_model_stats import (  # noqa: E402 # type: ignore
     collect_model_endpoints,
     fetch_json,
     load_mapping_cache,
-    load_provider_models,  # noqa: F401
     load_providers,
-    parse_base_model,  # noqa: F401
     print_bucket,
-    query_provider_mappings,  # noqa: F401
+    query_provider_mappings,
     resolve_provider_deterministically,
-    safe_relative_path,  # noqa: F401
     save_mapping_cache,
     write_collected_outputs,
-    write_outputs,  # noqa: F401
-    write_synthetic_stats,  # noqa: F401
 )
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
@@ -43,7 +36,7 @@ MODELS_DIR = REPO_ROOT / "providers" / "vercel" / "models"
 OUTPUT_DIR = REPO_ROOT / "stats" / "vercel"
 SYNTHETIC_OUTPUT_DIR = REPO_ROOT / "stats" / "_synthetic" / "vercel"
 CACHE_FILE_NAME = ".vercel_provider_mapping_cache.json"
-VERCEL_STATS_KEYS = (
+STATS_KEYS = (
     "uptime_last_15m",
     "uptime_last_1h",
     "uptime_last_1d",
@@ -106,7 +99,7 @@ def fetch_model_endpoints(api_url: str, model_id: str) -> list[dict[str, Any]]:
 
 
 def extract_stats(endpoint: dict[str, Any]) -> dict[str, Any]:
-    return {key: endpoint[key] for key in VERCEL_STATS_KEYS if key in endpoint}
+    return {key: endpoint[key] for key in STATS_KEYS if key in endpoint}
 
 
 def main() -> int:
@@ -114,6 +107,7 @@ def main() -> int:
     providers = load_providers(REPO_ROOT / DEFAULT_PROVIDER_DIR)
     cache = {} if args.clear_cache else load_mapping_cache(REPO_ROOT, CACHE_FILE_NAME)
     api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
+
     models, parse_errors, endpoint_cache, api_errors = collect_model_endpoints(
         models_dir=MODELS_DIR,
         api_url=API_URL,
@@ -140,7 +134,12 @@ def main() -> int:
             unresolved_names.append(provider_name)
 
     if unresolved_names and not args.disable_ai and api_key:
-        ai_mapping = query_provider_mappings(unresolved_names, providers, args.ai_model, api_key)
+        ai_mapping = query_provider_mappings(
+            unresolved_names,
+            providers,
+            args.ai_model,
+            api_key,
+        )
         mapping.update(ai_mapping)
         cache.update(ai_mapping)
     elif unresolved_names and not args.disable_ai:
@@ -153,6 +152,7 @@ def main() -> int:
         if mapping.get(provider_name) is None:
             mapping[provider_name] = provider_name
     cache.update(mapping)
+
     if not args.dry_run and cache:
         save_mapping_cache(REPO_ROOT, cache, CACHE_FILE_NAME)
 
@@ -181,13 +181,13 @@ def main() -> int:
     print(f"Cached provider mappings: {len(cache)}")
     print(f"Endpoint responses: {len(endpoint_cache)}")
     print(f"Resolved output files: {len(outputs)}")
-    print(f"Written: {written}" if not args.dry_run else f"Would write: {written}")
+    print(f"Written: {written}" if not args.dry_run else f"Would write: {len(outputs)}")
     print(
         f"Synthetic written: {synthetic_written}" if not args.dry_run else f"Synthetic would write: {synthetic_written}"
     )
-    print_bucket("Unmatched endpoints", unmatched_providers)
-    print_bucket("Multiple endpoints for provider/model", multiple_endpoints)
-    print_bucket("Output collisions", output_collisions)
+    print_bucket("Unmatched provider names", sorted(set(unmatched_providers)))
+    print_bucket("Multiple endpoints for provider/model", sorted(set(multiple_endpoints)))
+    print_bucket("Output collisions", sorted(set(output_collisions)))
     print_bucket("API errors", sorted(set(api_errors)))
     print_bucket("TOML parse errors", parse_errors)
     print_bucket("Synthetic output collisions", synthetic_collisions)

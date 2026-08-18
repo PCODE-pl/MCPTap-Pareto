@@ -11,12 +11,13 @@ SCRIPT_DIR = REPO_ROOT / ".github" / "scripts"
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from lib.provider_model_stats import (  # noqa: E402
+from lib.provider_model_stats import (  # noqa: E402 # type: ignore
     build_provider_outputs,
     collect_model_endpoints,
     load_mapping_cache,
     save_mapping_cache,
-)  # noqa: E402
+    write_collected_outputs,
+)
 
 
 class ProviderModelStatsLibraryTest(unittest.TestCase):
@@ -54,6 +55,31 @@ class ProviderModelStatsLibraryTest(unittest.TestCase):
                 {"Vercel": "vercel"},
             )
             self.assertEqual(load_mapping_cache(root, ".openrouter_provider_mapping_cache.json"), {})
+
+    def test_clears_direct_stats_output_before_writing(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = pathlib.Path(temporary_directory)
+            output_dir = root / "stats" / "vercel"
+            stale_file = output_dir / "stale.json"
+            stale_file.parent.mkdir(parents=True)
+            stale_file.write_text("stale\n", encoding="utf-8")
+
+            written, synthetic_written, errors, collisions = write_collected_outputs(
+                outputs={},
+                output_dir=output_dir,
+                providers_dir=root / "providers",
+                routers_dir=root / "routers",
+                synthetic_dir=root / "stats" / "_synthetic" / "vercel",
+                excluded_provider="vercel",
+                dry_run=False,
+            )
+            stale_exists_after = stale_file.exists()
+
+        self.assertEqual(written, 0)
+        self.assertEqual(synthetic_written, 0)
+        self.assertEqual(errors, [])
+        self.assertEqual(collisions, [])
+        self.assertFalse(stale_exists_after)
 
     def test_builds_outputs_with_provider_specific_resolver_and_stats_extractor(self):
         models = {

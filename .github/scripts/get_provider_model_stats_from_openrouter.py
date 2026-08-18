@@ -7,16 +7,14 @@ import argparse
 import os
 import pathlib
 import sys
-import urllib.error
 import urllib.parse
-import urllib.request
 from typing import Any
 
 SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from lib.provider_model_stats import (  # noqa: E402 # type: ignore
+from lib.provider_model_stats import (  # noqa: E402
     DEFAULT_AI_MODEL,
     DEFAULT_PROVIDER_DIR,
     DEFAULT_ROUTERS_DIR,
@@ -24,20 +22,12 @@ from lib.provider_model_stats import (  # noqa: E402 # type: ignore
     collect_model_endpoints,
     fetch_json,
     load_mapping_cache,
-    load_providers,  # noqa: F401
-    load_router_providers_from_models_dir_struct,  # noqa: F401
-    load_routers,  # noqa: F401
-    normalize_text,  # noqa: F401
-    parse_base_model,  # noqa: F401
+    load_providers,
     print_bucket,
-    provider_name_variants,  # noqa: F401
-    query_provider_mappings,  # noqa: F401
-    resolve_provider_deterministically,  # noqa: F401
-    router_slug_matches,  # noqa: F401
+    query_provider_mappings,
+    resolve_provider_deterministically,
     save_mapping_cache,
     write_collected_outputs,
-    write_outputs,  # noqa: F401
-    write_synthetic_stats,  # noqa: F401
 )
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
@@ -45,7 +35,6 @@ API_URL = "https://openrouter.ai/api/v1/models"
 MODELS_DIR = REPO_ROOT / "providers" / "openrouter" / "models"
 OUTPUT_DIR = REPO_ROOT / "stats" / "openrouter"
 SYNTHETIC_OUTPUT_DIR = REPO_ROOT / "stats" / "_synthetic" / "openrouter"
-OPENROUTER_CHAT_URL = "https://openrouter.ai/api/v1/chat/completions"
 CACHE_FILE_NAME = ".openrouter_provider_mapping_cache.json"
 STATS_KEYS = (
     "uptime_last_30m",
@@ -149,14 +138,14 @@ def main() -> int:
     )
     mapping: dict[str, str | None] = {}
     unresolved_names: list[str] = []
-    for name in provider_names:
-        deterministic = resolve_provider_deterministically(name, providers)
+    for provider_name in provider_names:
+        deterministic = resolve_provider_deterministically(provider_name, providers)
         if deterministic is not None:
-            mapping[name] = deterministic
-        elif name in cache and cache[name] is not None:
-            mapping[name] = cache[name]
+            mapping[provider_name] = deterministic
+        elif provider_name in cache and cache[provider_name] is not None:
+            mapping[provider_name] = cache[provider_name]
         else:
-            unresolved_names.append(name)
+            unresolved_names.append(provider_name)
 
     if unresolved_names and not args.disable_ai and api_key:
         ai_mapping = query_provider_mappings(
@@ -164,7 +153,6 @@ def main() -> int:
             providers,
             args.ai_model,
             api_key,
-            chat_url=OPENROUTER_CHAT_URL,
         )
         mapping.update(ai_mapping)
         cache.update(ai_mapping)
@@ -173,6 +161,11 @@ def main() -> int:
             "Warning: OPENROUTER_API_KEY is not set; unresolved provider names will be skipped.",
             file=sys.stderr,
         )
+
+    for provider_name in unresolved_names:
+        if mapping.get(provider_name) is None:
+            mapping[provider_name] = provider_name
+    cache.update(mapping)
 
     if not args.dry_run and cache:
         save_mapping_cache(REPO_ROOT, cache, CACHE_FILE_NAME)
@@ -200,6 +193,8 @@ def main() -> int:
     print(f"Unique source model IDs: {len(source_model_ids)}")
     print(f"Provider definitions: {len(providers)}")
     print(f"Provider names from endpoints: {len(provider_names)}")
+    print(f"Cached provider mappings: {len(cache)}")
+    print(f"Endpoint responses: {len(endpoint_cache)}")
     print(f"Resolved output files: {len(outputs)}")
     print(f"Written: {written}" if not args.dry_run else f"Would write: {len(outputs)}")
     print(

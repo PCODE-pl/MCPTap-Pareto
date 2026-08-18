@@ -182,6 +182,11 @@ def write_collected_outputs(
     excluded_provider: str,
     dry_run: bool,
 ) -> tuple[int, int, list[str], list[str]]:
+    if not dry_run and output_dir.exists():
+        if output_dir.is_dir() and not output_dir.is_symlink():
+            shutil.rmtree(output_dir)
+        else:
+            output_dir.unlink()
     written = write_outputs(outputs, output_dir, dry_run=dry_run)
     synthetic_written, synthetic_errors, synthetic_collisions = write_synthetic_stats(
         providers_dir=providers_dir,
@@ -264,8 +269,6 @@ def query_provider_mappings(
     providers: dict[str, dict[str, str]],
     model_name: str,
     api_key: str,
-    *,
-    chat_url: str = DEFAULT_PROVIDER_MAPPING_CHAT_URL,
 ) -> dict[str, str | None]:
     if not provider_names:
         return {}
@@ -294,7 +297,7 @@ def query_provider_mappings(
         "temperature": 0.0,
     }
     request = urllib.request.Request(
-        chat_url,
+        DEFAULT_PROVIDER_MAPPING_CHAT_URL,
         data=json.dumps(payload).encode("utf-8"),
         headers={
             "Authorization": f"Bearer {api_key}",
