@@ -4098,9 +4098,9 @@
         "deepseek/deepseek-v4-flash": {
           "is_thinking": true,
           "cost": {
-            "input": 0.14,
-            "output": 0.28,
-            "cache_read": 0.0028
+            "input": 0.22,
+            "output": 0.66,
+            "cache_read": 0.007
           }
         }
       },
@@ -4658,9 +4658,9 @@
         "deepseek/deepseek-v4-pro": {
           "is_thinking": true,
           "cost": {
-            "input": 0.435,
-            "output": 0.87,
-            "cache_read": 0.003625
+            "input": 0.66,
+            "output": 1.98,
+            "cache_read": 0.022
           }
         }
       },
@@ -7419,16 +7419,6 @@
             "input": 0.9006,
             "cache_read": 0.1881,
             "output": 4.389
-          }
-        }
-      },
-      "hetzner": {
-        "Kimi-K2.7-Code": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cache_read": 0
           }
         }
       },
