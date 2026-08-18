@@ -191,6 +191,20 @@ def write_collected_outputs(
     return written, synthetic_written, synthetic_errors, synthetic_collisions
 
 
+def load_providers(provider_dir: pathlib.Path) -> dict[str, dict[str, str]]:
+    providers: dict[str, dict[str, str]] = {}
+    for provider_file in sorted(provider_dir.glob("*/provider.toml")):
+        try:
+            document = tomllib.loads(provider_file.read_text(encoding="utf-8"))
+            slug = provider_file.parent.name
+            name = document.get("name")
+            if isinstance(name, str) and name.strip():
+                providers[slug] = {"slug": slug, "name": name.strip()}
+        except (OSError, ValueError, tomllib.TOMLDecodeError) as exc:
+            print(f"Warning: cannot read {provider_file}: {exc}", file=sys.stderr)
+    return providers
+
+
 def normalize_text(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", "", value.lower())
 

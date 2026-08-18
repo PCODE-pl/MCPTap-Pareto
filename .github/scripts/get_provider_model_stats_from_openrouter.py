@@ -13,8 +13,6 @@ import urllib.parse
 import urllib.request
 from typing import Any
 
-import tomllib
-
 SCRIPT_DIR = pathlib.Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
@@ -23,6 +21,7 @@ from lib.provider_model_stats import (  # noqa: E402 # type: ignore
     build_provider_outputs,
     collect_model_endpoints,
     fetch_json,
+    load_providers,  # noqa: F401
     load_router_providers_from_models_dir_struct,  # noqa: F401
     load_routers,  # noqa: F401
     normalize_text,  # noqa: F401
@@ -110,20 +109,6 @@ def parse_args() -> argparse.Namespace:
         help="Fetch and resolve data without writing JSON files",
     )
     return parser.parse_args()
-
-
-def load_providers(provider_dir: pathlib.Path) -> dict[str, dict[str, str]]:
-    providers: dict[str, dict[str, str]] = {}
-    for provider_file in sorted(provider_dir.glob("*/provider.toml")):
-        try:
-            document = tomllib.loads(provider_file.read_text(encoding="utf-8"))
-            slug = provider_file.parent.name
-            name = document.get("name")
-            if isinstance(name, str) and name.strip():
-                providers[slug] = {"slug": slug, "name": name.strip()}
-        except (OSError, ValueError, tomllib.TOMLDecodeError) as exc:
-            print(f"Warning: cannot read {provider_file}: {exc}", file=sys.stderr)
-    return providers
 
 
 def fetch_model_endpoints(api_url: str, model_id: str) -> list[dict[str, Any]]:

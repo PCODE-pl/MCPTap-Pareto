@@ -73,11 +73,13 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
 
     def test_provider_resolver_is_shared_with_library(self):
         from lib.provider_model_stats import (
+            load_providers,
             normalize_text,
             provider_name_variants,
             resolve_provider_deterministically,
         )
 
+        self.assertIs(get_provider_model_stats.load_providers, load_providers)
         self.assertIs(get_provider_model_stats.normalize_text, normalize_text)
         self.assertIs(get_provider_model_stats.provider_name_variants, provider_name_variants)
         self.assertIs(
