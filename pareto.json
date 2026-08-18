@@ -559,6 +559,17 @@
           }
         }
       },
+      "scx-ai": {
+        "Qwen3.8-Max": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.815,
+            "output": 5.4461,
+            "cache_read": 0.17,
+            "cache_write": 2.5
+          }
+        }
+      },
       "vercel": {
         "alibaba/qwen3.8-max": {
           "is_thinking": true,
@@ -13963,6 +13974,16 @@
           "cost": {
             "input": 1.8,
             "output": 5.5
+          }
+        }
+      },
+      "scx-ai": {
+        "GLM-5.2": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.55,
+            "output": 1.784,
+            "cache_read": 0.111
           }
         }
       },
