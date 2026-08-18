@@ -24,7 +24,6 @@ from lib.provider_model_stats import (  # noqa: E402 # type: ignore
     build_provider_outputs,
     collect_model_endpoints,
     fetch_json,
-    load_provider_models,
     load_router_providers_from_models_dir_struct,  # noqa: F401
     load_routers,  # noqa: F401
     parse_base_model,  # noqa: F401
@@ -136,12 +135,6 @@ def load_providers(provider_dir: pathlib.Path) -> dict[str, dict[str, str]]:
         except (OSError, ValueError, tomllib.TOMLDecodeError) as exc:
             print(f"Warning: cannot read {provider_file}: {exc}", file=sys.stderr)
     return providers
-
-
-def load_openrouter_models(
-    models_dir: pathlib.Path,
-) -> tuple[dict[str, list[dict[str, str]]], list[str]]:
-    return load_provider_models(models_dir)
 
 
 def fetch_model_endpoints(api_url: str, model_id: str) -> list[dict[str, Any]]:
