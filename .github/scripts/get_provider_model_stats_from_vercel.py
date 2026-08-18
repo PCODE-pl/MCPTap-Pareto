@@ -176,7 +176,7 @@ def main() -> int:
 
     print("Vercel AI Gateway provider model stats")
     print("=======================================")
-    print(f"Vercel TOMLs with base_model: {sum(len(entries) for entries in models.values())}")
+    print(f"Vercel TOMLs with base_model: {sum(len(v) for v in models.values())}")
     print(f"Unique source model IDs: {len(source_model_ids)}")
     print(f"Provider definitions: {len(providers)}")
     print(f"Provider names from endpoints: {len(provider_names)}")
