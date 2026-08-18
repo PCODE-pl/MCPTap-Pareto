@@ -269,6 +269,8 @@ def query_provider_mappings(
     providers: dict[str, dict[str, str]],
     model_name: str,
     api_key: str,
+    *,
+    debug: bool = False,
 ) -> dict[str, str | None]:
     if not provider_names:
         return {}
@@ -296,6 +298,14 @@ def query_provider_mappings(
         "response_format": {"type": "json_object"},
         "temperature": 0.0,
     }
+    if debug:
+        print("AI provider mapping request", file=sys.stderr)
+        print(f"URL: {DEFAULT_PROVIDER_MAPPING_CHAT_URL}", file=sys.stderr)
+        print(f"Model: {model_name}", file=sys.stderr)
+        print("System prompt:", file=sys.stderr)
+        print(system_prompt, file=sys.stderr)
+        print("User prompt:", file=sys.stderr)
+        print(user_prompt, file=sys.stderr)
     request = urllib.request.Request(
         DEFAULT_PROVIDER_MAPPING_CHAT_URL,
         data=json.dumps(payload).encode("utf-8"),
@@ -310,6 +320,9 @@ def query_provider_mappings(
         with urllib.request.urlopen(request, timeout=60) as response:
             data = json.load(response)
         content = data["choices"][0]["message"]["content"]
+        if debug:
+            print("AI provider mapping response:", file=sys.stderr)
+            print(content, file=sys.stderr)
         parsed = json.loads(content)
     except Exception as exc:  # noqa: BLE001
         print(f"Warning: AI provider mapping failed: {exc}", file=sys.stderr)

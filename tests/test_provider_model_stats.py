@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import io
 import pathlib
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stderr
+from unittest import mock
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[1]
 SCRIPT_DIR = REPO_ROOT / ".github" / "scripts"
@@ -15,6 +18,7 @@ from lib.provider_model_stats import (  # noqa: E402 # type: ignore
     build_provider_outputs,
     collect_model_endpoints,
     load_mapping_cache,
+    query_provider_mappings,
     save_mapping_cache,
     write_collected_outputs,
 )
@@ -55,6 +59,25 @@ class ProviderModelStatsLibraryTest(unittest.TestCase):
                 {"Vercel": "vercel"},
             )
             self.assertEqual(load_mapping_cache(root, ".openrouter_provider_mapping_cache.json"), {})
+
+    def test_debug_mapping_logs_prompts_and_response_without_authorization_header(self):
+        response = io.BytesIO(b'{"choices":[{"message":{"content":"{\\"Acme AI\\": \\"acme\\"}"}}]}')
+        debug_output = io.StringIO()
+        with mock.patch("lib.provider_model_stats.urllib.request.urlopen", return_value=response):
+            with redirect_stderr(debug_output):
+                mapping = query_provider_mappings(
+                    ["Acme AI"],
+                    {"acme": {"slug": "acme", "name": "Acme"}},
+                    "test-model",
+                    "secret-api-key",
+                    debug=True,
+                )
+
+        self.assertEqual(mapping, {"Acme AI": "acme"})
+        self.assertIn("System prompt:", debug_output.getvalue())
+        self.assertIn("PROVIDER_NAMES_TO_MAP", debug_output.getvalue())
+        self.assertIn('{"Acme AI": "acme"}', debug_output.getvalue())
+        self.assertNotIn("secret-api-key", debug_output.getvalue())
 
     def test_clears_direct_stats_output_before_writing(self):
         with tempfile.TemporaryDirectory() as temporary_directory:

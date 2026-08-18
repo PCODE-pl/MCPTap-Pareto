@@ -75,6 +75,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Fetch and resolve data without writing JSON files",
     )
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Print the AI request prompts and response to stderr",
+    )
     return parser.parse_args()
 
 
@@ -161,6 +166,7 @@ def main() -> int:
             providers,
             args.ai_model,
             api_key,
+            debug=args.debug,
         )
         mapping.update(ai_mapping)
         cache.update(ai_mapping)

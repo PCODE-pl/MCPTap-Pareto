@@ -4,8 +4,10 @@ from __future__ import annotations
 import importlib.util
 import json
 import pathlib
+import sys
 import tempfile
 import unittest
+from unittest import mock
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[1]
 SCRIPT_PATH = REPO_ROOT / ".github" / "scripts" / "get_provider_model_stats_from_openrouter.py"
@@ -43,6 +45,12 @@ get_provider_model_stats = load_script()
 
 
 class SyntheticOpenRouterStatsTest(unittest.TestCase):
+    def test_debug_option_is_disabled_by_default_and_can_be_enabled(self):
+        with mock.patch.object(sys, "argv", [str(SCRIPT_PATH)]):
+            self.assertFalse(get_provider_model_stats.parse_args().debug)
+        with mock.patch.object(sys, "argv", [str(SCRIPT_PATH), "--debug"]):
+            self.assertTrue(get_provider_model_stats.parse_args().debug)
+
     def test_loads_structured_and_actual_routers_without_openrouter(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             routers_dir = pathlib.Path(temporary_directory)
