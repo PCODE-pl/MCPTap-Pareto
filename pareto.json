@@ -143,7 +143,7 @@
           "cost": {
             "input": 1.25,
             "output": 3.75,
-            "cache_read": 0.125,
+            "cache_read": 0.25,
             "cache_write": 3.125
           }
         }
@@ -317,6 +317,16 @@
             "output": 6,
             "cache_read": 0.25,
             "cache_write": 2.5
+          }
+        }
+      },
+      "merge-gateway": {
+        "qwen/qwen3.8-2.4t-a95b": {
+          "is_thinking": true,
+          "cost": {
+            "input": 2.5,
+            "output": 6.25,
+            "cache_read": 0.5
           }
         }
       },
@@ -4183,9 +4193,9 @@
         "deepseek/deepseek-v4-flash": {
           "is_thinking": true,
           "cost": {
-            "input": 0.0798,
-            "output": 0.1596,
-            "cache_read": 0.01596
+            "input": 0.0742,
+            "output": 0.1484,
+            "cache_read": 0.01484
           }
         }
       },
@@ -13700,13 +13710,6 @@
             "output": 4.4,
             "cache_read": 0.26
           }
-        },
-        "z-ai/glm-5.2:free": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0
-          }
         }
       },
       "lilac": {
@@ -13858,9 +13861,9 @@
         "z-ai/glm-5.2": {
           "is_thinking": true,
           "cost": {
-            "input": 0.476,
-            "output": 1.496,
-            "cache_read": 0.0884
+            "input": 1.19,
+            "output": 3.74,
+            "cache_read": 0.221
           }
         },
         "z-ai/glm-5.2:free": {
