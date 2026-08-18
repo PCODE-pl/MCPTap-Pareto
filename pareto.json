@@ -6127,9 +6127,9 @@
         "google/gemini-3.6-flash": {
           "is_thinking": true,
           "cost": {
-            "input": 1.5,
-            "output": 7.5,
-            "cache_read": 0.15
+            "input": 0.75,
+            "output": 3.75,
+            "cache_read": 0.075
           }
         }
       }
@@ -9142,6 +9142,14 @@
             "output": 15,
             "cache_read": 0.25
           }
+        },
+        "openai/gpt-5.4-fast": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 30,
+            "cache_read": 0.5
+          }
         }
       },
       "xpersona": {
@@ -9892,6 +9900,14 @@
             "input": 5,
             "output": 30,
             "cache_read": 0.5
+          }
+        },
+        "openai/gpt-5.5-fast": {
+          "is_thinking": true,
+          "cost": {
+            "input": 12.5,
+            "output": 75,
+            "cache_read": 1.25
           }
         }
       },
@@ -10661,6 +10677,15 @@
             "input": 0.2,
             "output": 1.2,
             "cache_read": 0.02,
+            "cache_write": 0.25
+          }
+        },
+        "openai/gpt-5.6-luna-fast": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.4,
+            "output": 2.4,
+            "cache_read": 0.04,
             "cache_write": 0.25
           }
         }
@@ -11442,6 +11467,15 @@
             "cache_read": 0.25,
             "cache_write": 3.125
           }
+        },
+        "openai/gpt-5.6-sol-fast": {
+          "is_thinking": true,
+          "cost": {
+            "input": 5,
+            "output": 30,
+            "cache_read": 0.5,
+            "cache_write": 3.125
+          }
         }
       },
       "vivgrid": {
@@ -12178,6 +12212,15 @@
             "input": 2,
             "output": 12,
             "cache_read": 0.2,
+            "cache_write": 2.5
+          }
+        },
+        "openai/gpt-5.6-terra-fast": {
+          "is_thinking": true,
+          "cost": {
+            "input": 4,
+            "output": 24,
+            "cache_read": 0.4,
             "cache_write": 2.5
           }
         }
