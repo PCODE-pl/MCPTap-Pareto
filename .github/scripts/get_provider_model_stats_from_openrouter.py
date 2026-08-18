@@ -8,6 +8,7 @@ import json
 import os
 import pathlib
 import re
+import shutil
 import sys
 import urllib.error
 import urllib.parse
@@ -110,10 +111,24 @@ def load_router_providers_from_models_dir_struct(routers_dir: pathlib.Path) -> t
     for router_file in sorted(routers_dir.glob("*.toml")):
         try:
             document = tomllib.loads(router_file.read_text(encoding="utf-8"))
-        except (OSError, tomllib.TOMLDecodeError) as exc:
+        except (OSError, UnicodeDecodeError, tomllib.TOMLDecodeError) as exc:
             errors.append(f"{router_file}: {exc}")
             continue
         if router_file.stem != "openrouter" and document.get("router_providers_from_models_dir_struct") is True:
+            routers.add(router_file.stem)
+    return routers, errors
+
+
+def load_routers(routers_dir: pathlib.Path) -> tuple[set[str], list[str]]:
+    routers: set[str] = set()
+    errors: list[str] = []
+    for router_file in sorted(routers_dir.glob("*.toml")):
+        try:
+            document = tomllib.loads(router_file.read_text(encoding="utf-8"))
+        except (OSError, UnicodeDecodeError, tomllib.TOMLDecodeError) as exc:
+            errors.append(f"{router_file}: {exc}")
+            continue
+        if router_file.stem != "openrouter" and document.get("is_router") is True:
             routers.add(router_file.stem)
     return routers, errors
 
@@ -151,11 +166,18 @@ def write_synthetic_stats(
     synthetic_dir: pathlib.Path,
     dry_run: bool,
 ) -> tuple[int, list[str], list[str]]:
-    routers, errors = load_router_providers_from_models_dir_struct(routers_dir)
+    structural_routers, errors = load_router_providers_from_models_dir_struct(routers_dir)
+    routers, router_errors = load_routers(routers_dir)
+    errors.extend(router_errors)
     collisions: list[str] = []
     written = 0
     if not stats_dir.is_dir() or not providers_dir.is_dir():
         return written, errors, collisions
+    if not dry_run and synthetic_dir.exists():
+        if synthetic_dir.is_dir():
+            shutil.rmtree(synthetic_dir)
+        else:
+            synthetic_dir.unlink()
     stats_root = stats_dir.resolve()
     stats_provider_models_roots: list[tuple[pathlib.Path, pathlib.Path]] = []
 
@@ -176,11 +198,16 @@ def write_synthetic_stats(
         stats_provider_models_roots.append((stats_provider_dir, resolved_models_root))
 
     for provider_dir in sorted(path for path in providers_dir.iterdir() if path.is_dir()):
-        matching_routers = sorted(router for router in routers if router_slug_matches(router, provider_dir.name))
-        if len(matching_routers) != 1:
-            if len(matching_routers) > 1:
-                errors.append(f"{provider_dir}: matches multiple routers: {', '.join(matching_routers)}")
+        matching_structural_routers = sorted(
+            router for router in structural_routers if router_slug_matches(router, provider_dir.name)
+        )
+        if len(matching_structural_routers) != 1:
+            if len(matching_structural_routers) > 1:
+                errors.append(
+                    f"{provider_dir}: matches multiple structured routers: {', '.join(matching_structural_routers)}"
+                )
             continue
+        matched_router = matching_structural_routers[0]
         models_dir = provider_dir / "models"
         if not models_dir.is_dir():
             continue
@@ -188,7 +215,7 @@ def write_synthetic_stats(
         for model_file in sorted(models_dir.rglob("*.toml")):
             try:
                 model_document = tomllib.loads(model_file.read_text(encoding="utf-8"))
-            except (OSError, tomllib.TOMLDecodeError) as exc:
+            except (OSError, UnicodeDecodeError, tomllib.TOMLDecodeError) as exc:
                 errors.append(f"{model_file}: {exc}")
                 continue
             parsed_base_model = parse_base_model(model_document.get("base_model"))
@@ -197,20 +224,32 @@ def write_synthetic_stats(
             base_model_provider, base_model_slug = parsed_base_model
             model_relative_path = model_file.relative_to(models_dir)
             source_candidates: dict[pathlib.Path, pathlib.Path] = {}
+            if matched_router in routers:
+                matching_stats_provider_models_roots = [
+                    (stats_provider_dir, resolved_models_root)
+                    for stats_provider_dir, resolved_models_root in stats_provider_models_roots
+                    if any(
+                        router_slug_matches(component, stats_provider_dir.name)
+                        for component in model_relative_path.parent.parts
+                    )
+                ]
+            else:
+                matching_stats_provider_models_roots = [
+                    (stats_provider_dir, resolved_models_root)
+                    for stats_provider_dir, resolved_models_root in stats_provider_models_roots
+                    if router_slug_matches(provider_dir.name, stats_provider_dir.name)
+                ]
 
-            for component in model_relative_path.parent.parts:
-                for stats_provider_dir, resolved_models_root in stats_provider_models_roots:
-                    if not router_slug_matches(component, stats_provider_dir.name):
-                        continue
-                    source = stats_provider_dir / "models" / base_model_provider / f"{base_model_slug}.json"
-                    if not source.is_file():
-                        continue
-                    try:
-                        resolved_source = source.resolve(strict=True)
-                    except OSError:
-                        continue
-                    if resolved_source.is_relative_to(resolved_models_root):
-                        source_candidates[resolved_source] = source
+            for stats_provider_dir, resolved_models_root in matching_stats_provider_models_roots:
+                source = stats_provider_dir / "models" / base_model_provider / f"{base_model_slug}.json"
+                if not source.is_file():
+                    continue
+                try:
+                    resolved_source = source.resolve(strict=True)
+                except OSError:
+                    continue
+                if resolved_source.is_relative_to(resolved_models_root):
+                    source_candidates[resolved_source] = source
 
             if not source_candidates:
                 continue

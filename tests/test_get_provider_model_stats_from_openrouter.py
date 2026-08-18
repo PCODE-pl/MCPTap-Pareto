@@ -20,34 +20,48 @@ def load_script():
     return module
 
 
+def write_router(
+    routers_dir: pathlib.Path,
+    slug: str,
+    *,
+    is_router: bool,
+    structured_models: bool,
+) -> None:
+    (routers_dir / f"{slug}.toml").write_text(
+        "\n".join(
+            (
+                f"is_router = {str(is_router).lower()}",
+                f"router_providers_from_models_dir_struct = {str(structured_models).lower()}",
+                "",
+            )
+        ),
+        encoding="utf-8",
+    )
+
+
 get_provider_model_stats = load_script()
 
 
 class SyntheticOpenRouterStatsTest(unittest.TestCase):
-    def test_loads_only_non_openrouter_routers_enabled_for_models_directory_structure(self):
+    def test_loads_structured_and_actual_routers_without_openrouter(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             routers_dir = pathlib.Path(temporary_directory)
-            (routers_dir / "fast-router.toml").write_text(
-                "router_providers_from_models_dir_struct = true\n",
-                encoding="utf-8",
-            )
-            (routers_dir / "openrouter.toml").write_text(
-                "router_providers_from_models_dir_struct = true\n",
-                encoding="utf-8",
-            )
-            (routers_dir / "disabled-router.toml").write_text(
-                "router_providers_from_models_dir_struct = false\n",
-                encoding="utf-8",
-            )
+            write_router(routers_dir, "fast-router", is_router=True, structured_models=True)
+            write_router(routers_dir, "managed-platform", is_router=False, structured_models=True)
+            write_router(routers_dir, "openrouter", is_router=True, structured_models=True)
             (routers_dir / "invalid.toml").write_text("[invalid\n", encoding="utf-8")
 
-            routers, errors = get_provider_model_stats.load_router_providers_from_models_dir_struct(routers_dir)
+            structured, structured_errors = get_provider_model_stats.load_router_providers_from_models_dir_struct(
+                routers_dir
+            )
+            routers, router_errors = get_provider_model_stats.load_routers(routers_dir)
 
+        self.assertEqual(structured, {"fast-router", "managed-platform"})
         self.assertEqual(routers, {"fast-router"})
-        self.assertEqual(len(errors), 1)
-        self.assertIn("invalid.toml", errors[0])
+        self.assertEqual(len(structured_errors), 1)
+        self.assertEqual(len(router_errors), 1)
 
-    def test_copies_stats_for_router_model_with_matching_stats_provider_path_component(self):
+    def test_router_uses_matching_model_path_component_and_rebuilds_synthetic_output(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = pathlib.Path(temporary_directory)
             providers_dir = root / "providers"
@@ -55,10 +69,7 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
             stats_dir = root / "stats" / "openrouter"
             synthetic_dir = root / "stats" / "_synthetic" / "openrouter"
             routers_dir.mkdir()
-            (routers_dir / "fast-router.toml").write_text(
-                "router_providers_from_models_dir_struct = true\n",
-                encoding="utf-8",
-            )
+            write_router(routers_dir, "fast-router", is_router=True, structured_models=True)
             source_stats = stats_dir / "acme" / "models" / "acme" / "base-model.json"
             source_stats.parent.mkdir(parents=True)
             source_payload = {"uptime_last_30m": 0.99, "latency_last_30m": 123}
@@ -66,7 +77,44 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
             model_dir = providers_dir / "fast-router" / "models" / "acme" / "nested"
             model_dir.mkdir(parents=True)
             (model_dir / "proxy-model.toml").write_text('base_model = "acme/base-model"\n', encoding="utf-8")
-            (model_dir / "missing-model.toml").write_text('base_model = "acme/not-found"\n', encoding="utf-8")
+            stale_file = synthetic_dir / "stale.json"
+            stale_file.parent.mkdir(parents=True)
+            stale_file.write_text("stale\n", encoding="utf-8")
+
+            written, errors, collisions = get_provider_model_stats.write_synthetic_stats(
+                providers_dir=providers_dir,
+                routers_dir=routers_dir,
+                stats_dir=stats_dir,
+                synthetic_dir=synthetic_dir,
+                dry_run=False,
+            )
+
+            self.assertEqual(written, 1)
+            self.assertEqual(errors, [])
+            self.assertEqual(collisions, [])
+            self.assertFalse(stale_file.exists())
+            self.assertEqual(
+                (synthetic_dir / "fast-router" / "models" / "acme" / "nested" / "proxy-model.json").read_text(
+                    encoding="utf-8"
+                ),
+                source_stats.read_text(encoding="utf-8"),
+            )
+
+    def test_non_router_uses_its_own_stats_provider_directory(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = pathlib.Path(temporary_directory)
+            providers_dir = root / "providers"
+            routers_dir = root / "routers"
+            stats_dir = root / "stats" / "openrouter"
+            synthetic_dir = root / "synthetic"
+            routers_dir.mkdir()
+            write_router(routers_dir, "managed-platform", is_router=False, structured_models=True)
+            source_stats = stats_dir / "managed-platform" / "models" / "acme" / "model.json"
+            source_stats.parent.mkdir(parents=True)
+            source_stats.write_text('{"uptime_last_30m": 1}\n', encoding="utf-8")
+            model = providers_dir / "managed-platform" / "models" / "unrelated" / "model.toml"
+            model.parent.mkdir(parents=True)
+            model.write_text('base_model = "acme/model"\n', encoding="utf-8")
 
             written, errors, collisions = get_provider_model_stats.write_synthetic_stats(
                 providers_dir=providers_dir,
@@ -80,16 +128,13 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
             self.assertEqual(errors, [])
             self.assertEqual(collisions, [])
             self.assertEqual(
-                (synthetic_dir / "fast-router" / "models" / "acme" / "nested" / "proxy-model.json").read_text(
+                (synthetic_dir / "managed-platform" / "models" / "unrelated" / "model.json").read_text(
                     encoding="utf-8"
                 ),
                 source_stats.read_text(encoding="utf-8"),
             )
-            self.assertFalse(
-                (synthetic_dir / "fast-router" / "models" / "acme" / "nested" / "missing-model.json").exists()
-            )
 
-    def test_dry_run_reports_writes_without_creating_synthetic_files(self):
+    def test_non_router_without_own_stats_provider_is_skipped(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = pathlib.Path(temporary_directory)
             providers_dir = root / "providers"
@@ -97,16 +142,45 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
             stats_dir = root / "stats" / "openrouter"
             synthetic_dir = root / "synthetic"
             routers_dir.mkdir()
-            (routers_dir / "fast-router.toml").write_text(
-                "router_providers_from_models_dir_struct = true\n",
-                encoding="utf-8",
+            write_router(routers_dir, "infomaniak", is_router=False, structured_models=True)
+            source_stats = stats_dir / "moonshotai" / "models" / "moonshotai" / "kimi-k2.6.json"
+            source_stats.parent.mkdir(parents=True)
+            source_stats.write_text('{"uptime_last_30m": 1}\n', encoding="utf-8")
+            model = providers_dir / "infomaniak" / "models" / "moonshotai" / "Kimi-K2.6.toml"
+            model.parent.mkdir(parents=True)
+            model.write_text('base_model = "moonshotai/kimi-k2.6"\n', encoding="utf-8")
+
+            written, errors, collisions = get_provider_model_stats.write_synthetic_stats(
+                providers_dir=providers_dir,
+                routers_dir=routers_dir,
+                stats_dir=stats_dir,
+                synthetic_dir=synthetic_dir,
+                dry_run=False,
             )
+
+            self.assertEqual(written, 0)
+            self.assertEqual(errors, [])
+            self.assertEqual(collisions, [])
+            self.assertFalse(synthetic_dir.exists())
+
+    def test_dry_run_does_not_remove_existing_synthetic_files(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = pathlib.Path(temporary_directory)
+            providers_dir = root / "providers"
+            routers_dir = root / "routers"
+            stats_dir = root / "stats" / "openrouter"
+            synthetic_dir = root / "synthetic"
+            routers_dir.mkdir()
+            write_router(routers_dir, "fast-router", is_router=True, structured_models=True)
             source_stats = stats_dir / "acme" / "models" / "acme" / "model.json"
             source_stats.parent.mkdir(parents=True)
             source_stats.write_text('{"uptime_last_30m": 1}\n', encoding="utf-8")
             model = providers_dir / "fast-router" / "models" / "acme" / "model.toml"
             model.parent.mkdir(parents=True)
             model.write_text('base_model = "acme/model"\n', encoding="utf-8")
+            stale_file = synthetic_dir / "stale.json"
+            stale_file.parent.mkdir(parents=True)
+            stale_file.write_text("stale\n", encoding="utf-8")
 
             written, errors, collisions = get_provider_model_stats.write_synthetic_stats(
                 providers_dir=providers_dir,
@@ -119,7 +193,8 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
             self.assertEqual(written, 1)
             self.assertEqual(errors, [])
             self.assertEqual(collisions, [])
-            self.assertFalse(synthetic_dir.exists())
+            self.assertTrue(stale_file.is_file())
+            self.assertFalse((synthetic_dir / "fast-router").exists())
 
     def test_skips_collision_and_reports_all_sources(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
@@ -129,10 +204,7 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
             stats_dir = root / "stats" / "openrouter"
             synthetic_dir = root / "synthetic"
             routers_dir.mkdir()
-            (routers_dir / "fast-router.toml").write_text(
-                "router_providers_from_models_dir_struct = true\n",
-                encoding="utf-8",
-            )
+            write_router(routers_dir, "fast-router", is_router=True, structured_models=True)
             for stats_provider, payload in (("deepinfra", "first"), ("moonshotai", "second")):
                 source = stats_dir / stats_provider / "models" / "acme" / "base.json"
                 source.parent.mkdir(parents=True)
@@ -165,10 +237,7 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
             stats_dir = root / "stats" / "openrouter"
             synthetic_dir = root / "synthetic"
             routers_dir.mkdir()
-            (routers_dir / "fast-router.toml").write_text(
-                "router_providers_from_models_dir_struct = true\n",
-                encoding="utf-8",
-            )
+            write_router(routers_dir, "fast-router", is_router=True, structured_models=True)
             (stats_dir / "acme" / "models").mkdir(parents=True)
             secret = root / "secret.json"
             secret.write_text('{"must_not_copy": true}\n', encoding="utf-8")
@@ -204,10 +273,7 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
             stats_dir = root / "stats" / "openrouter"
             synthetic_dir = root / "synthetic"
             routers_dir.mkdir()
-            (routers_dir / "fast-router.toml").write_text(
-                "router_providers_from_models_dir_struct = true\n",
-                encoding="utf-8",
-            )
+            write_router(routers_dir, "fast-router", is_router=True, structured_models=True)
             source_dir = stats_dir / "acme" / "models" / "acme"
             source_dir.mkdir(parents=True)
             outside_stats = root / "outside-stats.json"
