@@ -678,9 +678,9 @@
     "source_urls": []
   },
   "sap-ai-core": {
-    "fingerprint": "e5a1b5b8996d6875c1bafe5a964401844049d7ee3546a7d4b9a38dbf4ce35647",
+    "fingerprint": "dbd17100db2cfb88eb8f2ba102a7749a30f6d4600dedd0b1569f77529343e6d7",
     "is_router": true,
-    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-3-5-sonnet-20241022', 'anthropic/claude-3-7-sonnet-20250219', 'anthropic/claude-3-haiku-20240307', 'anthropic/claude-haiku-4-5', 'anthropic/claude-opus-4-20250514', 'anthropic/claude-opus-4-5', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-opus-4-8', 'anthropic/claude-sonnet-4-20250514', 'anthropic/claude-sonnet-4-5', 'anthropic/claude-sonnet-4-6', 'google/gemini-embedding-001', 'mistral/mistral-medium-2505', 'openai/gpt-4.1', 'openai/gpt-4.1-mini', 'openai/gpt-4.1-nano', 'openai/gpt-5', 'openai/gpt-5-mini', 'openai/gpt-5-nano', 'openai/gpt-5.2', 'openai/gpt-5.4', 'openai/gpt-5.5', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra', 'perplexity/sonar', 'perplexity/sonar-pro']",
+    "reason": "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['anthropic/claude-3-5-sonnet-20241022', 'anthropic/claude-3-7-sonnet-20250219', 'anthropic/claude-3-haiku-20240307', 'anthropic/claude-haiku-4-5', 'anthropic/claude-opus-4-20250514', 'anthropic/claude-opus-4-5', 'anthropic/claude-opus-4-6', 'anthropic/claude-opus-4-7', 'anthropic/claude-opus-4-8', 'anthropic/claude-sonnet-4-20250514', 'anthropic/claude-sonnet-4-5', 'anthropic/claude-sonnet-4-6', 'google/gemini-embedding-001', 'google/gemini-embedding-2', 'mistral/mistral-medium-2505', 'openai/gpt-4.1', 'openai/gpt-4.1-mini', 'openai/gpt-4.1-nano', 'openai/gpt-5', 'openai/gpt-5-mini', 'openai/gpt-5-nano', 'openai/gpt-5.2', 'openai/gpt-5.4', 'openai/gpt-5.5', 'openai/gpt-5.6-luna', 'openai/gpt-5.6-sol', 'openai/gpt-5.6-terra', 'perplexity/sonar', 'perplexity/sonar-pro']",
     "source_urls": []
   },
   "sarvam": {
@@ -697,12 +697,6 @@
   },
   "scnet-token-plan": {
     "fingerprint": "f30f3c176e7e54176eae4d33c87561e5dcfb2275d94789ee801e4f4d67c52a49",
-    "is_router": false,
-    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
-    "source_urls": []
-  },
-  "scx": {
-    "fingerprint": "7d165e225300dc127eb9b565cfcb4203c65f58be4a1137d0151f18a6dfc0b461",
     "is_router": false,
     "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
     "source_urls": []
@@ -937,6 +931,12 @@
   },
   "zhipuai-coding-plan": {
     "fingerprint": "f398302e348aa3831f1e4bf3a40ad541a2a9fb5499555dbab47e4484d275a7d3",
+    "is_router": false,
+    "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
+    "source_urls": []
+  },
+  "scx-ai": {
+    "fingerprint": "7d165e225300dc127eb9b565cfcb4203c65f58be4a1137d0151f18a6dfc0b461",
     "is_router": false,
     "reason": "The provider catalog has no verified closed-source frontier models, so it is not classified as a model router.",
     "source_urls": []
