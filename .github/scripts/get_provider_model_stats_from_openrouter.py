@@ -113,7 +113,7 @@ def load_router_providers_from_models_dir_struct(routers_dir: pathlib.Path) -> t
         except (OSError, tomllib.TOMLDecodeError) as exc:
             errors.append(f"{router_file}: {exc}")
             continue
-        if document.get("router_providers_from_models_dir_struct") is True:
+        if router_file.stem != "openrouter" and document.get("router_providers_from_models_dir_struct") is True:
             routers.add(router_file.stem)
     return routers, errors
 
@@ -150,13 +150,14 @@ def write_synthetic_stats(
     stats_dir: pathlib.Path,
     synthetic_dir: pathlib.Path,
     dry_run: bool,
-) -> tuple[int, list[str]]:
+) -> tuple[int, list[str], list[str]]:
     routers, errors = load_router_providers_from_models_dir_struct(routers_dir)
-    destination_sources: dict[pathlib.Path, pathlib.Path] = {}
+    collisions: list[str] = []
     written = 0
-    if not stats_dir.is_dir():
-        return written, errors
+    if not stats_dir.is_dir() or not providers_dir.is_dir():
+        return written, errors, collisions
     stats_root = stats_dir.resolve()
+    stats_provider_models_roots: list[tuple[pathlib.Path, pathlib.Path]] = []
 
     for stats_provider_dir in sorted(path for path in stats_dir.iterdir() if path.is_dir()):
         try:
@@ -172,60 +173,59 @@ def write_synthetic_stats(
             continue
         if not resolved_models_root.is_relative_to(stats_provider_root):
             continue
-        matching_routers = sorted(router for router in routers if router_slug_matches(router, stats_provider_dir.name))
+        stats_provider_models_roots.append((stats_provider_dir, resolved_models_root))
+
+    for provider_dir in sorted(path for path in providers_dir.iterdir() if path.is_dir()):
+        matching_routers = sorted(router for router in routers if router_slug_matches(router, provider_dir.name))
         if len(matching_routers) != 1:
             if len(matching_routers) > 1:
-                errors.append(f"{stats_provider_dir}: matches multiple routers: {', '.join(matching_routers)}")
+                errors.append(f"{provider_dir}: matches multiple routers: {', '.join(matching_routers)}")
             continue
-        router_slug = matching_routers[0]
+        models_dir = provider_dir / "models"
+        if not models_dir.is_dir():
+            continue
 
-        for provider_dir in sorted(
-            path for path in providers_dir.iterdir() if path.is_dir() and path.name != "openrouter"
-        ):
-            models_dir = provider_dir / "models"
-            if not models_dir.is_dir():
+        for model_file in sorted(models_dir.rglob("*.toml")):
+            try:
+                model_document = tomllib.loads(model_file.read_text(encoding="utf-8"))
+            except (OSError, tomllib.TOMLDecodeError) as exc:
+                errors.append(f"{model_file}: {exc}")
                 continue
-            provider_matches_router = router_slug_matches(provider_dir.name, router_slug)
-            for model_file in sorted(models_dir.rglob("*.toml")):
-                try:
-                    model_document = tomllib.loads(model_file.read_text(encoding="utf-8"))
-                except (OSError, tomllib.TOMLDecodeError) as exc:
-                    errors.append(f"{model_file}: {exc}")
-                    continue
-                model_relative_path = model_file.relative_to(models_dir)
-                path_matches_router = any(
-                    router_slug_matches(component, router_slug) for component in model_relative_path.parent.parts
-                )
-                if not provider_matches_router and not path_matches_router:
-                    continue
-                parsed_base_model = parse_base_model(model_document.get("base_model"))
-                if parsed_base_model is None:
-                    continue
-                base_model_provider, base_model_slug = parsed_base_model
-                source = stats_provider_dir / "models" / base_model_provider / f"{base_model_slug}.json"
-                if not source.is_file():
-                    continue
-                try:
-                    resolved_source = source.resolve(strict=True)
-                except OSError:
-                    continue
-                if not resolved_source.is_relative_to(resolved_models_root):
-                    continue
-                destination = synthetic_dir / provider_dir.name / "models" / model_relative_path.with_suffix(".json")
-                previous_source = destination_sources.get(destination)
-                if previous_source is not None:
-                    if previous_source != resolved_source:
-                        errors.append(
-                            f"{destination}: multiple source stats files: {previous_source}, {resolved_source}"
-                        )
-                    continue
-                destination_sources[destination] = resolved_source
-                if not dry_run:
-                    destination.parent.mkdir(parents=True, exist_ok=True)
-                    destination.write_bytes(resolved_source.read_bytes())
-                written += 1
+            parsed_base_model = parse_base_model(model_document.get("base_model"))
+            if parsed_base_model is None:
+                continue
+            base_model_provider, base_model_slug = parsed_base_model
+            model_relative_path = model_file.relative_to(models_dir)
+            source_candidates: dict[pathlib.Path, pathlib.Path] = {}
 
-    return written, errors
+            for component in model_relative_path.parent.parts:
+                for stats_provider_dir, resolved_models_root in stats_provider_models_roots:
+                    if not router_slug_matches(component, stats_provider_dir.name):
+                        continue
+                    source = stats_provider_dir / "models" / base_model_provider / f"{base_model_slug}.json"
+                    if not source.is_file():
+                        continue
+                    try:
+                        resolved_source = source.resolve(strict=True)
+                    except OSError:
+                        continue
+                    if resolved_source.is_relative_to(resolved_models_root):
+                        source_candidates[resolved_source] = source
+
+            if not source_candidates:
+                continue
+            destination = synthetic_dir / provider_dir.name / "models" / model_relative_path.with_suffix(".json")
+            if len(source_candidates) > 1:
+                sources = ", ".join(str(source.relative_to(stats_dir)) for source in sorted(source_candidates.values()))
+                collisions.append(f"{destination.relative_to(synthetic_dir)}: {sources}")
+                continue
+            resolved_source = next(iter(source_candidates))
+            if not dry_run:
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                destination.write_bytes(resolved_source.read_bytes())
+            written += 1
+
+    return written, errors, collisions
 
 
 def load_providers(provider_dir: pathlib.Path) -> dict[str, dict[str, str]]:
@@ -510,7 +510,7 @@ def main() -> int:
             )
             written += 1
 
-    synthetic_written, synthetic_errors = write_synthetic_stats(
+    synthetic_written, synthetic_errors, synthetic_collisions = write_synthetic_stats(
         providers_dir=args.provider_dir,
         routers_dir=args.routers_dir,
         stats_dir=args.output_dir,
@@ -534,6 +534,7 @@ def main() -> int:
     print_bucket("Output collisions", sorted(set(output_collisions)))
     print_bucket("API errors", sorted(set(api_errors)))
     print_bucket("TOML parse errors", parse_errors)
+    print_bucket("Synthetic output collisions", synthetic_collisions)
     print_bucket("Synthetic stats errors", synthetic_errors)
 
     return 1 if api_errors or parse_errors or synthetic_errors else 0
