@@ -17,6 +17,7 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from lib.provider_model_stats import (  # noqa: E402 # type: ignore
+    DEFAULT_AI_MODEL,
     DEFAULT_PROVIDER_DIR,
     DEFAULT_ROUTERS_DIR,
     build_provider_outputs,
@@ -27,6 +28,7 @@ from lib.provider_model_stats import (  # noqa: E402 # type: ignore
     load_providers,
     parse_base_model,  # noqa: F401
     print_bucket,
+    query_provider_mappings,  # noqa: F401
     resolve_provider_deterministically,
     safe_relative_path,  # noqa: F401
     save_mapping_cache,
@@ -71,6 +73,16 @@ def parse_args() -> argparse.Namespace:
         type=pathlib.Path,
         default=repo_root / "stats" / "_synthetic" / "vercel",
         help="Output directory for synthetic provider/model JSON files",
+    )
+    parser.add_argument(
+        "--ai-model",
+        default=os.environ.get("OPENROUTER_AI_MODEL", DEFAULT_AI_MODEL),
+        help="OpenRouter model used for provider-name mapping",
+    )
+    parser.add_argument(
+        "--disable-ai",
+        action="store_true",
+        help="Disable AI provider-name mapping",
     )
     parser.add_argument(
         "--clear-cache",
@@ -122,6 +134,7 @@ def main() -> int:
     repo_root = pathlib.Path(__file__).resolve().parents[2]
     providers = load_providers(repo_root / DEFAULT_PROVIDER_DIR)
     cache = {} if args.clear_cache else load_mapping_cache(repo_root, CACHE_FILE_NAME)
+    api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
     models, parse_errors, endpoint_cache, api_errors = collect_model_endpoints(
         models_dir=args.models_dir,
         api_url=args.api_url,
@@ -137,6 +150,7 @@ def main() -> int:
         }
     )
     mapping: dict[str, str | None] = {}
+    unresolved_names: list[str] = []
     for provider_name in provider_names:
         deterministic = resolve_provider_deterministically(provider_name, providers)
         if deterministic is not None:
@@ -144,6 +158,20 @@ def main() -> int:
         elif provider_name in cache and cache[provider_name] is not None:
             mapping[provider_name] = cache[provider_name]
         else:
+            unresolved_names.append(provider_name)
+
+    if unresolved_names and not args.disable_ai and api_key:
+        ai_mapping = query_provider_mappings(unresolved_names, providers, args.ai_model, api_key)
+        mapping.update(ai_mapping)
+        cache.update(ai_mapping)
+    elif unresolved_names and not args.disable_ai:
+        print(
+            "Warning: OPENROUTER_API_KEY is not set; unresolved provider names will use their original names.",
+            file=sys.stderr,
+        )
+
+    for provider_name in unresolved_names:
+        if mapping.get(provider_name) is None:
             mapping[provider_name] = provider_name
     cache.update(mapping)
     if not args.dry_run and cache:

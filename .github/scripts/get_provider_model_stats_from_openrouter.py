@@ -17,6 +17,7 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from lib.provider_model_stats import (  # noqa: E402 # type: ignore
+    DEFAULT_AI_MODEL,
     DEFAULT_PROVIDER_DIR,
     DEFAULT_ROUTERS_DIR,
     build_provider_outputs,
@@ -40,8 +41,6 @@ from lib.provider_model_stats import (  # noqa: E402 # type: ignore
 )
 
 DEFAULT_API_URL = "https://openrouter.ai/api/v1/models"
-# DEFAULT_AI_MODEL = "google/gemini-2.5-flash"
-DEFAULT_AI_MODEL = "meta-llama/llama-3.3-70b-instruct"
 OPENROUTER_CHAT_URL = "https://openrouter.ai/api/v1/chat/completions"
 CACHE_FILE_NAME = ".openrouter_provider_mapping_cache.json"
 STATS_KEYS = (

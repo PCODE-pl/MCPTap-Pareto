@@ -15,6 +15,7 @@ from typing import Any
 import tomllib
 
 DEFAULT_PROVIDER_MAPPING_CHAT_URL = "https://openrouter.ai/api/v1/chat/completions"
+DEFAULT_AI_MODEL = "meta-llama/llama-3.3-70b-instruct"
 DEFAULT_PROVIDER_DIR = "providers"
 DEFAULT_ROUTERS_DIR = "routers"
 

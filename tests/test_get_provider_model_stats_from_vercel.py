@@ -24,6 +24,11 @@ get_provider_model_stats = load_script()
 
 
 class VercelStatsTest(unittest.TestCase):
+    def test_uses_shared_ai_provider_mapping_function(self):
+        from lib.provider_model_stats import query_provider_mappings
+
+        self.assertIs(get_provider_model_stats.query_provider_mappings, query_provider_mappings)
+
     def test_extracts_vercel_metrics_without_renaming_or_filling(self):
         endpoint = {
             "provider_name": "alibaba",
