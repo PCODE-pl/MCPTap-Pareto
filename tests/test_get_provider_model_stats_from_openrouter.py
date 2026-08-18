@@ -62,6 +62,12 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
         self.assertEqual(len(structured_errors), 1)
         self.assertEqual(len(router_errors), 1)
 
+    def test_query_provider_mappings_is_shared_with_library(self):
+        from lib.provider_model_stats import query_provider_mappings
+
+        self.assertIs(get_provider_model_stats.query_provider_mappings, query_provider_mappings)
+        self.assertEqual(query_provider_mappings([], {}, "model", "key"), {})
+
     def test_excludes_the_collector_provider_dynamically(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             routers_dir = pathlib.Path(temporary_directory)

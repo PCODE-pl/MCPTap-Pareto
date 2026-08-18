@@ -25,6 +25,7 @@ from lib.provider_model_stats import (  # noqa: E402 # type: ignore
     load_router_providers_from_models_dir_struct,  # noqa: F401
     load_routers,  # noqa: F401
     parse_base_model,  # noqa: F401
+    query_provider_mappings,  # noqa: F401
     router_slug_matches,  # noqa: F401
     write_outputs,
     write_synthetic_stats,
@@ -204,65 +205,6 @@ def save_mapping_cache(repo_root: pathlib.Path, cache: dict[str, str | None]) ->
     )
 
 
-def query_provider_mappings(
-    provider_names: list[str],
-    providers: dict[str, dict[str, str]],
-    model_name: str,
-    api_key: str,
-) -> dict[str, str | None]:
-    if not provider_names:
-        return {}
-
-    candidates = [providers[slug] for slug in sorted(providers)]
-    system_prompt = (
-        "You map OpenRouter provider_name values to canonical provider directory slugs.\n"
-        "Return ONLY a JSON object mapping every input provider name to one allowed slug or null.\n"
-        "A provider name may omit suffixes such as AI, API, Cloud, Direct, or Router.\n"
-        "Prefer the provider.toml name and slug that identify the same company.\n"
-        "Never invent a slug: values must be present in ALLOWED_PROVIDERS or null."
-    )
-    user_prompt = (
-        f"ALLOWED_PROVIDERS ({len(candidates)}):\n"
-        f"{json.dumps(candidates, ensure_ascii=False)}\n\n"
-        f"PROVIDER_NAMES_TO_MAP ({len(provider_names)}):\n"
-        f"{json.dumps(provider_names, ensure_ascii=False)}\n"
-    )
-    payload = {
-        "model": model_name,
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ],
-        "response_format": {"type": "json_object"},
-        "temperature": 0.0,
-    }
-    request = urllib.request.Request(
-        OPENROUTER_CHAT_URL,
-        data=json.dumps(payload).encode("utf-8"),
-        headers={
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json",
-            "HTTP-Referer": "https://github.com/PCODE-pl/MCPTap-Pareto",
-            "X-Title": "MCPTap OpenRouter Provider Stats",
-        },
-    )
-    try:
-        with urllib.request.urlopen(request, timeout=60) as response:
-            data = json.load(response)
-        content = data["choices"][0]["message"]["content"]
-        parsed = json.loads(content)
-    except Exception as exc:  # noqa: BLE001
-        print(f"Warning: AI provider mapping failed: {exc}", file=sys.stderr)
-        return {}
-
-    valid_slugs = set(providers)
-    if not isinstance(parsed, dict):
-        return {}
-    return {
-        str(key): value if isinstance(value, str) and value in valid_slugs else None for key, value in parsed.items()
-    }
-
-
 def select_endpoint(endpoints: list[dict[str, Any]]) -> dict[str, Any] | None:
     if not endpoints:
         return None
@@ -328,7 +270,13 @@ def main() -> int:
             unresolved_names.append(name)
 
     if unresolved_names and not args.disable_ai and api_key:
-        ai_mapping = query_provider_mappings(unresolved_names, providers, args.ai_model, api_key)
+        ai_mapping = query_provider_mappings(
+            unresolved_names,
+            providers,
+            args.ai_model,
+            api_key,
+            chat_url=OPENROUTER_CHAT_URL,
+        )
         mapping.update(ai_mapping)
         cache.update(ai_mapping)
     elif unresolved_names and not args.disable_ai:
