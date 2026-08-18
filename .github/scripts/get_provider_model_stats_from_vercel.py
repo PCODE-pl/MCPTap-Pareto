@@ -22,16 +22,21 @@ from lib.provider_model_stats import (  # noqa: E402 # type: ignore
     build_provider_outputs,
     collect_model_endpoints,
     fetch_json,
+    load_mapping_cache,
     load_provider_models,  # noqa: F401
+    load_providers,
     parse_base_model,  # noqa: F401
     print_bucket,
+    resolve_provider_deterministically,
     safe_relative_path,  # noqa: F401
+    save_mapping_cache,
     write_collected_outputs,
     write_outputs,  # noqa: F401
     write_synthetic_stats,  # noqa: F401
 )
 
 DEFAULT_API_URL = "https://ai-gateway.vercel.sh/v1/models"
+CACHE_FILE_NAME = ".vercel_provider_mapping_cache.json"
 VERCEL_STATS_KEYS = (
     "uptime_last_15m",
     "uptime_last_1h",
@@ -66,6 +71,11 @@ def parse_args() -> argparse.Namespace:
         type=pathlib.Path,
         default=repo_root / "stats" / "_synthetic" / "vercel",
         help="Output directory for synthetic provider/model JSON files",
+    )
+    parser.add_argument(
+        "--clear-cache",
+        action="store_true",
+        help="Clear provider-name mapping cache before running",
     )
     parser.add_argument(
         "--dry-run",
@@ -110,17 +120,39 @@ def extract_stats(endpoint: dict[str, Any]) -> dict[str, Any]:
 def main() -> int:
     args = parse_args()
     repo_root = pathlib.Path(__file__).resolve().parents[2]
+    providers = load_providers(repo_root / DEFAULT_PROVIDER_DIR)
+    cache = {} if args.clear_cache else load_mapping_cache(repo_root, CACHE_FILE_NAME)
     models, parse_errors, endpoint_cache, api_errors = collect_model_endpoints(
         models_dir=args.models_dir,
         api_url=args.api_url,
         fetch_model_endpoints=fetch_model_endpoints,
     )
     source_model_ids = sorted({entry["model_id"] for entries in models.values() for entry in entries})
+    provider_names = sorted(
+        {
+            str(endpoint.get("provider_name"))
+            for endpoints in endpoint_cache.values()
+            for endpoint in endpoints
+            if endpoint.get("provider_name")
+        }
+    )
+    mapping: dict[str, str | None] = {}
+    for provider_name in provider_names:
+        deterministic = resolve_provider_deterministically(provider_name, providers)
+        if deterministic is not None:
+            mapping[provider_name] = deterministic
+        elif provider_name in cache and cache[provider_name] is not None:
+            mapping[provider_name] = cache[provider_name]
+        else:
+            mapping[provider_name] = provider_name
+    cache.update(mapping)
+    if not args.dry_run and cache:
+        save_mapping_cache(repo_root, cache, CACHE_FILE_NAME)
 
     outputs, output_collisions, unmatched_providers, multiple_endpoints = build_provider_outputs(
         models,
         endpoint_cache,
-        resolve_provider=lambda provider_name: provider_name,
+        resolve_provider=mapping.get,
         extract_stats=extract_stats,
     )
     written, synthetic_written, synthetic_errors, synthetic_collisions = write_collected_outputs(
@@ -137,6 +169,9 @@ def main() -> int:
     print("=======================================")
     print(f"Vercel TOMLs with base_model: {sum(len(entries) for entries in models.values())}")
     print(f"Unique source model IDs: {len(source_model_ids)}")
+    print(f"Provider definitions: {len(providers)}")
+    print(f"Provider names from endpoints: {len(provider_names)}")
+    print(f"Cached provider mappings: {len(cache)}")
     print(f"Endpoint responses: {len(endpoint_cache)}")
     print(f"Resolved output files: {len(outputs)}")
     print(f"Written: {written}" if not args.dry_run else f"Would write: {written}")

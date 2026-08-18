@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import json
 import os
 import pathlib
 import sys
@@ -23,6 +22,7 @@ from lib.provider_model_stats import (  # noqa: E402 # type: ignore
     build_provider_outputs,
     collect_model_endpoints,
     fetch_json,
+    load_mapping_cache,
     load_providers,  # noqa: F401
     load_router_providers_from_models_dir_struct,  # noqa: F401
     load_routers,  # noqa: F401
@@ -33,6 +33,7 @@ from lib.provider_model_stats import (  # noqa: E402 # type: ignore
     query_provider_mappings,  # noqa: F401
     resolve_provider_deterministically,  # noqa: F401
     router_slug_matches,  # noqa: F401
+    save_mapping_cache,
     write_collected_outputs,
     write_outputs,  # noqa: F401
     write_synthetic_stats,  # noqa: F401
@@ -126,27 +127,6 @@ def fetch_model_endpoints(api_url: str, model_id: str) -> list[dict[str, Any]]:
     return [endpoint for endpoint in endpoints if isinstance(endpoint, dict)]
 
 
-def load_mapping_cache(repo_root: pathlib.Path) -> dict[str, str | None]:
-    path = repo_root / CACHE_FILE_NAME
-    if not path.is_file():
-        return {}
-    try:
-        data = json.loads(path.read_text(encoding="utf-8"))
-        if isinstance(data, dict):
-            return {str(key): value if isinstance(value, str) or value is None else None for key, value in data.items()}
-    except (OSError, json.JSONDecodeError):
-        pass
-    return {}
-
-
-def save_mapping_cache(repo_root: pathlib.Path, cache: dict[str, str | None]) -> None:
-    path = repo_root / CACHE_FILE_NAME
-    path.write_text(
-        json.dumps(cache, indent=2, ensure_ascii=False) + "\n",
-        encoding="utf-8",
-    )
-
-
 def select_endpoint(endpoints: list[dict[str, Any]]) -> dict[str, Any] | None:
     if not endpoints:
         return None
@@ -168,7 +148,7 @@ def main() -> int:
     args = parse_args()
     repo_root = pathlib.Path(__file__).resolve().parents[2]
     providers = load_providers(repo_root / DEFAULT_PROVIDER_DIR)
-    cache = {} if args.clear_cache else load_mapping_cache(repo_root)
+    cache = {} if args.clear_cache else load_mapping_cache(repo_root, CACHE_FILE_NAME)
     api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
 
     models, parse_errors, endpoint_cache, api_errors = collect_model_endpoints(
@@ -213,7 +193,7 @@ def main() -> int:
         )
 
     if not args.dry_run and cache:
-        save_mapping_cache(repo_root, cache)
+        save_mapping_cache(repo_root, cache, CACHE_FILE_NAME)
 
     outputs, output_collisions, unmatched_providers, multiple_endpoints = build_provider_outputs(
         models,

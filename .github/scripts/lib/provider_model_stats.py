@@ -207,6 +207,31 @@ def load_providers(provider_dir: pathlib.Path) -> dict[str, dict[str, str]]:
     return providers
 
 
+def load_mapping_cache(repo_root: pathlib.Path, cache_file_name: str) -> dict[str, str | None]:
+    path = repo_root / cache_file_name
+    if not path.is_file():
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        if isinstance(data, dict):
+            return {str(key): value if isinstance(value, str) or value is None else None for key, value in data.items()}
+    except (OSError, json.JSONDecodeError):
+        pass
+    return {}
+
+
+def save_mapping_cache(
+    repo_root: pathlib.Path,
+    cache: dict[str, str | None],
+    cache_file_name: str,
+) -> None:
+    path = repo_root / cache_file_name
+    path.write_text(
+        json.dumps(cache, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+
+
 def normalize_text(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", "", value.lower())
 

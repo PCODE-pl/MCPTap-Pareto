@@ -11,7 +11,12 @@ SCRIPT_DIR = REPO_ROOT / ".github" / "scripts"
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from lib.provider_model_stats import build_provider_outputs, collect_model_endpoints  # noqa: E402
+from lib.provider_model_stats import (  # noqa: E402
+    build_provider_outputs,
+    collect_model_endpoints,
+    load_mapping_cache,
+    save_mapping_cache,
+)  # noqa: E402
 
 
 class ProviderModelStatsLibraryTest(unittest.TestCase):
@@ -38,6 +43,17 @@ class ProviderModelStatsLibraryTest(unittest.TestCase):
         self.assertEqual(calls, [("https://example.test/models", "acme/model")])
         self.assertEqual(endpoint_cache, {"acme/model": [{"provider_name": "acme"}]})
         self.assertEqual(models["acme/model"][0]["model_id"], "acme/model")
+
+    def test_mapping_cache_round_trip_is_scoped_by_filename(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = pathlib.Path(temporary_directory)
+            save_mapping_cache(root, {"Vercel": "vercel"}, ".vercel_provider_mapping_cache.json")
+
+            self.assertEqual(
+                load_mapping_cache(root, ".vercel_provider_mapping_cache.json"),
+                {"Vercel": "vercel"},
+            )
+            self.assertEqual(load_mapping_cache(root, ".openrouter_provider_mapping_cache.json"), {})
 
     def test_builds_outputs_with_provider_specific_resolver_and_stats_extractor(self):
         models = {
