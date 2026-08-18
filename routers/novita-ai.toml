@@ -1,5 +1,5 @@
 # mcp-tap-auto-source = collect_routers
 is_router = true
 reason = "The provider catalog has verified closed-source frontier models, so it is classified as a model router.['xiaomi/mimo-v2-pro']"
-router_providers_from_models_dir_struct = false
+router_providers_from_models_dir_struct = true
 router_providers_from_models_prefixes = false
