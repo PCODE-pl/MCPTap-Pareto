@@ -1,7 +1,7 @@
 {
   "alibaba": "alibaba",
   "anthropic": "anthropic",
-  "arcee-ai": "arcee",
+  "arcee-ai": "arcee-ai",
   "azure": "azure",
   "baseten": "baseten",
   "cerebras": "cerebras",
@@ -30,7 +30,7 @@
   "wafer": "wafer.ai",
   "xai": "xai",
   "xiaomi": "xiaomi",
-  "zai": "zai",
+  "zai": "zhipuai",
   "bedrock": "bedrock",
   "claudeaws": "claudeaws",
   "openai": "openai",

@@ -261,6 +261,13 @@ def resolve_provider_deterministically(
         candidates = provider_name_variants(slug) | provider_name_variants(provider["name"])
         if target_variants & candidates:
             matches.append(slug)
+
+    if len(matches) == 1:
+        if "zai" == matches[0]:
+            matches[0] = "zhipuai"
+        elif "arcee" == matches[0]:
+            matches[0] = "arcee-ai"
+
     return matches[0] if len(matches) == 1 else None
 
 
@@ -276,6 +283,7 @@ def query_provider_mappings(
         return {}
 
     candidates = [providers[slug] for slug in sorted(providers)]
+
     system_prompt = (
         "You map OpenRouter provider_name values to canonical provider directory slugs.\n"
         "Return ONLY a JSON object mapping every input provider name to one allowed slug or null.\n"
@@ -448,9 +456,14 @@ def write_synthetic_stats(
         stats_provider_models_roots.append((stats_provider_dir, resolved_models_root))
 
     for provider_dir in sorted(path for path in providers_dir.iterdir() if path.is_dir()):
+        # print(provider_dir)  # TODO: remove
+
         matching_structural_routers = sorted(
             router for router in structural_routers if router_slug_matches(router, provider_dir.name)
         )
+
+        # print(matching_structural_routers) # TODO: remove
+
         if len(matching_structural_routers) != 1:
             if len(matching_structural_routers) > 1:
                 errors.append(
@@ -463,6 +476,7 @@ def write_synthetic_stats(
             continue
 
         for model_file in sorted(models_dir.rglob("*.toml")):
+            # print(model_file) # TODO: remove
             try:
                 model_document = tomllib.loads(model_file.read_text(encoding="utf-8"))
             except (OSError, UnicodeDecodeError, tomllib.TOMLDecodeError) as exc:
@@ -471,18 +485,27 @@ def write_synthetic_stats(
             parsed_base_model = parse_base_model(model_document.get("base_model"))
             if parsed_base_model is None:
                 continue
+
             base_model_provider, base_model_slug = parsed_base_model
             model_relative_path = model_file.relative_to(models_dir)
             source_candidates: dict[pathlib.Path, pathlib.Path] = {}
+
             if matched_router in routers:
-                matching_stats_provider_models_roots = [
-                    (stats_provider_dir, resolved_models_root)
-                    for stats_provider_dir, resolved_models_root in stats_provider_models_roots
-                    if any(
-                        router_slug_matches(component, stats_provider_dir.name)
-                        for component in model_relative_path.parent.parts
-                    )
-                ]
+                # if "arcee" == str(provider_dir.name):
+                #     print(provider_dir)  # TODO: remove
+
+                matching_stats_provider_models_roots = []
+                for stats_provider_dir, resolved_models_root in stats_provider_models_roots:
+                    if stats_provider_dir.name != base_model_provider:
+                        continue
+
+                    source = stats_provider_dir / "models" / base_model_provider / f"{base_model_slug}.json"
+                    if source.is_file():
+                        matching_stats_provider_models_roots.append((stats_provider_dir, resolved_models_root))
+                    # else:
+                    #     if "arcee" == str(provider_dir.name):
+                    #         print(f"NOT FOUND: {source}")  # TODO: remove
+
             else:
                 matching_stats_provider_models_roots = [
                     (stats_provider_dir, resolved_models_root)
@@ -493,6 +516,7 @@ def write_synthetic_stats(
             for stats_provider_dir, resolved_models_root in matching_stats_provider_models_roots:
                 source = stats_provider_dir / "models" / base_model_provider / f"{base_model_slug}.json"
                 if not source.is_file():
+                    # print(f"NOT FOUND: {source}")  # TODO: remove
                     continue
                 try:
                     resolved_source = source.resolve(strict=True)
