@@ -7,7 +7,6 @@ import argparse
 import json
 import os
 import pathlib
-import re
 import sys
 import urllib.error
 import urllib.parse
@@ -26,9 +25,12 @@ from lib.provider_model_stats import (  # noqa: E402 # type: ignore
     fetch_json,
     load_router_providers_from_models_dir_struct,  # noqa: F401
     load_routers,  # noqa: F401
+    normalize_text,  # noqa: F401
     parse_base_model,  # noqa: F401
     print_bucket,
+    provider_name_variants,  # noqa: F401
     query_provider_mappings,  # noqa: F401
+    resolve_provider_deterministically,  # noqa: F401
     router_slug_matches,  # noqa: F401
     write_collected_outputs,
     write_outputs,  # noqa: F401
@@ -110,19 +112,6 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def normalize_text(value: str) -> str:
-    return re.sub(r"[^a-z0-9]+", "", value.lower())
-
-
-def provider_name_variants(value: str) -> set[str]:
-    normalized = normalize_text(value)
-    variants = {normalized}
-    for suffix in ("ai", "api", "cloud", "llc", "inc", "direct", "router"):
-        if normalized.endswith(suffix) and len(normalized) > len(suffix) + 2:
-            variants.add(normalized[: -len(suffix)])
-    return variants
-
-
 def load_providers(provider_dir: pathlib.Path) -> dict[str, dict[str, str]]:
     providers: dict[str, dict[str, str]] = {}
     for provider_file in sorted(provider_dir.glob("*/provider.toml")):
@@ -160,19 +149,6 @@ def fetch_model_endpoints(api_url: str, model_id: str) -> list[dict[str, Any]]:
     if not isinstance(endpoints, list):
         raise TypeError(f"OpenRouter endpoint response has no endpoints list for {model_id}")
     return [endpoint for endpoint in endpoints if isinstance(endpoint, dict)]
-
-
-def resolve_provider_deterministically(
-    provider_name: str,
-    providers: dict[str, dict[str, str]],
-) -> str | None:
-    target_variants = provider_name_variants(provider_name)
-    matches = []
-    for slug, provider in providers.items():
-        candidates = provider_name_variants(slug) | provider_name_variants(provider["name"])
-        if target_variants & candidates:
-            matches.append(slug)
-    return matches[0] if len(matches) == 1 else None
 
 
 def load_mapping_cache(repo_root: pathlib.Path) -> dict[str, str | None]:

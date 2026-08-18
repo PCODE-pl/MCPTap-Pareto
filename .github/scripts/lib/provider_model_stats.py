@@ -191,6 +191,32 @@ def write_collected_outputs(
     return written, synthetic_written, synthetic_errors, synthetic_collisions
 
 
+def normalize_text(value: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "", value.lower())
+
+
+def provider_name_variants(value: str) -> set[str]:
+    normalized = normalize_text(value)
+    variants = {normalized}
+    for suffix in ("ai", "api", "cloud", "llc", "inc", "direct", "router"):
+        if normalized.endswith(suffix) and len(normalized) > len(suffix) + 2:
+            variants.add(normalized[: -len(suffix)])
+    return variants
+
+
+def resolve_provider_deterministically(
+    provider_name: str,
+    providers: dict[str, dict[str, str]],
+) -> str | None:
+    target_variants = provider_name_variants(provider_name)
+    matches = []
+    for slug, provider in providers.items():
+        candidates = provider_name_variants(slug) | provider_name_variants(provider["name"])
+        if target_variants & candidates:
+            matches.append(slug)
+    return matches[0] if len(matches) == 1 else None
+
+
 def query_provider_mappings(
     provider_names: list[str],
     providers: dict[str, dict[str, str]],

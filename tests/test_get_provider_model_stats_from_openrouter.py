@@ -71,6 +71,27 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
         self.assertIs(get_provider_model_stats.query_provider_mappings, query_provider_mappings)
         self.assertEqual(query_provider_mappings([], {}, "model", "key"), {})
 
+    def test_provider_resolver_is_shared_with_library(self):
+        from lib.provider_model_stats import (
+            normalize_text,
+            provider_name_variants,
+            resolve_provider_deterministically,
+        )
+
+        self.assertIs(get_provider_model_stats.normalize_text, normalize_text)
+        self.assertIs(get_provider_model_stats.provider_name_variants, provider_name_variants)
+        self.assertIs(
+            get_provider_model_stats.resolve_provider_deterministically,
+            resolve_provider_deterministically,
+        )
+        self.assertEqual(
+            resolve_provider_deterministically(
+                "Acme AI",
+                {"acme": {"slug": "acme", "name": "Acme"}},
+            ),
+            "acme",
+        )
+
     def test_excludes_the_collector_provider_dynamically(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             routers_dir = pathlib.Path(temporary_directory)
