@@ -85,7 +85,6 @@ def collect_model_endpoints(
     models_dir: pathlib.Path,
     api_url: str,
     fetch_model_endpoints: Callable[[str, str], list[dict[str, Any]]],
-    selected_models: set[str] | None = None,
 ) -> tuple[
     dict[str, list[dict[str, str]]],
     list[str],
@@ -93,13 +92,6 @@ def collect_model_endpoints(
     list[str],
 ]:
     models, parse_errors = load_provider_models(models_dir)
-    if selected_models:
-        models = {
-            canonical_model: entries
-            for canonical_model, entries in models.items()
-            if canonical_model in selected_models or any(entry["model_id"] in selected_models for entry in entries)
-        }
-
     source_model_ids = sorted({entry["model_id"] for entries in models.values() for entry in entries})
     endpoint_cache: dict[str, list[dict[str, Any]]] = {}
     api_errors: list[str] = []

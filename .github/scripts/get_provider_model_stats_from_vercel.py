@@ -78,12 +78,6 @@ def parse_args() -> argparse.Namespace:
         help="Output directory for synthetic provider/model JSON files",
     )
     parser.add_argument(
-        "--model",
-        action="append",
-        dest="models",
-        help="Process only this source or canonical model ID; may be repeated",
-    )
-    parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Fetch and resolve data without writing JSON files",
@@ -142,7 +136,6 @@ def main() -> int:
         models_dir=args.models_dir,
         api_url=args.api_url,
         fetch_model_endpoints=fetch_model_endpoints,
-        selected_models=set(args.models) if args.models else None,
     )
     source_model_ids = sorted({entry["model_id"] for entries in models.values() for entry in entries})
 
