@@ -6993,9 +6993,9 @@
         "moonshotai/kimi-k2.6": {
           "is_thinking": true,
           "cost": {
-            "input": 0.95,
-            "output": 4,
-            "cache_read": 0.16
+            "input": 0.5795,
+            "output": 2.44,
+            "cache_read": 0.0976
           }
         }
       },
