@@ -222,6 +222,8 @@ class CollectRoutersTest(unittest.TestCase):
                 ("alpha", ("anthropic/claude-opus-4-8",)),
                 ("beta", ("openai/gpt-5.4", "anthropic/claude-sonnet-4-6")),
                 ("gamma", ("google/gemini-3.5-flash",)),
+                ("delta", ("meta/llama-3.3-70b",)),
+                ("epsilon", ("mistral/mistral-large",)),
             ):
                 for index, base_model in enumerate(base_models):
                     model_file = mixed_dir / nested_provider / f"model-{index}.toml"
@@ -236,7 +238,7 @@ class CollectRoutersTest(unittest.TestCase):
 
             discovered = collect_routers.discover_router_providers_from_models_dir_struct(providers_dir)
 
-        self.assertEqual(discovered, {"managed-platform"})
+        self.assertEqual(discovered, {"managed-platform", "mixed"})
 
     def test_debug_usage_reports_openrouter_cost(self):
         debug_text = collect_routers.usage_debug_text(

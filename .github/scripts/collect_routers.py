@@ -202,22 +202,24 @@ def model_directory_base_model_providers(models_provider_dir: pathlib.Path) -> s
 
 
 def discover_router_providers_from_models_dir_struct(providers_dir: pathlib.Path) -> frozenset[str]:
+    """Find providers with at least three unambiguous model subdirectories.
+
+    A subdirectory containing models from multiple base-model providers is
+    ignored because its name cannot identify a single stats-provider path.
+    It must not invalidate independent, unambiguous subdirectories belonging
+    to the same catalog provider.
+    """
     discovered: set[str] = set()
     for provider_dir in sorted(path for path in providers_dir.iterdir() if path.is_dir()):
         models_dir = provider_dir / "models"
         if not models_dir.is_dir():
             continue
         structured_directory_count = 0
-        has_ambiguous_directory = False
         for models_provider_dir in sorted(path for path in models_dir.iterdir() if path.is_dir()):
             base_model_providers = model_directory_base_model_providers(models_provider_dir)
-            if not base_model_providers:
-                continue
-            if len(base_model_providers) > 1:
-                has_ambiguous_directory = True
-                break
-            structured_directory_count += 1
-        if not has_ambiguous_directory and structured_directory_count >= 3:
+            if len(base_model_providers) == 1:
+                structured_directory_count += 1
+        if structured_directory_count >= 3:
             discovered.add(provider_dir.name)
     return frozenset(discovered)
 
