@@ -4150,9 +4150,9 @@
         "deepseek/deepseek-v4-flash": {
           "is_thinking": true,
           "cost": {
-            "input": 0.0798,
-            "output": 0.1596,
-            "cache_read": 0.01596
+            "input": 0.0826,
+            "output": 0.1652,
+            "cache_read": 0.01652
           }
         }
       },
@@ -13677,13 +13677,6 @@
             "output": 4.4,
             "cache_read": 0.26
           }
-        },
-        "z-ai/glm-5.2:free": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0
-          }
         }
       },
       "lilac": {
@@ -13835,16 +13828,9 @@
         "z-ai/glm-5.2": {
           "is_thinking": true,
           "cost": {
-            "input": 0.4886,
-            "output": 1.5356,
-            "cache_read": 0.09074
-          }
-        },
-        "z-ai/glm-5.2:free": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0,
-            "output": 0
+            "input": 1.19,
+            "output": 3.74,
+            "cache_read": 0.221
           }
         }
       },
