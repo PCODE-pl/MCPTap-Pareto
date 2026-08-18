@@ -21,14 +21,19 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from lib.provider_model_stats import (  # noqa: E402 # type: ignore
+    build_provider_outputs,
+    collect_model_endpoints,
+    fetch_json,
     load_provider_models,
     load_router_providers_from_models_dir_struct,  # noqa: F401
     load_routers,  # noqa: F401
     parse_base_model,  # noqa: F401
+    print_bucket,
     query_provider_mappings,  # noqa: F401
     router_slug_matches,  # noqa: F401
-    write_outputs,
-    write_synthetic_stats,
+    write_collected_outputs,
+    write_outputs,  # noqa: F401
+    write_synthetic_stats,  # noqa: F401
 )
 
 DEFAULT_API_URL = "https://openrouter.ai/api/v1/models"
@@ -99,6 +104,12 @@ def parse_args() -> argparse.Namespace:
         help="Clear provider-name mapping cache before running",
     )
     parser.add_argument(
+        "--model",
+        action="append",
+        dest="models",
+        help="Process only this source or canonical model ID; may be repeated",
+    )
+    parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Fetch and resolve data without writing JSON files",
@@ -147,18 +158,11 @@ def fetch_model_endpoints(api_url: str, model_id: str) -> list[dict[str, Any]]:
     if api_key:
         headers["Authorization"] = f"Bearer {api_key}"
 
-    request = urllib.request.Request(url, headers=headers)
-    try:
-        with urllib.request.urlopen(request, timeout=60) as response:
-            payload = json.load(response)
-    except urllib.error.HTTPError as exc:
-        body = exc.read().decode("utf-8", errors="replace")[:500]
-        raise RuntimeError(f"OpenRouter endpoint request failed for {model_id}: HTTP {exc.code}: {body}") from exc
-    except urllib.error.URLError as exc:
-        raise RuntimeError(f"OpenRouter endpoint request failed for {model_id}: {exc.reason}") from exc
-    except json.JSONDecodeError as exc:
-        raise RuntimeError(f"OpenRouter endpoint returned invalid JSON for {model_id}") from exc
-
+    payload = fetch_json(
+        url,
+        headers=headers,
+        error_context=f"OpenRouter endpoint request failed for {model_id}",
+    )
     if not isinstance(payload, dict):
         raise TypeError(f"OpenRouter endpoint response is not an object for {model_id}")
     data = payload.get("data")
@@ -222,34 +226,20 @@ def extract_stats(endpoint: dict[str, Any]) -> dict[str, Any]:
     return {key: endpoint.get(key) for key in STATS_KEYS}
 
 
-def print_bucket(title: str, items: list[str], limit: int = 100) -> None:
-    print(f"\n{title} ({len(items)})")
-    if not items:
-        print("  - none")
-        return
-    for item in items[:limit]:
-        print(f"  - {item}")
-    if len(items) > limit:
-        print(f"  ... and {len(items) - limit} more")
-
-
 def main() -> int:
     args = parse_args()
     repo_root = pathlib.Path(__file__).resolve().parents[2]
     providers = load_providers(args.provider_dir)
-    models, parse_errors = load_openrouter_models(args.openrouter_models_dir)
     cache = {} if args.clear_cache else load_mapping_cache(repo_root)
     api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
 
+    models, parse_errors, endpoint_cache, api_errors = collect_model_endpoints(
+        models_dir=args.openrouter_models_dir,
+        api_url=args.api_url,
+        fetch_model_endpoints=fetch_model_endpoints,
+        selected_models=set(args.models) if args.models else None,
+    )
     source_model_ids = sorted({entry["model_id"] for entries in models.values() for entry in entries})
-    endpoint_cache: dict[str, list[dict[str, Any]]] = {}
-    api_errors: list[str] = []
-    for model_id in source_model_ids:
-        try:
-            endpoint_cache[model_id] = fetch_model_endpoints(args.api_url, model_id)
-        except RuntimeError as exc:
-            api_errors.append(str(exc))
-
     provider_names = sorted(
         {
             str(endpoint.get("provider_name"))
@@ -288,49 +278,21 @@ def main() -> int:
     if not args.dry_run and cache:
         save_mapping_cache(repo_root, cache)
 
-    written = 0
-    unmatched_providers: set[str] = set()
-    multiple_endpoints: list[str] = []
-    output_collisions: list[str] = []
-    outputs: dict[str, dict[str, Any]] = {}
-
-    for canonical_model, entries in sorted(models.items()):
-        # Prefer a source model ID identical to the canonical model ID when available.
-        source_entry = next(
-            (entry for entry in entries if entry["model_id"] == canonical_model),
-            min(entries, key=lambda entry: entry["model_id"]),
-        )
-        source_model_id = source_entry["model_id"]
-        for endpoint in endpoint_cache.get(source_model_id, []):
-            provider_name = endpoint.get("provider_name")
-            if not isinstance(provider_name, str):
-                continue
-            canonical_provider = mapping.get(provider_name)
-            if canonical_provider is None:
-                unmatched_providers.add(provider_name)
-                continue
-            matched_endpoints = [
-                item for item in endpoint_cache.get(source_model_id, []) if item.get("provider_name") == provider_name
-            ]
-            if len(matched_endpoints) > 1:
-                multiple_endpoints.append(
-                    f"{provider_name}/{canonical_model}: {len(matched_endpoints)} endpoints; selected deterministic first"
-                )
-            output_key = f"{canonical_provider}/models/{canonical_model}.json"
-            if output_key in outputs:
-                output_collisions.append(output_key)
-                continue
-            outputs[output_key] = extract_stats(select_endpoint(matched_endpoints) or endpoint)
-
-    written = write_outputs(outputs, args.output_dir, dry_run=args.dry_run)
-
-    synthetic_written, synthetic_errors, synthetic_collisions = write_synthetic_stats(
+    outputs, output_collisions, unmatched_providers, multiple_endpoints = build_provider_outputs(
+        models,
+        endpoint_cache,
+        resolve_provider=mapping.get,
+        extract_stats=extract_stats,
+        select_endpoint=select_endpoint,
+    )
+    written, synthetic_written, synthetic_errors, synthetic_collisions = write_collected_outputs(
+        outputs=outputs,
+        output_dir=args.output_dir,
         providers_dir=args.provider_dir,
         routers_dir=args.routers_dir,
-        stats_dir=args.output_dir,
         synthetic_dir=args.synthetic_output_dir,
-        dry_run=args.dry_run,
         excluded_provider="openrouter",
+        dry_run=args.dry_run,
     )
 
     print("OpenRouter provider model stats")

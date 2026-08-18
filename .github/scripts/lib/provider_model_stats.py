@@ -7,7 +7,9 @@ import pathlib
 import re
 import shutil
 import sys
+import urllib.error
 import urllib.request
+from collections.abc import Callable
 from typing import Any
 
 import tomllib
@@ -56,6 +58,145 @@ def load_provider_models(
         except (OSError, UnicodeDecodeError, tomllib.TOMLDecodeError) as exc:
             errors.append(f"{path}: {exc}")
     return by_base_model, errors
+
+
+def fetch_json(
+    url: str,
+    *,
+    headers: dict[str, str],
+    error_context: str,
+    timeout: int = 60,
+) -> object:
+    request = urllib.request.Request(url, headers=headers)
+    try:
+        with urllib.request.urlopen(request, timeout=timeout) as response:
+            return json.load(response)
+    except urllib.error.HTTPError as exc:
+        body = exc.read().decode("utf-8", errors="replace")[:500]
+        raise RuntimeError(f"{error_context}: HTTP {exc.code}: {body}") from exc
+    except urllib.error.URLError as exc:
+        raise RuntimeError(f"{error_context}: {exc.reason}") from exc
+    except json.JSONDecodeError as exc:
+        raise RuntimeError(f"{error_context}: invalid JSON") from exc
+
+
+def collect_model_endpoints(
+    *,
+    models_dir: pathlib.Path,
+    api_url: str,
+    fetch_model_endpoints: Callable[[str, str], list[dict[str, Any]]],
+    selected_models: set[str] | None = None,
+) -> tuple[
+    dict[str, list[dict[str, str]]],
+    list[str],
+    dict[str, list[dict[str, Any]]],
+    list[str],
+]:
+    models, parse_errors = load_provider_models(models_dir)
+    if selected_models:
+        models = {
+            canonical_model: entries
+            for canonical_model, entries in models.items()
+            if canonical_model in selected_models or any(entry["model_id"] in selected_models for entry in entries)
+        }
+
+    source_model_ids = sorted({entry["model_id"] for entries in models.values() for entry in entries})
+    endpoint_cache: dict[str, list[dict[str, Any]]] = {}
+    api_errors: list[str] = []
+    for model_id in source_model_ids:
+        try:
+            endpoint_cache[model_id] = fetch_model_endpoints(api_url, model_id)
+        except RuntimeError as exc:
+            api_errors.append(str(exc))
+    return models, parse_errors, endpoint_cache, api_errors
+
+
+def build_provider_outputs(
+    models: dict[str, list[dict[str, str]]],
+    endpoint_cache: dict[str, list[dict[str, Any]]],
+    *,
+    resolve_provider: Callable[[str], str | None],
+    extract_stats: Callable[[dict[str, Any]], dict[str, Any]],
+    select_endpoint: Callable[[list[dict[str, Any]]], dict[str, Any] | None] | None = None,
+) -> tuple[dict[str, dict[str, Any]], list[str], list[str], list[str]]:
+    outputs: dict[str, dict[str, Any]] = {}
+    collisions: list[str] = []
+    unmatched_providers: list[str] = []
+    multiple_endpoints: list[str] = []
+
+    for canonical_model, entries in sorted(models.items()):
+        source_entry = next(
+            (entry for entry in entries if entry["model_id"] == canonical_model),
+            min(entries, key=lambda entry: entry["model_id"]),
+        )
+        source_model_id = source_entry["model_id"]
+        if parse_base_model(canonical_model) is None:
+            unmatched_providers.append(f"{canonical_model}: invalid base_model")
+            continue
+        endpoints_by_provider: dict[str, list[dict[str, Any]]] = {}
+        for endpoint in endpoint_cache.get(source_model_id, []):
+            provider_name = endpoint.get("provider_name")
+            if not isinstance(provider_name, str) or not provider_name.strip():
+                unmatched_providers.append(f"{source_model_id}: endpoint has no provider_name")
+                continue
+            endpoints_by_provider.setdefault(provider_name, []).append(endpoint)
+
+        for provider_name, matched_endpoints in sorted(endpoints_by_provider.items()):
+            canonical_provider = resolve_provider(provider_name)
+            if canonical_provider is None:
+                unmatched_providers.append(provider_name)
+                continue
+            if len(matched_endpoints) > 1:
+                multiple_endpoints.append(
+                    f"{provider_name}/{canonical_model}: {len(matched_endpoints)} endpoints; selected deterministic first"
+                )
+            selected_endpoint = select_endpoint(matched_endpoints) if select_endpoint else matched_endpoints[0]
+            if selected_endpoint is None:
+                continue
+            try:
+                output_key = safe_relative_path(f"{canonical_provider}/models/{canonical_model}.json").as_posix()
+            except ValueError:
+                unmatched_providers.append(f"{provider_name}: unsafe canonical provider {canonical_provider!r}")
+                continue
+            if output_key in outputs:
+                collisions.append(output_key)
+                continue
+            outputs[output_key] = extract_stats(selected_endpoint)
+
+    return outputs, sorted(set(collisions)), sorted(set(unmatched_providers)), sorted(set(multiple_endpoints))
+
+
+def print_bucket(title: str, items: list[str], limit: int = 100) -> None:
+    print(f"\n{title} ({len(items)})")
+    if not items:
+        print("  - none")
+        return
+    for item in items[:limit]:
+        print(f"  - {item}")
+    if len(items) > limit:
+        print(f"  ... and {len(items) - limit} more")
+
+
+def write_collected_outputs(
+    *,
+    outputs: dict[str, dict[str, Any]],
+    output_dir: pathlib.Path,
+    providers_dir: pathlib.Path,
+    routers_dir: pathlib.Path,
+    synthetic_dir: pathlib.Path,
+    excluded_provider: str,
+    dry_run: bool,
+) -> tuple[int, int, list[str], list[str]]:
+    written = write_outputs(outputs, output_dir, dry_run=dry_run)
+    synthetic_written, synthetic_errors, synthetic_collisions = write_synthetic_stats(
+        providers_dir=providers_dir,
+        routers_dir=routers_dir,
+        stats_dir=output_dir,
+        synthetic_dir=synthetic_dir,
+        dry_run=dry_run,
+        excluded_provider=excluded_provider,
+    )
+    return written, synthetic_written, synthetic_errors, synthetic_collisions
 
 
 def query_provider_mappings(

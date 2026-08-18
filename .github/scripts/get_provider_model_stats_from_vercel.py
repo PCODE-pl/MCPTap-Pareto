@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import json
 import os
 import pathlib
 import sys
@@ -18,11 +17,16 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from lib.provider_model_stats import (  # noqa: E402 # type: ignore
-    load_provider_models,
-    parse_base_model,
-    safe_relative_path,
-    write_outputs,
-    write_synthetic_stats,
+    build_provider_outputs,
+    collect_model_endpoints,
+    fetch_json,
+    load_provider_models,  # noqa: F401
+    parse_base_model,  # noqa: F401
+    print_bucket,
+    safe_relative_path,  # noqa: F401
+    write_collected_outputs,
+    write_outputs,  # noqa: F401
+    write_synthetic_stats,  # noqa: F401
 )
 
 DEFAULT_API_URL = "https://ai-gateway.vercel.sh/v1/models"
@@ -107,17 +111,11 @@ def fetch_model_endpoints(api_url: str, model_id: str) -> list[dict[str, Any]]:
     if api_key:
         headers["Authorization"] = f"Bearer {api_key}"
 
-    request = urllib.request.Request(url, headers=headers)
-    try:
-        with urllib.request.urlopen(request, timeout=60) as response:
-            payload = json.load(response)
-    except urllib.error.HTTPError as exc:
-        body = exc.read().decode("utf-8", errors="replace")[:500]
-        raise RuntimeError(f"Vercel endpoint request failed for {model_id}: HTTP {exc.code}: {body}") from exc
-    except urllib.error.URLError as exc:
-        raise RuntimeError(f"Vercel endpoint request failed for {model_id}: {exc.reason}") from exc
-    except json.JSONDecodeError as exc:
-        raise RuntimeError(f"Vercel endpoint returned invalid JSON for {model_id}") from exc
+    payload = fetch_json(
+        url,
+        headers=headers,
+        error_context=f"Vercel endpoint request failed for {model_id}",
+    )
     return parse_vercel_response(payload, model_id)
 
 
@@ -129,80 +127,39 @@ def build_outputs(
     models: dict[str, list[dict[str, str]]],
     endpoint_cache: dict[str, list[dict[str, Any]]],
 ) -> tuple[dict[str, dict[str, Any]], list[str], list[str]]:
-    outputs: dict[str, dict[str, Any]] = {}
-    collisions: list[str] = []
-    unmatched_providers: list[str] = []
-
-    for canonical_model, entries in sorted(models.items()):
-        source_entry = next(
-            (entry for entry in entries if entry["model_id"] == canonical_model),
-            min(entries, key=lambda entry: entry["model_id"]),
-        )
-        source_model_id = source_entry["model_id"]
-        parsed_model = parse_base_model(canonical_model)
-        if parsed_model is None:
-            unmatched_providers.append(f"{canonical_model}: invalid base_model")
-            continue
-        model_provider, model_name = parsed_model
-
-        for endpoint in endpoint_cache.get(source_model_id, []):
-            provider_name = endpoint.get("provider_name")
-            if not isinstance(provider_name, str) or not provider_name.strip():
-                unmatched_providers.append(f"{source_model_id}: endpoint has no provider_name")
-                continue
-            try:
-                output_key = safe_relative_path(f"{provider_name}/models/{model_provider}/{model_name}.json").as_posix()
-            except ValueError:
-                unmatched_providers.append(f"{source_model_id}: unsafe provider_name {provider_name!r}")
-                continue
-            if output_key in outputs:
-                collisions.append(output_key)
-                continue
-            outputs[output_key] = extract_stats(endpoint)
-
-    return outputs, sorted(set(collisions)), sorted(set(unmatched_providers))
-
-
-def print_bucket(title: str, items: list[str], limit: int = 100) -> None:
-    print(f"\n{title} ({len(items)})")
-    if not items:
-        print("  - none")
-        return
-    for item in items[:limit]:
-        print(f"  - {item}")
-    if len(items) > limit:
-        print(f"  ... and {len(items) - limit} more")
+    outputs, collisions, unmatched_providers, _ = build_provider_outputs(
+        models,
+        endpoint_cache,
+        resolve_provider=lambda provider_name: provider_name,
+        extract_stats=extract_stats,
+    )
+    return outputs, collisions, unmatched_providers
 
 
 def main() -> int:
     args = parse_args()
-    models, parse_errors = load_provider_models(args.models_dir)
-    if args.models:
-        selected = set(args.models)
-        models = {
-            canonical_model: entries
-            for canonical_model, entries in models.items()
-            if canonical_model in selected or any(entry["model_id"] in selected for entry in entries)
-        }
-
+    models, parse_errors, endpoint_cache, api_errors = collect_model_endpoints(
+        models_dir=args.models_dir,
+        api_url=args.api_url,
+        fetch_model_endpoints=fetch_model_endpoints,
+        selected_models=set(args.models) if args.models else None,
+    )
     source_model_ids = sorted({entry["model_id"] for entries in models.values() for entry in entries})
-    endpoint_cache: dict[str, list[dict[str, Any]]] = {}
-    api_errors: list[str] = []
-    for model_id in source_model_ids:
-        try:
-            endpoint_cache[model_id] = fetch_model_endpoints(args.api_url, model_id)
-        except RuntimeError as exc:
-            api_errors.append(str(exc))
 
-    outputs, output_collisions, unmatched_providers = build_outputs(models, endpoint_cache)
-    written = write_outputs(outputs, args.output_dir, dry_run=args.dry_run)
-    synthetic_written, synthetic_errors, synthetic_collisions = write_synthetic_stats(
+    outputs, output_collisions, unmatched_providers, multiple_endpoints = build_provider_outputs(
+        models,
+        endpoint_cache,
+        resolve_provider=lambda provider_name: provider_name,
+        extract_stats=extract_stats,
+    )
+    written, synthetic_written, synthetic_errors, synthetic_collisions = write_collected_outputs(
+        outputs=outputs,
+        output_dir=args.output_dir,
         providers_dir=args.provider_dir,
         routers_dir=args.routers_dir,
-        stats_dir=args.output_dir,
         synthetic_dir=args.synthetic_output_dir,
-        dry_run=args.dry_run,
         excluded_provider="vercel",
+        dry_run=args.dry_run,
     )
 
     print("Vercel AI Gateway provider model stats")
@@ -216,6 +173,7 @@ def main() -> int:
         f"Synthetic written: {synthetic_written}" if not args.dry_run else f"Synthetic would write: {synthetic_written}"
     )
     print_bucket("Unmatched endpoints", unmatched_providers)
+    print_bucket("Multiple endpoints for provider/model", multiple_endpoints)
     print_bucket("Output collisions", output_collisions)
     print_bucket("API errors", sorted(set(api_errors)))
     print_bucket("TOML parse errors", parse_errors)
