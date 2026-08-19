@@ -443,20 +443,13 @@
         }
       },
       "edenai": {
-        "cloudflare/@cf/qwen/qwen3.8-27b": {
+        "qwen/qwen3.8-27b": {
           "is_thinking": true,
           "cost": {
-            "input": 0.45,
-            "output": 3.2,
-            "cache_read": 0.05
-          }
-        },
-        "deepinfra/Qwen/Qwen3.8-27B": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0.4,
+            "input": 0.5,
             "output": 3,
-            "cache_read": 0.04
+            "cache_read": 0.1,
+            "cache_write": 0.625
           }
         },
         "tensorx/qwen/qwen3.8-27b": {
@@ -7334,9 +7327,9 @@
         "moonshotai/kimi-k2.6": {
           "is_thinking": true,
           "cost": {
-            "input": 0.95,
-            "output": 4,
-            "cache_read": 0.16
+            "input": 0.646,
+            "output": 2.72,
+            "cache_read": 0.1088
           }
         }
       },
@@ -14705,6 +14698,16 @@
       },
       "kilo": {
         "z-ai/glm-5.3": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.4,
+            "output": 4.4,
+            "cache_read": 0.26
+          }
+        }
+      },
+      "llmgateway": {
+        "glm-5.3": {
           "is_thinking": true,
           "cost": {
             "input": 1.4,
