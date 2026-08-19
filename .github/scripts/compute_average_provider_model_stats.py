@@ -54,6 +54,14 @@ SOURCE_SPECS = (
             MetricSpec(("throughput_last_1h", "p50"), ("throughput_last_1h", "p50")),
         ),
     ),
+    SourceSpec(
+        name="llmgateway",
+        metrics=(
+            MetricSpec(("uptime",), ("uptime",)),
+            MetricSpec(("avgTimeToFirstToken",), ("avgTimeToFirstToken",)),
+            MetricSpec(("tokensPerSecond",), ("tokensPerSecond",)),
+        ),
+    ),
 )
 
 
@@ -109,7 +117,7 @@ def _average_values(values: list[object], context: str) -> tuple[object | None, 
 
 
 def _is_valid_metric(metric: MetricSpec, value: object) -> bool:
-    if not metric.source_path[0].startswith("uptime_last_"):
+    if metric.source_path[0] != "uptime" and not metric.source_path[0].startswith("uptime_last_"):
         return True
     return not (isinstance(value, Real) and not isinstance(value, bool) and value < MIN_VALID_UPTIME)
 

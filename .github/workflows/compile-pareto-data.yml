@@ -115,6 +115,9 @@ jobs:
       - name: Get provider model stats from Vercel
         run: python .github/scripts/get_provider_model_stats_from_vercel.py
 
+      - name: Get provider model stats from LLM Gateway
+        run: python .github/scripts/get_provider_model_stats_from_llmgateway.py
+
       - name: Compute average provider model stats
         run: python .github/scripts/compute_average_provider_model_stats.py
 

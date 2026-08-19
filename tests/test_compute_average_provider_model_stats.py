@@ -159,6 +159,41 @@ class ComputeAverageProviderModelStatsTest(unittest.TestCase):
                 },
             )
 
+    def test_averages_llmgateway_metrics_and_omits_log_count(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = pathlib.Path(temporary_directory)
+            model = root / "providers" / "acme" / "models" / "model.toml"
+            model.parent.mkdir(parents=True)
+            model.write_text("", encoding="utf-8")
+
+            source = root / "stats" / "llmgateway" / "acme" / "models" / "model.json"
+            source.parent.mkdir(parents=True)
+            source.write_text(
+                json.dumps(
+                    {
+                        "logsCount": 120,
+                        "avgTimeToFirstToken": 450,
+                        "tokensPerSecond": 80,
+                        "uptime": 99.5,
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            written, errors = compute_average_stats.compute_stats(root, dry_run=False)
+
+            destination = root / "stats" / "_average" / "acme" / "models" / "model.json"
+            self.assertEqual(written, 1)
+            self.assertEqual(errors, [])
+            self.assertEqual(
+                json.loads(destination.read_text(encoding="utf-8")),
+                {
+                    "avgTimeToFirstToken": 450,
+                    "tokensPerSecond": 80,
+                    "uptime": 99.5,
+                },
+            )
+
     def test_does_not_write_model_without_any_source_stats(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = pathlib.Path(temporary_directory)

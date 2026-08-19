@@ -9,7 +9,7 @@ import shutil
 import sys
 import urllib.error
 import urllib.request
-from collections.abc import Callable
+from collections.abc import Callable, Collection
 from typing import Any
 
 import tomllib
@@ -90,6 +90,8 @@ def fetch_json(
         ) from exc
     except urllib.error.URLError as exc:
         raise RuntimeError(f"{error_context}: {exc.reason}") from exc
+    except TimeoutError as exc:
+        raise RuntimeError(f"{error_context}: request timed out") from exc
     except json.JSONDecodeError as exc:
         raise RuntimeError(f"{error_context}: invalid JSON") from exc
 
@@ -99,6 +101,7 @@ def collect_model_endpoints(
     models_dir: pathlib.Path,
     api_url: str,
     fetch_model_endpoints: Callable[[str, str], list[dict[str, Any]]],
+    model_ids: Collection[str] | None = None,
 ) -> tuple[
     dict[str, list[dict[str, str]]],
     list[str],
@@ -107,6 +110,13 @@ def collect_model_endpoints(
     list[str],
 ]:
     models, parse_errors = load_provider_models(models_dir)
+    if model_ids is not None:
+        selected_model_ids = set(model_ids)
+        models = {
+            canonical_model: [entry for entry in entries if entry["model_id"] in selected_model_ids]
+            for canonical_model, entries in models.items()
+        }
+        models = {canonical_model: entries for canonical_model, entries in models.items() if entries}
     source_model_ids = sorted({entry["model_id"] for entries in models.values() for entry in entries})
     endpoint_cache: dict[str, list[dict[str, Any]]] = {}
     api_errors: list[str] = []

@@ -18,6 +18,7 @@ from lib.provider_model_stats import (  # noqa: E402 # type: ignore
     HttpRequestError,
     build_provider_outputs,
     collect_model_endpoints,
+    fetch_json,
     load_mapping_cache,
     query_provider_mappings,
     save_mapping_cache,
@@ -115,6 +116,41 @@ class ProviderModelStatsLibraryTest(unittest.TestCase):
                 {"Vercel": "vercel"},
             )
             self.assertEqual(load_mapping_cache(root, ".openrouter_provider_mapping_cache.json"), {})
+
+    def test_collects_only_discovered_source_model_ids_when_filter_is_provided(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            models_dir = pathlib.Path(temporary_directory)
+            for model_id in ("first", "second"):
+                model = models_dir / f"{model_id}.toml"
+                model.write_text(f'base_model = "acme/{model_id}"\n', encoding="utf-8")
+            calls: list[str] = []
+
+            def fetch(_api_url: str, model_id: str):
+                calls.append(model_id)
+                return [{"provider_name": "acme"}]
+
+            models, parse_errors, endpoint_cache, api_errors, unavailable_models = collect_model_endpoints(
+                models_dir=models_dir,
+                api_url="https://example.test/models",
+                fetch_model_endpoints=fetch,
+                model_ids=["second"],
+            )
+
+        self.assertEqual(parse_errors, [])
+        self.assertEqual(api_errors, [])
+        self.assertEqual(unavailable_models, [])
+        self.assertEqual(calls, ["second"])
+        self.assertEqual(set(models), {"acme/second"})
+        self.assertEqual(set(endpoint_cache), {"second"})
+
+    def test_fetch_json_turns_timeouts_into_runtime_errors(self):
+        with mock.patch("lib.provider_model_stats.urllib.request.urlopen", side_effect=TimeoutError):
+            with self.assertRaisesRegex(RuntimeError, "request timed out"):
+                fetch_json(
+                    "https://example.test",
+                    headers={"Accept": "application/json"},
+                    error_context="Example request failed",
+                )
 
     def test_debug_mapping_logs_prompts_and_response_without_authorization_header(self):
         response = io.BytesIO(b'{"choices":[{"message":{"content":"{\\"Acme AI\\": \\"acme\\"}"}}]}')
