@@ -545,9 +545,9 @@
         "alibaba/qwen3.8-27b": {
           "is_thinking": true,
           "cost": {
-            "input": 0.1,
-            "output": 0.4,
-            "cache_read": 0.01
+            "input": 0.55,
+            "output": 3.3,
+            "cache_read": 0.11
           }
         }
       },
@@ -4393,9 +4393,9 @@
         "deepseek/deepseek-v4-flash": {
           "is_thinking": true,
           "cost": {
-            "input": 0.077,
-            "output": 0.154,
-            "cache_read": 0.0154
+            "input": 0.0742,
+            "output": 0.1484,
+            "cache_read": 0.01484
           }
         }
       },
