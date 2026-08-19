@@ -399,6 +399,184 @@
       }
     }
   },
+  "alibaba/qwen3.8-27b": {
+    "accuracy": 68.1,
+    "providers": {
+      "chutes": {
+        "Qwen/Qwen3.8-27B-TEE": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.4,
+            "output": 3,
+            "cache_read": 0.039999999999999994
+          }
+        }
+      },
+      "cloudflare-workers-ai": {
+        "@cf/qwen/qwen3.8-27b": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.45,
+            "output": 3.2,
+            "cache_read": 0.05
+          }
+        }
+      },
+      "cortecs": {
+        "qwen3.8-27b": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.334,
+            "output": 2.451,
+            "cache_read": 0.111
+          }
+        }
+      },
+      "deepinfra": {
+        "Qwen/Qwen3.8-27B": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.4,
+            "output": 3,
+            "cache_read": 0.04
+          }
+        }
+      },
+      "edenai": {
+        "cloudflare/@cf/qwen/qwen3.8-27b": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.45,
+            "output": 3.2,
+            "cache_read": 0.05
+          }
+        },
+        "deepinfra/Qwen/Qwen3.8-27B": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.4,
+            "output": 3,
+            "cache_read": 0.04
+          }
+        },
+        "tensorx/qwen/qwen3.8-27b": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.4,
+            "output": 2.4,
+            "cache_read": 0.1
+          }
+        }
+      },
+      "empiriolabs": {
+        "qwen3-8-27b": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.17,
+            "output": 0.5,
+            "cache_read": 0.08
+          }
+        }
+      },
+      "hetzner": {
+        "Qwen3.8-27B": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cache_read": 0
+          }
+        }
+      },
+      "kilo": {
+        "qwen/qwen3.8-27b": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.45,
+            "output": 3.2,
+            "cache_read": 0.05
+          }
+        }
+      },
+      "kosmik": {
+        "qwen/qwen3.8-27b": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.35,
+            "output": 2.2,
+            "cache_read": 0.09
+          }
+        }
+      },
+      "nano-gpt": {
+        "qwen3.8-27b": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.2,
+            "output": 1.4,
+            "cache_read": 0.04
+          }
+        },
+        "qwen3.8-27b:thinking": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.2,
+            "output": 1.4,
+            "cache_read": 0.04
+          }
+        }
+      },
+      "openrouter": {
+        "qwen/qwen3.8-27b": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.45,
+            "output": 3.2,
+            "cache_read": 0.05
+          }
+        }
+      },
+      "runinfra": {
+        "Qwen/Qwen3.8-27B": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.1,
+            "output": 0.4,
+            "cache_read": 0.01
+          }
+        }
+      },
+      "venice": {
+        "qwen-3-8-27b": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.45,
+            "output": 3.2
+          }
+        }
+      },
+      "vercel": {
+        "alibaba/qwen3.8-27b": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.1,
+            "output": 0.4,
+            "cache_read": 0.01
+          }
+        }
+      },
+      "wandb": {
+        "Qwen/Qwen3.8-27B": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.4,
+            "output": 3,
+            "cache_read": 0.15
+          }
+        }
+      }
+    }
+  },
   "alibaba/qwen3.8-max": {
     "accuracy": 71.8,
     "providers": {
@@ -14497,6 +14675,147 @@
             "input": 0,
             "output": 0,
             "cache_read": 0
+          }
+        }
+      }
+    }
+  },
+  "zhipuai/glm-5.3": {
+    "accuracy": 74.8,
+    "providers": {
+      "edenai": {
+        "zai/glm-5.3": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.4,
+            "output": 4.4,
+            "cache_read": 0.26
+          }
+        }
+      },
+      "empiriolabs": {
+        "glm-5-3": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.4,
+            "output": 4.4,
+            "cache_read": 1.4
+          }
+        }
+      },
+      "kilo": {
+        "z-ai/glm-5.3": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.4,
+            "output": 4.4,
+            "cache_read": 0.26
+          }
+        }
+      },
+      "merge-gateway": {
+        "zai/glm-5.3": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.4,
+            "output": 4.4,
+            "cache_read": 0.26
+          }
+        }
+      },
+      "nano-gpt": {
+        "zai-org/glm-5.3": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.4,
+            "output": 4.4,
+            "cache_read": 0.26
+          }
+        },
+        "zai-org/glm-5.3:thinking": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.4,
+            "output": 4.4,
+            "cache_read": 0.26
+          }
+        }
+      },
+      "ofox": {
+        "z-ai/glm-5.3": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.4,
+            "output": 4.4,
+            "cache_read": 0.26
+          }
+        }
+      },
+      "opencode-go": {
+        "glm-5.3": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.4,
+            "output": 4.4,
+            "cache_read": 0.26
+          }
+        }
+      },
+      "openrouter": {
+        "z-ai/glm-5.3": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.4,
+            "output": 4.4,
+            "cache_read": 0.26
+          }
+        }
+      },
+      "requesty": {
+        "glm-5.3": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.4,
+            "output": 4.4,
+            "cache_read": 0.26
+          }
+        },
+        "zai/glm-5.3": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.4,
+            "output": 4.4,
+            "cache_read": 0.26
+          }
+        }
+      },
+      "venice": {
+        "z-ai-glm-5-3": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.75,
+            "output": 5.5,
+            "cache_read": 0.325
+          }
+        }
+      },
+      "vercel": {
+        "zai/glm-5.3": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.4,
+            "output": 4.4,
+            "cache_read": 0.26
+          }
+        }
+      },
+      "vivgrid": {
+        "glm-5.3": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.2,
+            "output": 4.2,
+            "cache_read": 0.26
           }
         }
       }
