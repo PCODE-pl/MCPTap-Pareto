@@ -69,6 +69,15 @@ jobs:
       - name: Sync Requesty model prices
         run: python .github/scripts/sync_requesty_models.py
 
+      - name: Get provider model stats from OpenRouter
+        run: python .github/scripts/get_provider_model_stats_from_openrouter.py
+
+      - name: Get provider model stats from Vercel
+        run: python .github/scripts/get_provider_model_stats_from_vercel.py
+
+      - name: Compute average provider model stats
+        run: python .github/scripts/compute_average_provider_model_stats.py
+
       - name: Compile Pareto data
         run: python .github/scripts/compile_pareto_data.py
 
