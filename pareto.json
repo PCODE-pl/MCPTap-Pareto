@@ -350,6 +350,14 @@
         }
       },
       "requesty": {
+        "deepinfra/qwen3.8": {
+          "is_thinking": true,
+          "cost": {
+            "input": 2.0,
+            "output": 6.0,
+            "cache_read": 0.19999999999999998
+          }
+        },
         "qwen3.8-2.4T-A95B": {
           "is_thinking": true,
           "cost": {
@@ -6318,67 +6326,67 @@
         "google/gemini-3.7-flash": {
           "is_thinking": true,
           "cost": {
-            "input": 0.75,
-            "output": 3.75,
-            "reasoning": 3.75,
-            "cache_read": 0.075,
-            "cache_write": 0.041667,
-            "input_audio": 0.75
+            "input": 1.5,
+            "output": 7.5,
+            "reasoning": 7.5,
+            "cache_read": 0.15,
+            "cache_write": 0.083333,
+            "input_audio": 1.5
           }
         },
         "google/gemini-flash-latest": {
           "is_thinking": true,
           "cost": {
-            "input": 0.75,
-            "output": 3.75,
-            "reasoning": 3.75,
-            "cache_read": 0.075,
-            "cache_write": 0.041667,
-            "input_audio": 0.75
+            "input": 1.5,
+            "output": 7.5,
+            "reasoning": 7.5,
+            "cache_read": 0.15,
+            "cache_write": 0.083333,
+            "input_audio": 1.5
           }
         },
         "vertex/gemini-3.7-flash": {
           "is_thinking": true,
           "cost": {
-            "input": 0.75,
-            "output": 3.75,
-            "reasoning": 3.75,
-            "cache_read": 0.075,
-            "cache_write": 0.041667,
-            "input_audio": 0.75
+            "input": 1.5,
+            "output": 7.5,
+            "reasoning": 7.5,
+            "cache_read": 0.15,
+            "cache_write": 0.083333,
+            "input_audio": 1.5
           }
         },
         "vertex/gemini-3.7-flash@eu": {
           "is_thinking": true,
           "cost": {
-            "input": 0.75,
-            "output": 3.75,
-            "reasoning": 3.75,
-            "cache_read": 0.075,
-            "cache_write": 0.041667,
-            "input_audio": 0.75
+            "input": 1.5,
+            "output": 7.5,
+            "reasoning": 7.5,
+            "cache_read": 0.15,
+            "cache_write": 0.083333,
+            "input_audio": 1.5
           }
         },
         "vertex/gemini-3.7-flash@us": {
           "is_thinking": true,
           "cost": {
-            "input": 0.75,
-            "output": 3.75,
-            "reasoning": 3.75,
-            "cache_read": 0.075,
-            "cache_write": 0.041667,
-            "input_audio": 0.75
+            "input": 1.5,
+            "output": 7.5,
+            "reasoning": 7.5,
+            "cache_read": 0.15,
+            "cache_write": 0.083333,
+            "input_audio": 1.5
           }
         },
         "vertex/gemini-flash-latest": {
           "is_thinking": true,
           "cost": {
-            "input": 0.75,
-            "output": 3.75,
-            "reasoning": 3.75,
-            "cache_read": 0.075,
-            "cache_write": 0.041667,
-            "input_audio": 0.75
+            "input": 1.5,
+            "output": 7.5,
+            "reasoning": 7.5,
+            "cache_read": 0.15,
+            "cache_write": 0.083333,
+            "input_audio": 1.5
           }
         }
       },
@@ -12668,6 +12676,16 @@
           }
         }
       },
+      "ofox": {
+        "x-ai/grok-4.5": {
+          "is_thinking": true,
+          "cost": {
+            "input": 2,
+            "output": 6,
+            "cache_read": 0.3
+          }
+        }
+      },
       "opencode": {
         "grok-4.5": {
           "is_thinking": true,
@@ -12985,6 +13003,16 @@
         }
       },
       "nano-gpt": {
+        "x-ai/grok-4.6": {
+          "is_thinking": true,
+          "cost": {
+            "input": 2,
+            "output": 6,
+            "cache_read": 0.5
+          }
+        }
+      },
+      "ofox": {
         "x-ai/grok-4.6": {
           "is_thinking": true,
           "cost": {
@@ -14132,6 +14160,22 @@
         }
       },
       "requesty": {
+        "deepinfra/glm-5.2": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.75,
+            "output": 2.4,
+            "cache_read": 0.14
+          }
+        },
+        "deepinfra/glm-5.2:flex": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.6,
+            "output": 1.92,
+            "cache_read": 0.112
+          }
+        },
         "doubleword/glm-5.2": {
           "is_thinking": true,
           "cost": {
