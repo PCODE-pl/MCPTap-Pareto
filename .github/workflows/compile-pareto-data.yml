@@ -112,25 +112,51 @@ jobs:
         run: python .github/scripts/compile_pareto_data.py
 
       - name: Commit changed catalog and generated data
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -euo pipefail
           export GIT_TERMINAL_PROMPT=0
 
-          if test -z "$(git status --porcelain -- models providers pareto.json .requesty_ai_mapping_cache.json)"; then
+          if test -z "$(git status --porcelain -- models providers stats pareto.json .requesty_ai_mapping_cache.json)"; then
             echo "Catalog and generated data are unchanged."
             exit 0
           fi
 
+          if [[ -z "${GITHUB_TOKEN:-}" ]]; then
+            echo "GITHUB_TOKEN is required to publish generated data." >&2
+            exit 1
+          fi
+          git config --local http.https://github.com/.extraheader "AUTHORIZATION: bearer ${GITHUB_TOKEN}"
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A -- models providers pareto.json .requesty_ai_mapping_cache.json
+          git add -A -- models providers stats pareto.json .requesty_ai_mapping_cache.json
           git commit -m "chore: sync upstream catalog and generated data"
 
           max_attempts=3
           for attempt in $(seq 1 "$max_attempts"); do
-            if timeout --signal=TERM 120s git push origin "HEAD:${GITHUB_REF_NAME}"; then
+            push_output="$(mktemp)"
+            if timeout --signal=TERM 120s git push origin "HEAD:${GITHUB_REF_NAME}" >"$push_output" 2>&1; then
+              cat "$push_output"
+              rm -f "$push_output"
               echo "Catalog and generated data pushed successfully."
               exit 0
             fi
+            cat "$push_output" >&2
+
+            if grep -Eqi "authentication failed|could not read Username|terminal prompts disabled|permission denied|invalid username|HTTP 40[13]" "$push_output"; then
+              rm -f "$push_output"
+              echo "GitHub authentication failed; refusing to retry push." >&2
+              exit 1
+            fi
+
+            if ! grep -Eqi "rejected|non-fast-forward|fetch first|remote contains work" "$push_output"; then
+              rm -f "$push_output"
+              echo "Git push failed for a non-retryable reason." >&2
+              exit 1
+            fi
+            rm -f "$push_output"
 
             if test "$attempt" -eq "$max_attempts"; then
               echo "Unable to push after ${max_attempts} attempts."
@@ -139,9 +165,22 @@ jobs:
 
             echo "Remote branch advanced during push; rebasing and retrying."
             git fetch --no-tags origin "${GITHUB_REF_NAME}"
+            had_local_changes=false
+            if ! git diff --quiet || ! git diff --cached --quiet || test -n "$(git ls-files --others --exclude-standard)"; then
+              had_local_changes=true
+              git stash push --include-untracked -m "preserve local changes before push rebase"
+            fi
             if ! GIT_EDITOR=: git rebase "origin/${GITHUB_REF_NAME}"; then
-              echo "Automatic rebase failed; refusing to overwrite remote changes."
+              echo "Automatic rebase failed; refusing to overwrite remote changes." >&2
               git rebase --abort || true
+              if [[ "$had_local_changes" == true ]]; then
+                git stash pop || true
+              fi
+              git status --short
+              exit 1
+            fi
+            if [[ "$had_local_changes" == true ]] && ! git stash pop; then
+              echo "Unable to restore local changes after push rebase." >&2
               git status --short
               exit 1
             fi
