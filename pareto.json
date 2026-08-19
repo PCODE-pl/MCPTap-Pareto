@@ -7752,9 +7752,9 @@
         "kimi-k2.7-code": {
           "is_thinking": true,
           "cost": {
-            "input": 0.95,
-            "output": 4,
-            "cache_read": 0.19
+            "input": 1.03436,
+            "output": 4.3552,
+            "cache_read": 0.206872
           }
         }
       },
@@ -11603,20 +11603,20 @@
         "gpt-5.6-sol": {
           "is_thinking": true,
           "cost": {
-            "input": 5,
-            "output": 30,
-            "cache_read": 0.5,
-            "cache_write": 6.25,
+            "input": 2.5,
+            "output": 15,
+            "cache_read": 0.25,
+            "cache_write": 3.125,
             "tiers": [
               {
                 "tier": {
                   "type": "context",
                   "size": 272000
                 },
-                "input": 10,
-                "output": 45,
-                "cache_read": 1,
-                "cache_write": 12.5
+                "input": 5,
+                "output": 22.5,
+                "cache_read": 0.5,
+                "cache_write": 6.25
               }
             ]
           }
@@ -14084,9 +14084,9 @@
         "glm-5.2": {
           "is_thinking": true,
           "cost": {
-            "input": 1.1,
-            "output": 3.851,
-            "cache_read": 0.275
+            "input": 1.52432,
+            "output": 4.79072,
+            "cache_read": 0.152432
           }
         }
       },
@@ -14676,6 +14676,17 @@
   "zhipuai/glm-5.3": {
     "accuracy": 74.8,
     "providers": {
+      "crossmodel": {
+        "z-ai/glm-5.3": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.2,
+            "output": 4.4,
+            "cache_read": 0.3,
+            "cache_write": 1.2
+          }
+        }
+      },
       "edenai": {
         "zai/glm-5.3": {
           "is_thinking": true,
