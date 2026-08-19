@@ -1,14 +1,9 @@
 {
   "uptime_last_30m": 100,
   "uptime_last_5m": 100,
-  "uptime_last_1d": 99.9609246612862,
-  "latency_last_30m": {
-    "p50": 3140.5
-  },
-  "throughput_last_30m": {
-    "p50": 56
-  },
-  "uptime": 99.7,
-  "avgTimeToFirstToken": 5436.0625,
-  "tokensPerSecond": 59
+  "uptime_last_1d": 99.8304623306431,
+  "latency_last_30m": 3140.5,
+  "throughput_last_30m": 56,
+  "latency_last_1d": 5436.0625,
+  "throughput_last_1d": 59
 }

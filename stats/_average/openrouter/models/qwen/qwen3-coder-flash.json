@@ -1,5 +1,5 @@
 {
-  "uptime": 100,
-  "avgTimeToFirstToken": 697,
-  "tokensPerSecond": 76
+  "uptime_last_1d": 100,
+  "latency_last_1d": 697,
+  "throughput_last_1d": 76
 }
