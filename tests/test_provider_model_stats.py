@@ -15,6 +15,7 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from lib.provider_model_stats import (  # noqa: E402 # type: ignore
+    HttpRequestError,
     build_provider_outputs,
     collect_model_endpoints,
     load_mapping_cache,
@@ -37,7 +38,7 @@ class ProviderModelStatsLibraryTest(unittest.TestCase):
                 calls.append((api_url, model_id))
                 return [{"provider_name": "acme"}]
 
-            models, parse_errors, endpoint_cache, api_errors = collect_model_endpoints(
+            models, parse_errors, endpoint_cache, api_errors, unavailable_models = collect_model_endpoints(
                 models_dir=models_dir,
                 api_url="https://example.test/models",
                 fetch_model_endpoints=fetch,
@@ -45,9 +46,64 @@ class ProviderModelStatsLibraryTest(unittest.TestCase):
 
         self.assertEqual(parse_errors, [])
         self.assertEqual(api_errors, [])
+        self.assertEqual(unavailable_models, [])
         self.assertEqual(calls, [("https://example.test/models", "acme/model")])
         self.assertEqual(endpoint_cache, {"acme/model": [{"provider_name": "acme"}]})
         self.assertEqual(models["acme/model"][0]["model_id"], "acme/model")
+
+    def test_skips_models_missing_from_endpoint_catalog(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            models_dir = pathlib.Path(temporary_directory)
+            model = models_dir / "acme" / "model.toml"
+            model.parent.mkdir(parents=True)
+            model.write_text('base_model = "acme/model"\n', encoding="utf-8")
+
+            def fetch(_api_url: str, _model_id: str):
+                raise HttpRequestError(
+                    "Vercel endpoint request failed for acme/model: HTTP 404: model_not_found",
+                    status_code=404,
+                )
+
+            models, parse_errors, endpoint_cache, api_errors, unavailable_models = collect_model_endpoints(
+                models_dir=models_dir,
+                api_url="https://example.test/models",
+                fetch_model_endpoints=fetch,
+            )
+
+        self.assertEqual(models["acme/model"][0]["model_id"], "acme/model")
+        self.assertEqual(parse_errors, [])
+        self.assertEqual(endpoint_cache, {})
+        self.assertEqual(api_errors, [])
+        self.assertEqual(
+            unavailable_models,
+            ["Vercel endpoint request failed for acme/model: HTTP 404: model_not_found"],
+        )
+
+    def test_keeps_non_404_endpoint_failures_fatal(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            models_dir = pathlib.Path(temporary_directory)
+            model = models_dir / "acme" / "model.toml"
+            model.parent.mkdir(parents=True)
+            model.write_text('base_model = "acme/model"\n', encoding="utf-8")
+
+            def fetch(_api_url: str, _model_id: str):
+                raise HttpRequestError(
+                    "Vercel endpoint request failed for acme/model: HTTP 503: unavailable",
+                    status_code=503,
+                )
+
+            _, _, endpoint_cache, api_errors, unavailable_models = collect_model_endpoints(
+                models_dir=models_dir,
+                api_url="https://example.test/models",
+                fetch_model_endpoints=fetch,
+            )
+
+        self.assertEqual(endpoint_cache, {})
+        self.assertEqual(
+            api_errors,
+            ["Vercel endpoint request failed for acme/model: HTTP 503: unavailable"],
+        )
+        self.assertEqual(unavailable_models, [])
 
     def test_mapping_cache_round_trip_is_scoped_by_filename(self):
         with tempfile.TemporaryDirectory() as temporary_directory:

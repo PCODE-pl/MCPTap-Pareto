@@ -20,6 +20,14 @@ DEFAULT_PROVIDER_DIR = "providers"
 DEFAULT_ROUTERS_DIR = "routers"
 
 
+class HttpRequestError(RuntimeError):
+    """HTTP request failure with a status code for caller-specific handling."""
+
+    def __init__(self, message: str, *, status_code: int):
+        super().__init__(message)
+        self.status_code = status_code
+
+
 def parse_base_model(value: object) -> tuple[str, str] | None:
     if not isinstance(value, str):
         return None
@@ -76,7 +84,10 @@ def fetch_json(
             return json.load(response)
     except urllib.error.HTTPError as exc:
         body = exc.read().decode("utf-8", errors="replace")[:500]
-        raise RuntimeError(f"{error_context}: HTTP {exc.code}: {body}") from exc
+        raise HttpRequestError(
+            f"{error_context}: HTTP {exc.code}: {body}",
+            status_code=exc.code,
+        ) from exc
     except urllib.error.URLError as exc:
         raise RuntimeError(f"{error_context}: {exc.reason}") from exc
     except json.JSONDecodeError as exc:
@@ -93,17 +104,24 @@ def collect_model_endpoints(
     list[str],
     dict[str, list[dict[str, Any]]],
     list[str],
+    list[str],
 ]:
     models, parse_errors = load_provider_models(models_dir)
     source_model_ids = sorted({entry["model_id"] for entries in models.values() for entry in entries})
     endpoint_cache: dict[str, list[dict[str, Any]]] = {}
     api_errors: list[str] = []
+    unavailable_models: list[str] = []
     for model_id in source_model_ids:
         try:
             endpoint_cache[model_id] = fetch_model_endpoints(api_url, model_id)
+        except HttpRequestError as exc:
+            if exc.status_code == 404:
+                unavailable_models.append(str(exc))
+            else:
+                api_errors.append(str(exc))
         except RuntimeError as exc:
             api_errors.append(str(exc))
-    return models, parse_errors, endpoint_cache, api_errors
+    return models, parse_errors, endpoint_cache, api_errors, unavailable_models
 
 
 def build_provider_outputs(

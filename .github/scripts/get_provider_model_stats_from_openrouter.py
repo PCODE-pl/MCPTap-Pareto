@@ -135,7 +135,7 @@ def main() -> int:
     cache = {} if args.clear_cache else load_mapping_cache(REPO_ROOT, CACHE_FILE_NAME)
     api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
 
-    models, parse_errors, endpoint_cache, api_errors = collect_model_endpoints(
+    models, parse_errors, endpoint_cache, api_errors, unavailable_models = collect_model_endpoints(
         models_dir=MODELS_DIR,
         api_url=API_URL,
         fetch_model_endpoints=fetch_model_endpoints,
@@ -217,6 +217,7 @@ def main() -> int:
     print_bucket("Unmatched provider names", sorted(set(unmatched_providers)))
     print_bucket("Multiple endpoints for provider/model", sorted(set(multiple_endpoints)))
     print_bucket("Output collisions", sorted(set(output_collisions)))
+    print_bucket("Unavailable models (HTTP 404)", sorted(set(unavailable_models)))
     print_bucket("API errors", sorted(set(api_errors)))
     print_bucket("TOML parse errors", parse_errors)
     print_bucket("Synthetic output collisions", synthetic_collisions)
