@@ -113,6 +113,52 @@ class ComputeAverageProviderModelStatsTest(unittest.TestCase):
             self.assertEqual(errors, [])
             self.assertEqual(json.loads(destination.read_text(encoding="utf-8")), {"uptime_last_30m": 97})
 
+    def test_ignores_uptime_values_below_configured_minimum(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = pathlib.Path(temporary_directory)
+            model = root / "providers" / "acme" / "models" / "model.toml"
+            model.parent.mkdir(parents=True)
+            model.write_text("", encoding="utf-8")
+
+            openrouter = root / "stats" / "openrouter" / "acme" / "models" / "model.json"
+            openrouter.parent.mkdir(parents=True)
+            openrouter.write_text(
+                json.dumps(
+                    {
+                        "uptime_last_5m": 29,
+                        "uptime_last_30m": 30,
+                        "uptime_last_1d": 20,
+                    }
+                ),
+                encoding="utf-8",
+            )
+            vercel = root / "stats" / "vercel" / "acme" / "models" / "model.json"
+            vercel.parent.mkdir(parents=True)
+            vercel.write_text(
+                json.dumps(
+                    {
+                        "uptime_last_15m": 29,
+                        "uptime_last_1h": 30,
+                        "uptime_last_1d": 40,
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            written, errors = compute_average_stats.compute_stats(root, dry_run=False)
+
+            destination = root / "stats" / "_average" / "acme" / "models" / "model.json"
+            self.assertEqual(written, 1)
+            self.assertEqual(errors, [])
+            self.assertEqual(
+                json.loads(destination.read_text(encoding="utf-8")),
+                {
+                    "uptime_last_30m": 30,
+                    "uptime_last_1h": 30,
+                    "uptime_last_1d": 40,
+                },
+            )
+
     def test_does_not_write_model_without_any_source_stats(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = pathlib.Path(temporary_directory)

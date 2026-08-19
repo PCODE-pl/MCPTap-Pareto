@@ -12,6 +12,7 @@ from numbers import Real
 from typing import Any
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
+MIN_VALID_UPTIME = 30
 
 _MISSING = object()
 
@@ -107,6 +108,12 @@ def _average_values(values: list[object], context: str) -> tuple[object | None, 
     return sum(values) / len(values), None  # type: ignore[arg-type]
 
 
+def _is_valid_metric(metric: MetricSpec, value: object) -> bool:
+    if not metric.source_path[0].startswith("uptime_last_"):
+        return True
+    return not (isinstance(value, Real) and not isinstance(value, bool) and value < MIN_VALID_UPTIME)
+
+
 def _average_model_stats(
     repo_root: pathlib.Path,
     relative_model_path: pathlib.Path,
@@ -122,7 +129,7 @@ def _average_model_stats(
             continue
         for metric in source.metrics:
             value = _read_value(document, metric.source_path)
-            if value is not _MISSING:
+            if value is not _MISSING and _is_valid_metric(metric, value):
                 values_by_output_path.setdefault(metric.output_path, []).append(value)
 
     result: dict[str, Any] = {}
