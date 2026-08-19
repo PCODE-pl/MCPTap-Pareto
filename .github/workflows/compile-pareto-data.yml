@@ -32,11 +32,21 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
+      - name: Validate shared hook credentials
+        env:
+          MCPTAP_EXTRAS_TOKEN: ${{ secrets.MCPTAP_EXTRAS_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${MCPTAP_EXTRAS_TOKEN:-}" ]]; then
+            echo "A read-capable MCPTAP_EXTRAS_TOKEN secret is required." >&2
+            exit 1
+          fi
+
       - name: Checkout shared pre-commit hooks
         uses: actions/checkout@v4
         with:
           repository: PCODE-pl/MCPTap-Extras
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.MCPTAP_EXTRAS_TOKEN }}
           path: mcp-tap-extras
           fetch-depth: 1
 
