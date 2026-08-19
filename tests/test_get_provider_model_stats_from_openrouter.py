@@ -176,7 +176,7 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
                 source_stats.read_text(encoding="utf-8"),
             )
 
-    def test_non_router_uses_its_own_stats_provider_directory(self):
+    def test_skips_structured_non_router_provider(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = pathlib.Path(temporary_directory)
             providers_dir = root / "providers"
@@ -200,15 +200,10 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
                 dry_run=False,
             )
 
-            self.assertEqual(written, 1)
+            self.assertEqual(written, 0)
             self.assertEqual(errors, [])
             self.assertEqual(collisions, [])
-            self.assertEqual(
-                (synthetic_dir / "managed-platform" / "models" / "unrelated" / "model.json").read_text(
-                    encoding="utf-8"
-                ),
-                source_stats.read_text(encoding="utf-8"),
-            )
+            self.assertFalse(synthetic_dir.exists())
 
     def test_non_router_without_own_stats_provider_is_skipped(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
@@ -272,7 +267,7 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
             self.assertTrue(stale_file.is_file())
             self.assertFalse((synthetic_dir / "fast-router").exists())
 
-    def test_skips_collision_and_reports_all_sources(self):
+    def test_uses_base_model_provider_stats_for_router(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = pathlib.Path(temporary_directory)
             providers_dir = root / "providers"
@@ -281,10 +276,12 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
             synthetic_dir = root / "synthetic"
             routers_dir.mkdir()
             write_router(routers_dir, "fast-router", is_router=True, structured_models=True)
-            for stats_provider, payload in (("deepinfra", "first"), ("moonshotai", "second")):
-                source = stats_dir / stats_provider / "models" / "acme" / "base.json"
-                source.parent.mkdir(parents=True)
-                source.write_text(f'{{"source": "{payload}"}}\n', encoding="utf-8")
+            source = stats_dir / "acme" / "models" / "acme" / "base.json"
+            source.parent.mkdir(parents=True)
+            source.write_text('{"source": "canonical"}\n', encoding="utf-8")
+            unrelated_source = stats_dir / "deepinfra" / "models" / "acme" / "base.json"
+            unrelated_source.parent.mkdir(parents=True)
+            unrelated_source.write_text('{"source": "unrelated"}\n', encoding="utf-8")
             model = providers_dir / "fast-router" / "models" / "deepinfra" / "moonshotai" / "model.toml"
             model.parent.mkdir(parents=True)
             model.write_text('base_model = "acme/base"\n', encoding="utf-8")
@@ -297,13 +294,11 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
                 dry_run=False,
             )
 
-            self.assertEqual(written, 0)
+            destination = synthetic_dir / "fast-router" / "models" / "deepinfra" / "moonshotai" / "model.json"
+            self.assertEqual(written, 1)
             self.assertEqual(errors, [])
-            self.assertEqual(len(collisions), 1)
-            self.assertIn("fast-router/models/deepinfra/moonshotai/model.json", collisions[0])
-            self.assertIn("deepinfra/models/acme/base.json", collisions[0])
-            self.assertIn("moonshotai/models/acme/base.json", collisions[0])
-            self.assertFalse(synthetic_dir.exists())
+            self.assertEqual(collisions, [])
+            self.assertEqual(destination.read_text(encoding="utf-8"), source.read_text(encoding="utf-8"))
 
     def test_rejects_base_models_that_escape_the_stats_directory(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
