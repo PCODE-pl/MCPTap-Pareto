@@ -32,6 +32,27 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
+      - name: Checkout shared pre-commit hooks
+        uses: actions/checkout@v4
+        with:
+          repository: PCODE-pl/MCPTap-Extras
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: mcp-tap-extras
+          fetch-depth: 1
+
+      - name: Link shared pre-commit hooks
+        run: |
+          set -euo pipefail
+
+          hooks_link="${GITHUB_WORKSPACE}/../mcp-tap-extras"
+          if [ -L "${hooks_link}" ]; then
+            rm "${hooks_link}"
+          elif [ -e "${hooks_link}" ]; then
+            echo "Expected ${hooks_link} to be absent or a symlink" >&2
+            exit 1
+          fi
+          ln -s "${GITHUB_WORKSPACE}/mcp-tap-extras" "${hooks_link}"
+
       - name: Sync catalog from upstream models.dev
         run: |
           set -euo pipefail
@@ -66,6 +87,15 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Set up pre-commit
+        run: |
+          python -m pip install --disable-pip-version-check \
+            pre-commit \
+            ruff \
+            "lingua-language-detector>=2.0"
+          npm install --global markdownlint-cli2@0.23.2
+          pre-commit install --install-hooks --hook-type pre-commit --hook-type post-commit
+
       - name: Sync Requesty model prices
         run: python .github/scripts/sync_requesty_models.py
 
@@ -93,8 +123,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A -- models providers pareto.json .requesty_ai_mapping_cache.json
-          # Automated commits must not depend on developer-local hooks copied into act.
-          git commit --no-verify -m "chore: sync upstream catalog and generated data"
+          git commit -m "chore: sync upstream catalog and generated data"
 
           max_attempts=3
           for attempt in $(seq 1 "$max_attempts"); do
