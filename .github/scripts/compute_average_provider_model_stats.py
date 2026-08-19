@@ -40,8 +40,8 @@ SOURCE_SPECS = (
             MetricSpec(("uptime_last_30m",), ("uptime_last_30m",)),
             MetricSpec(("uptime_last_5m",), ("uptime_last_5m",)),
             MetricSpec(("uptime_last_1d",), ("uptime_last_1d",)),
-            MetricSpec(("latency_last_30m", "p50"), ("latency_last_30m", "p50")),
-            MetricSpec(("throughput_last_30m", "p50"), ("throughput_last_30m", "p50")),
+            MetricSpec(("latency_last_30m", "p50"), ("latency_last_30m",)),
+            MetricSpec(("throughput_last_30m", "p50"), ("throughput_last_30m",)),
         ),
     ),
     SourceSpec(
@@ -50,16 +50,16 @@ SOURCE_SPECS = (
             MetricSpec(("uptime_last_15m",), ("uptime_last_15m",)),
             MetricSpec(("uptime_last_1h",), ("uptime_last_1h",)),
             MetricSpec(("uptime_last_1d",), ("uptime_last_1d",)),
-            MetricSpec(("latency_last_1h", "p50"), ("latency_last_1h", "p50")),
-            MetricSpec(("throughput_last_1h", "p50"), ("throughput_last_1h", "p50")),
+            MetricSpec(("latency_last_1h", "p50"), ("latency_last_1h",)),
+            MetricSpec(("throughput_last_1h", "p50"), ("throughput_last_1h",)),
         ),
     ),
     SourceSpec(
         name="llmgateway",
         metrics=(
-            MetricSpec(("uptime",), ("uptime",)),
-            MetricSpec(("avgTimeToFirstToken",), ("avgTimeToFirstToken",)),
-            MetricSpec(("tokensPerSecond",), ("tokensPerSecond",)),
+            MetricSpec(("uptime",), ("uptime_last_1d",)),
+            MetricSpec(("avgTimeToFirstToken",), ("latency_last_1d",)),
+            MetricSpec(("tokensPerSecond",), ("throughput_last_1d",)),
         ),
     ),
 )
