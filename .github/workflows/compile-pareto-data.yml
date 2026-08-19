@@ -81,7 +81,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A -- models providers pareto.json .requesty_ai_mapping_cache.json
-          git commit -m "chore: sync upstream catalog and generated data"
+          # Automated commits must not depend on developer-local hooks copied into act.
+          git commit --no-verify -m "chore: sync upstream catalog and generated data"
 
           max_attempts=3
           for attempt in $(seq 1 "$max_attempts"); do
