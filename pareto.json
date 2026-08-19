@@ -6771,6 +6771,14 @@
             "output": 0.2,
             "cache_read": 0.002
           }
+        },
+        "muse-spark-1.2-contributor": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.1,
+            "output": 0.2,
+            "cache_read": 0.002
+          }
         }
       },
       "openrouter": {
