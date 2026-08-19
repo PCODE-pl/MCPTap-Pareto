@@ -29,9 +29,11 @@
   "Nebius": "nebius",
   "Novita": "novita-ai",
   "Nvidia": "nvidia",
+  "OpenAI": "openai",
   "Poolside": "poolside",
   "Sakana AI": "sakana",
   "SiliconFlow": "siliconflow",
+  "StepFun": "stepfun",
   "Together": "togetherai",
   "Venice": "venice",
   "Wafer": "wafer.ai",
@@ -52,7 +54,6 @@
   "Mara": "Mara",
   "ModelRun": "ModelRun",
   "NextBit": "NextBit",
-  "OpenAI": "OpenAI",
   "OpenInference": "OpenInference",
   "Parasail": "Parasail",
   "Phala": "Phala",
@@ -60,7 +61,7 @@
   "Sail Research": "Sail Research",
   "SambaNova": "SambaNova",
   "Seed": "Seed",
-  "StepFun": "StepFun",
   "StreamLake": "StreamLake",
-  "Tencent": "Tencent"
+  "Tencent": "Tencent",
+  "Reka": "Reka"
 }
