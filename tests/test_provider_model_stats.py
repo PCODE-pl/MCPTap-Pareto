@@ -152,6 +152,25 @@ class ProviderModelStatsLibraryTest(unittest.TestCase):
                     error_context="Example request failed",
                 )
 
+    def test_fetch_json_retries_transient_timeouts(self):
+        response = io.BytesIO(b"{}")
+        with mock.patch(
+            "lib.provider_model_stats.urllib.request.urlopen",
+            side_effect=[TimeoutError, response],
+        ) as urlopen:
+            self.assertEqual(
+                fetch_json(
+                    "https://example.test",
+                    headers={"Accept": "application/json"},
+                    error_context="Example request failed",
+                    retries=1,
+                    retry_delay=0,
+                ),
+                {},
+            )
+
+        self.assertEqual(urlopen.call_count, 2)
+
     def test_debug_mapping_logs_prompts_and_response_without_authorization_header(self):
         response = io.BytesIO(b'{"choices":[{"message":{"content":"{\\"Acme AI\\": \\"acme\\"}"}}]}')
         debug_output = io.StringIO()

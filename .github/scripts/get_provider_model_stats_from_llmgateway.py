@@ -95,6 +95,8 @@ def fetch_public_model_ids(api_url: str) -> list[str]:
         f"{api_url.rstrip('/')}/public/models/stats?window=24h",
         headers={"Accept": "application/json"},
         error_context="LLM Gateway public model stats request failed",
+        retries=2,
+        retry_delay=1,
     )
     return parse_public_stats_response(payload)
 
@@ -126,6 +128,8 @@ def fetch_model_endpoints(api_url: str, model_id: str) -> list[dict[str, Any]]:
         url,
         headers={"Accept": "application/json"},
         error_context=f"LLM Gateway benchmark request failed for {model_id}",
+        retries=2,
+        retry_delay=1,
     )
     return parse_benchmarks_response(payload, model_id)
 

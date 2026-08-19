@@ -7,6 +7,7 @@ import pathlib
 import re
 import shutil
 import sys
+import time
 import urllib.error
 import urllib.request
 from collections.abc import Callable, Collection
@@ -77,23 +78,31 @@ def fetch_json(
     headers: dict[str, str],
     error_context: str,
     timeout: int = 60,
+    retries: int = 0,
+    retry_delay: float = 1.0,
 ) -> object:
     request = urllib.request.Request(url, headers=headers)
-    try:
-        with urllib.request.urlopen(request, timeout=timeout) as response:
-            return json.load(response)
-    except urllib.error.HTTPError as exc:
-        body = exc.read().decode("utf-8", errors="replace")[:500]
-        raise HttpRequestError(
-            f"{error_context}: HTTP {exc.code}: {body}",
-            status_code=exc.code,
-        ) from exc
-    except urllib.error.URLError as exc:
-        raise RuntimeError(f"{error_context}: {exc.reason}") from exc
-    except TimeoutError as exc:
-        raise RuntimeError(f"{error_context}: request timed out") from exc
-    except json.JSONDecodeError as exc:
-        raise RuntimeError(f"{error_context}: invalid JSON") from exc
+    for attempt in range(retries + 1):
+        try:
+            with urllib.request.urlopen(request, timeout=timeout) as response:
+                return json.load(response)
+        except urllib.error.HTTPError as exc:
+            body = exc.read().decode("utf-8", errors="replace")[:500]
+            raise HttpRequestError(
+                f"{error_context}: HTTP {exc.code}: {body}",
+                status_code=exc.code,
+            ) from exc
+        except urllib.error.URLError as exc:
+            raise RuntimeError(f"{error_context}: {exc.reason}") from exc
+        except TimeoutError as exc:
+            if attempt < retries:
+                if retry_delay > 0:
+                    time.sleep(retry_delay * (2**attempt))
+                continue
+            raise RuntimeError(f"{error_context}: request timed out") from exc
+        except json.JSONDecodeError as exc:
+            raise RuntimeError(f"{error_context}: invalid JSON") from exc
+    raise RuntimeError(f"{error_context}: request failed")
 
 
 def collect_model_endpoints(

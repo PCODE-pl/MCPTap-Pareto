@@ -98,6 +98,8 @@ class LlmGatewayStatsTest(unittest.TestCase):
             "https://internal.example/internal/models/model%2Fname/benchmarks",
             headers={"Accept": "application/json"},
             error_context="LLM Gateway benchmark request failed for model/name",
+            retries=2,
+            retry_delay=1,
         )
 
 
