@@ -41,18 +41,11 @@ MODEL_LAB_ALIASES = {
 
 
 def parse_args() -> argparse.Namespace:
-    repo_root = pathlib.Path(__file__).resolve().parents[2]
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--api-url",
         default=os.environ.get("REQUESTY_API_URL", DEFAULT_API_URL),
         help="Requesty model catalog URL",
-    )
-    parser.add_argument(
-        "--output-dir",
-        type=pathlib.Path,
-        default=repo_root / "providers" / "requesty" / "models",
-        help="Target directory for generated Requesty TOMLs",
     )
     parser.add_argument(
         "--dry-run",
@@ -386,11 +379,23 @@ def toml_string(value: str) -> str:
 
 def model_path(model_id: str) -> pathlib.PurePosixPath | None:
     parts = model_id.split("/")
-    if not parts or any(not part or part in {".", ".."} for part in parts):
+    if len(parts) < 2 or any(not part or part in {".", ".."} for part in parts):
         return None
     if any(re.search(r"[\x00-\x1f]", part) for part in parts):
         return None
     return pathlib.PurePosixPath(*parts[:-1], f"{parts[-1]}.toml")
+
+
+def safe_destination(
+    output_dir: pathlib.Path,
+    relative_path: pathlib.PurePosixPath,
+) -> pathlib.Path | None:
+    destination = output_dir / pathlib.Path(relative_path)
+    try:
+        destination.resolve(strict=False).relative_to(output_dir.resolve())
+    except (OSError, ValueError):
+        return None
+    return destination
 
 
 def render_toml(base_model: str, record: dict[str, Any], cost: dict[str, Any]) -> str:
@@ -423,7 +428,8 @@ def render_toml(base_model: str, record: dict[str, Any], cost: dict[str, Any]) -
 
 def is_auto_source_file(path: pathlib.Path) -> bool:
     try:
-        first_line = path.open(encoding="utf-8").readline().strip()
+        with path.open(encoding="utf-8") as file:
+            first_line = file.readline().strip()
     except OSError:
         return False
     return first_line == AUTO_SOURCE_MARKER
@@ -440,6 +446,8 @@ def prune_auto_source_files(
     pruned: list[str] = []
     for path in output_dir.rglob("*.toml"):
         relative_path = pathlib.PurePosixPath(path.relative_to(output_dir).as_posix())
+        if relative_path.parent == pathlib.PurePosixPath("."):
+            continue
         if relative_path in current_paths or not is_auto_source_file(path):
             continue
         pruned.append(relative_path.as_posix())
@@ -462,7 +470,6 @@ def prune_auto_source_files(
 def sync(
     repo_root: pathlib.Path,
     records: list[dict[str, Any]],
-    output_dir: pathlib.Path,
     dry_run: bool,
     ai_model: str = DEFAULT_AI_MODEL,
     disable_ai: bool = False,
@@ -470,6 +477,7 @@ def sync(
     clear_cache: bool = False,
 ) -> dict[str, Any]:
     canonical_ids = load_canonical_ids(repo_root)
+    output_dir = repo_root / "providers" / "requesty" / "models"
     matched: list[str] = []
     skipped_mapping: list[str] = []
     skipped_price: list[str] = []
@@ -557,10 +565,14 @@ def sync(
             skipped_invalid_id.append(display_id)
             continue
 
+        destination = safe_destination(output_dir, relative_path)
+        if destination is None:
+            skipped_invalid_id.append(display_id)
+            continue
+
         seen_paths.add(relative_path)
         matched.append(f"{model_id} -> {base_model} [{relative_path.as_posix()}]")
         written.append(relative_path.as_posix())
-        destination = output_dir / pathlib.Path(relative_path)
         if not dry_run:
             destination.parent.mkdir(parents=True, exist_ok=True)
             destination.write_text(render_toml(base_model, record, cost), encoding="utf-8")
@@ -604,7 +616,6 @@ def main() -> None:
     summary = sync(
         repo_root,
         fetch_models(args.api_url),
-        args.output_dir,
         args.dry_run,
         ai_model=args.ai_model,
         disable_ai=args.disable_ai,
