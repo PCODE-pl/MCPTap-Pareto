@@ -6755,6 +6755,16 @@
           }
         }
       },
+      "opencode-go": {
+        "muse-spark-1.2": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0.1,
+            "output": 0.2,
+            "cache_read": 0.002
+          }
+        }
+      },
       "openrouter": {
         "meta/muse-spark-1.2": {
           "is_thinking": true,
