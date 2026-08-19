@@ -4281,14 +4281,6 @@
             "cache_read": 0.014
           }
         },
-        "deepseek/deepseek-v4-flash": {
-          "is_thinking": true,
-          "cost": {
-            "input": 0.44,
-            "output": 1.32,
-            "cache_read": 0.014
-          }
-        },
         "deepseek/deepseek-v4-flash-0731": {
           "is_thinking": true,
           "cost": {
@@ -4861,14 +4853,6 @@
             "input": 1.75,
             "output": 3.5,
             "cache_read": 0.44
-          }
-        },
-        "deepseek/deepseek-v4-pro": {
-          "is_thinking": true,
-          "cost": {
-            "input": 1.32,
-            "output": 3.9600000000000004,
-            "cache_read": 0.044
           }
         },
         "deepseek/deepseek-v4-pro-0813": {
@@ -8220,9 +8204,9 @@
         "kimi-k3": {
           "is_thinking": true,
           "cost": {
-            "input": 3,
-            "output": 15,
-            "cache_read": 0.3
+            "input": 3.2664,
+            "output": 16.332,
+            "cache_read": 0.32664
           }
         }
       },
