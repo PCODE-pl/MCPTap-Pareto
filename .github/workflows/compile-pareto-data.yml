@@ -109,14 +109,25 @@ jobs:
       - name: Sync Requesty model prices
         run: python .github/scripts/sync_requesty_models.py
 
-      - name: Get provider model stats from OpenRouter
-        run: python .github/scripts/get_provider_model_stats_from_openrouter.py
+      - name: Get provider model stats
+        run: |
+          set -euo pipefail
+          pids=()
 
-      - name: Get provider model stats from Vercel
-        run: python .github/scripts/get_provider_model_stats_from_vercel.py
+          python .github/scripts/get_provider_model_stats_from_openrouter.py &
+          pids+=("$!")
+          python .github/scripts/get_provider_model_stats_from_vercel.py &
+          pids+=("$!")
+          python .github/scripts/get_provider_model_stats_from_llmgateway.py &
+          pids+=("$!")
 
-      - name: Get provider model stats from LLM Gateway
-        run: python .github/scripts/get_provider_model_stats_from_llmgateway.py
+          status=0
+          for pid in "${pids[@]}"; do
+            if ! wait "$pid"; then
+              status=1
+            fi
+          done
+          exit "$status"
 
       - name: Compute average provider model stats
         run: python .github/scripts/compute_average_provider_model_stats.py

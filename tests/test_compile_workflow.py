@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import pathlib
+import re
 import unittest
 
 WORKFLOW_PATH = pathlib.Path(__file__).resolve().parents[1] / ".github" / "workflows" / "compile-pareto-data.yml"
@@ -35,6 +36,27 @@ class CompileWorkflowTest(unittest.TestCase):
             "git add -A -- models providers stats pareto.json .requesty_ai_mapping_cache.json",
             WORKFLOW,
         )
+
+    def test_provider_stats_collectors_run_in_parallel_and_all_failures_propagate(self):
+        match = re.search(
+            r"      - name: Get provider model stats\n(.*?)\n      - name: Compute average provider model stats",
+            WORKFLOW,
+            re.DOTALL,
+        )
+        self.assertIsNotNone(match)
+        assert match is not None
+        block = match.group(1)
+
+        self.assertIn("pids=()", block)
+        self.assertIn('pids+=("$!")', block)
+        self.assertIn('if ! wait "$pid"; then', block)
+        self.assertIn('exit "$status"', block)
+        for script in (
+            "get_provider_model_stats_from_openrouter.py",
+            "get_provider_model_stats_from_vercel.py",
+            "get_provider_model_stats_from_llmgateway.py",
+        ):
+            self.assertIn(f"python .github/scripts/{script} &", block)
 
     def test_local_runner_forwards_shared_hook_token(self):
         self.assertIn('MCPTAP_EXTRAS_TOKEN="${MCPTAP_EXTRAS_TOKEN:-$GITHUB_TOKEN}"', RUN_SCRIPT)
