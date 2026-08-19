@@ -7,5 +7,7 @@
   },
   "throughput_last_1h": {
     "p50": 237.5
-  }
+  },
+  "uptime": 100,
+  "tokensPerSecond": 112
 }

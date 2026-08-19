@@ -4288,9 +4288,9 @@
         "deepseek-v4-flash": {
           "is_thinking": true,
           "cost": {
-            "input": 0.05,
-            "output": 0.09,
-            "cache_read": 0.0027
+            "input": 0.076,
+            "output": 0.153,
+            "cache_read": 0.014
           }
         }
       },
@@ -4393,9 +4393,9 @@
         "deepseek/deepseek-v4-flash": {
           "is_thinking": true,
           "cost": {
-            "input": 0.0798,
-            "output": 0.1596,
-            "cache_read": 0.01596
+            "input": 0.077,
+            "output": 0.154,
+            "cache_read": 0.0154
           }
         }
       },
@@ -14263,9 +14263,9 @@
         "z-ai/glm-5.2": {
           "is_thinking": true,
           "cost": {
-            "input": 1.4,
-            "output": 4.4,
-            "cache_read": 0.26
+            "input": 0.98,
+            "output": 3.08,
+            "cache_read": 0.182
           }
         }
       },
@@ -14762,9 +14762,9 @@
         "z-ai/glm-5.3": {
           "is_thinking": true,
           "cost": {
-            "input": 1.4,
-            "output": 4.4,
-            "cache_read": 0.26
+            "input": 1.26,
+            "output": 3.96,
+            "cache_read": 0.234
           }
         }
       },

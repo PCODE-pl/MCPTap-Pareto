@@ -7,5 +7,8 @@
   },
   "throughput_last_1h": {
     "p50": 74.5
-  }
+  },
+  "uptime": 100,
+  "avgTimeToFirstToken": 3984.714285714286,
+  "tokensPerSecond": 28
 }

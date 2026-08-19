@@ -4,5 +4,8 @@
   "uptime_last_1d": 100,
   "latency_last_1h": {
     "p50": 27813
-  }
+  },
+  "uptime": 63.6,
+  "avgTimeToFirstToken": 109327.16666666667,
+  "tokensPerSecond": 13
 }
