@@ -12,7 +12,11 @@ class CompileWorkflowTest(unittest.TestCase):
     def test_commit_step_publishes_stats_with_explicit_github_credentials(self):
         self.assertIn("GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}", WORKFLOW)
         self.assertIn(
-            'git config --local http.https://github.com/.extraheader "AUTHORIZATION: bearer ${GITHUB_TOKEN}"',
+            'github_auth="$(printf \'x-access-token:%s\' "$GITHUB_TOKEN" | base64 -w0)"',
+            WORKFLOW,
+        )
+        self.assertIn(
+            'git config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ${github_auth}"',
             WORKFLOW,
         )
         self.assertIn(
