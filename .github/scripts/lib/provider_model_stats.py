@@ -262,13 +262,15 @@ def resolve_provider_deterministically(
         if target_variants & candidates:
             matches.append(slug)
 
-    if len(matches) == 1:
-        if "zai" == matches[0]:
-            matches[0] = "zhipuai"
-        elif "arcee" == matches[0]:
-            matches[0] = "arcee-ai"
+    if len(matches) > 0:
+        if "zai" in matches:
+            return "zhipuai"
+        elif "arcee" in matches:
+            return "arcee-ai"
+        # elif "stepfun" in matches:
+        #     return "stepfun-ai"
 
-    return matches[0] if len(matches) == 1 else None
+    return matches[0] if len(matches) > 0 else None
 
 
 def query_provider_mappings(
@@ -471,6 +473,10 @@ def write_synthetic_stats(
                 )
             continue
         matched_router = matching_structural_routers[0]
+
+        if matched_router not in routers:
+            continue
+
         models_dir = provider_dir / "models"
         if not models_dir.is_dir():
             continue
@@ -490,28 +496,53 @@ def write_synthetic_stats(
             model_relative_path = model_file.relative_to(models_dir)
             source_candidates: dict[pathlib.Path, pathlib.Path] = {}
 
-            if matched_router in routers:
-                # if "arcee" == str(provider_dir.name):
-                #     print(provider_dir)  # TODO: remove
+            # TODO: remove
+            # if matched_router in routers:
+            #     # if "arcee" == str(provider_dir.name):
+            #     #     print(provider_dir)  # TODO: remove
 
-                matching_stats_provider_models_roots = []
-                for stats_provider_dir, resolved_models_root in stats_provider_models_roots:
-                    if stats_provider_dir.name != base_model_provider:
-                        continue
+            #     matching_stats_provider_models_roots = []
+            #     for stats_provider_dir, resolved_models_root in stats_provider_models_roots:
+            #         if stats_provider_dir.name != base_model_provider:
+            #             continue
 
-                    source = stats_provider_dir / "models" / base_model_provider / f"{base_model_slug}.json"
-                    if source.is_file():
-                        matching_stats_provider_models_roots.append((stats_provider_dir, resolved_models_root))
-                    # else:
-                    #     if "arcee" == str(provider_dir.name):
-                    #         print(f"NOT FOUND: {source}")  # TODO: remove
+            #         source = stats_provider_dir / "models" / base_model_provider / f"{base_model_slug}.json"
+            #         if source.is_file():
+            #             matching_stats_provider_models_roots.append((stats_provider_dir, resolved_models_root))
+            #         # else:
+            #         #     if "arcee" == str(provider_dir.name):
+            #         #         print(f"NOT FOUND: {source}")  # TODO: remove
+            # TODO: remove
+            # else:
+            #     # matching_stats_provider_models_roots = [
+            #     #     (stats_provider_dir, resolved_models_root)
+            #     #     for stats_provider_dir, resolved_models_root in stats_provider_models_roots
+            #     #     if router_slug_matches(provider_dir.name, stats_provider_dir.name)
+            #     # ]
 
-            else:
-                matching_stats_provider_models_roots = [
-                    (stats_provider_dir, resolved_models_root)
-                    for stats_provider_dir, resolved_models_root in stats_provider_models_roots
-                    if router_slug_matches(provider_dir.name, stats_provider_dir.name)
-                ]
+            #     matching_stats_provider_models_roots = []
+            #     for stats_provider_dir, resolved_models_root in stats_provider_models_roots:
+            #         if stats_provider_dir.name != base_model_provider:
+            #             continue
+
+            #         source = stats_provider_dir / "models" / base_model_provider / f"{base_model_slug}.json"
+            #         if source.is_file():
+            #             matching_stats_provider_models_roots.append((stats_provider_dir, resolved_models_root))
+            #         # else:
+            #         #     if "arcee" == str(provider_dir.name):
+            #         #         print(f"NOT FOUND: {source}")  # TODO: remove
+
+            matching_stats_provider_models_roots = []
+            for stats_provider_dir, resolved_models_root in stats_provider_models_roots:
+                if stats_provider_dir.name != base_model_provider:
+                    continue
+
+                source = stats_provider_dir / "models" / base_model_provider / f"{base_model_slug}.json"
+                if source.is_file():
+                    matching_stats_provider_models_roots.append((stats_provider_dir, resolved_models_root))
+                # else:
+                #     if "arcee" == str(provider_dir.name):
+                #         print(f"NOT FOUND: {source}")  # TODO: remove
 
             for stats_provider_dir, resolved_models_root in matching_stats_provider_models_roots:
                 source = stats_provider_dir / "models" / base_model_provider / f"{base_model_slug}.json"

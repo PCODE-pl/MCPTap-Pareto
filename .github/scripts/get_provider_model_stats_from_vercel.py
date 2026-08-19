@@ -93,7 +93,7 @@ def fetch_model_endpoints(api_url: str, model_id: str) -> list[dict[str, Any]]:
     encoded_model_id = urllib.parse.quote(model_id, safe="/")
     url = f"{api_url.rstrip('/')}/{encoded_model_id}/endpoints"
     headers = {"Accept": "application/json"}
-    api_key = os.environ.get("AI_GATEWAY_API_KEY", "").strip()
+    api_key = os.environ.get("VERCEL_API_KEY", "").strip()
     if api_key:
         headers["Authorization"] = f"Bearer {api_key}"
 
