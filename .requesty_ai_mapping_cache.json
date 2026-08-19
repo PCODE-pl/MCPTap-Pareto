@@ -72,5 +72,7 @@
   "minimax/minimax-m2": "minimax/MiniMax-M2",
   "minimax/minimax-m2.5-highspeed": "minimax/MiniMax-M2.5-highspeed",
   "deepinfra/tbd": null,
-  "alibaba/tbd": null
+  "alibaba/tbd": null,
+  "deepinfra/glm-5.2": null,
+  "deepinfra/qwen3.8-2.4T-A95B": null
 }
