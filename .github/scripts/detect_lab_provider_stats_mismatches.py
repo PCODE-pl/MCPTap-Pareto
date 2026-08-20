@@ -147,6 +147,8 @@ def _provider_model_ids(
         exact_ids.add(_toml_model_id(path, provider_models_dir))
         try:
             document = tomllib.loads(path.read_text(encoding="utf-8"))
+        except FileNotFoundError:
+            continue
         except (OSError, UnicodeDecodeError, tomllib.TOMLDecodeError) as exc:
             errors.append(f"{path}: cannot read TOML: {exc}")
             continue
@@ -370,6 +372,8 @@ def _matching_provider_models(
     for path in sorted(models_dir.rglob("*.toml")):
         try:
             document = tomllib.loads(path.read_text(encoding="utf-8"))
+        except FileNotFoundError:
+            continue
         except (OSError, UnicodeDecodeError, tomllib.TOMLDecodeError) as exc:
             errors.append(f"{path}: cannot read TOML: {exc}")
             continue

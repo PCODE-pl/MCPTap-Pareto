@@ -102,6 +102,24 @@ class DetectLabProviderStatsMismatchesTest(unittest.TestCase):
         self.assertEqual(len(result.errors), 1)
         self.assertIn("stats/vercel/openai/models/acme/model.json", result.errors[0])
 
+    def test_ignores_broken_provider_model_symlinks(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = pathlib.Path(temporary_directory)
+            self._write(root / "models/alibaba/qwen.toml", "name = 'Qwen'\n")
+            self._write(root / "providers/alibaba/provider.toml", "name = 'Alibaba'\n")
+            models_dir = root / "providers/alibaba/models"
+            models_dir.mkdir(parents=True)
+            (models_dir / "broken.toml").symlink_to("missing.toml")
+            self._write(
+                root / "stats/openrouter/alibaba/models/alibaba/qwen.json",
+                json.dumps({"uptime_last_1d": 99}) + "\n",
+            )
+
+            result = detector.scan_repository(root)
+
+        self.assertEqual(result.errors, ())
+        self.assertEqual(len(result.findings), 1)
+
     def test_directory_missing_detection_flag_defaults_to_false(self):
         with mock.patch.object(sys, "argv", [str(SCRIPT_PATH)]):
             self.assertFalse(detector.parse_args().detect_labs_provider_directory_missing)

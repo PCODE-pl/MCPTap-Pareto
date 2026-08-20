@@ -129,6 +129,9 @@ jobs:
           done
           exit "$status"
 
+      - name: Generate missing-provider synthetic stats
+        run: python .github/scripts/detect_lab_provider_stats_mismatches.py
+
       - name: Compute average provider model stats
         run: python .github/scripts/compute_average_provider_model_stats.py
 

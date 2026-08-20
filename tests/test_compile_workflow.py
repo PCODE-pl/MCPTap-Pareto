@@ -58,6 +58,20 @@ class CompileWorkflowTest(unittest.TestCase):
         ):
             self.assertIn(f"python .github/scripts/{script} &", block)
 
+    def test_missing_provider_detector_runs_before_average_stats(self):
+        match = re.search(
+            r"      - name: Get provider model stats\n(.*?)\n      - name: Compute average provider model stats",
+            WORKFLOW,
+            re.DOTALL,
+        )
+        self.assertIsNotNone(match)
+        assert match is not None
+        block = match.group(1)
+        self.assertIn(
+            "python .github/scripts/detect_lab_provider_stats_mismatches.py",
+            block,
+        )
+
     def test_local_runner_forwards_shared_hook_token(self):
         self.assertIn('MCPTAP_EXTRAS_TOKEN="${MCPTAP_EXTRAS_TOKEN:-$GITHUB_TOKEN}"', RUN_SCRIPT)
         self.assertIn('--secret MCPTAP_EXTRAS_TOKEN="$MCPTAP_EXTRAS_TOKEN"', RUN_SCRIPT)
