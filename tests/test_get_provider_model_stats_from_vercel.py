@@ -10,7 +10,12 @@ import unittest
 from unittest import mock
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[1]
-SCRIPT_PATH = REPO_ROOT / ".github" / "scripts" / "get_provider_model_stats_from_vercel.py"
+SCRIPT_DIR = REPO_ROOT / ".github" / "scripts"
+SCRIPT_PATH = SCRIPT_DIR / "get_provider_model_stats_from_vercel.py"
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+from lib.provider_model_stats import write_outputs, write_synthetic_stats  # noqa: E402
 
 
 def load_script():
@@ -88,7 +93,7 @@ class VercelStatsTest(unittest.TestCase):
         }
         with tempfile.TemporaryDirectory() as temporary_directory:
             output_dir = pathlib.Path(temporary_directory)
-            written = get_provider_model_stats.write_outputs(outputs, output_dir, dry_run=False)
+            written = write_outputs(outputs, output_dir, dry_run=False)
             destination = output_dir / "alibaba/models/alibaba/qwen3.5-plus.json"
 
             self.assertEqual(written, 1)
@@ -121,7 +126,7 @@ class VercelStatsTest(unittest.TestCase):
             model.parent.mkdir(parents=True)
             model.write_text('base_model = "alibaba/qwen3.5-plus"\n', encoding="utf-8")
 
-            written, errors, collisions = get_provider_model_stats.write_synthetic_stats(
+            written, errors, collisions = write_synthetic_stats(
                 providers_dir=providers_dir,
                 routers_dir=routers_dir,
                 stats_dir=stats_dir,

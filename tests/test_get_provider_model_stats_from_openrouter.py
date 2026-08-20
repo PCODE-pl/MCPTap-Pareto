@@ -10,7 +10,21 @@ import unittest
 from unittest import mock
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[1]
-SCRIPT_PATH = REPO_ROOT / ".github" / "scripts" / "get_provider_model_stats_from_openrouter.py"
+SCRIPT_DIR = REPO_ROOT / ".github" / "scripts"
+SCRIPT_PATH = SCRIPT_DIR / "get_provider_model_stats_from_openrouter.py"
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+from lib.provider_model_stats import (  # noqa: E402
+    load_providers,
+    load_router_providers_from_models_dir_struct,
+    load_routers,
+    normalize_text,
+    parse_base_model,
+    provider_name_variants,
+    resolve_provider_deterministically,
+    write_synthetic_stats,
+)
 
 
 def load_script():
@@ -59,11 +73,11 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
             write_router(routers_dir, "openrouter", is_router=True, structured_models=True)
             (routers_dir / "invalid.toml").write_text("[invalid\n", encoding="utf-8")
 
-            structured, structured_errors = get_provider_model_stats.load_router_providers_from_models_dir_struct(
+            structured, structured_errors = load_router_providers_from_models_dir_struct(
                 routers_dir,
                 excluded_provider="openrouter",
             )
-            routers, router_errors = get_provider_model_stats.load_routers(
+            routers, router_errors = load_routers(
                 routers_dir,
                 excluded_provider="openrouter",
             )
@@ -86,21 +100,14 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
                 "meta-llama/llama-3.3-70b-instruct",
             )
 
-    def test_provider_resolver_is_shared_with_library(self):
-        from lib.provider_model_stats import (
-            load_providers,
-            normalize_text,
-            provider_name_variants,
-            resolve_provider_deterministically,
-        )
-
+    def test_provider_resolver_uses_shared_library(self):
         self.assertIs(get_provider_model_stats.load_providers, load_providers)
-        self.assertIs(get_provider_model_stats.normalize_text, normalize_text)
-        self.assertIs(get_provider_model_stats.provider_name_variants, provider_name_variants)
         self.assertIs(
             get_provider_model_stats.resolve_provider_deterministically,
             resolve_provider_deterministically,
         )
+        self.assertEqual(normalize_text("Acme AI"), "acmeai")
+        self.assertEqual(provider_name_variants("Acme AI"), {"acmeai", "acme"})
         self.assertEqual(
             resolve_provider_deterministically(
                 "Acme AI",
@@ -115,7 +122,7 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
             write_router(routers_dir, "openrouter", is_router=True, structured_models=True)
             write_router(routers_dir, "vercel", is_router=True, structured_models=True)
 
-            structured, errors = get_provider_model_stats.load_router_providers_from_models_dir_struct(
+            structured, errors = load_router_providers_from_models_dir_struct(
                 routers_dir,
                 excluded_provider="vercel",
             )
@@ -129,7 +136,7 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
             write_router(routers_dir, "openrouter", is_router=True, structured_models=True)
             write_router(routers_dir, "vercel", is_router=True, structured_models=True)
 
-            routers, errors = get_provider_model_stats.load_routers(
+            routers, errors = load_routers(
                 routers_dir,
                 excluded_provider="vercel",
             )
@@ -157,7 +164,7 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
             stale_file.parent.mkdir(parents=True)
             stale_file.write_text("stale\n", encoding="utf-8")
 
-            written, errors, collisions = get_provider_model_stats.write_synthetic_stats(
+            written, errors, collisions = write_synthetic_stats(
                 providers_dir=providers_dir,
                 routers_dir=routers_dir,
                 stats_dir=stats_dir,
@@ -192,7 +199,7 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
             model.parent.mkdir(parents=True)
             model.write_text('base_model = "acme/model"\n', encoding="utf-8")
 
-            written, errors, collisions = get_provider_model_stats.write_synthetic_stats(
+            written, errors, collisions = write_synthetic_stats(
                 providers_dir=providers_dir,
                 routers_dir=routers_dir,
                 stats_dir=stats_dir,
@@ -221,7 +228,7 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
             model.parent.mkdir(parents=True)
             model.write_text('base_model = "moonshotai/kimi-k2.6"\n', encoding="utf-8")
 
-            written, errors, collisions = get_provider_model_stats.write_synthetic_stats(
+            written, errors, collisions = write_synthetic_stats(
                 providers_dir=providers_dir,
                 routers_dir=routers_dir,
                 stats_dir=stats_dir,
@@ -253,7 +260,7 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
             stale_file.parent.mkdir(parents=True)
             stale_file.write_text("stale\n", encoding="utf-8")
 
-            written, errors, collisions = get_provider_model_stats.write_synthetic_stats(
+            written, errors, collisions = write_synthetic_stats(
                 providers_dir=providers_dir,
                 routers_dir=routers_dir,
                 stats_dir=stats_dir,
@@ -286,7 +293,7 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
             model.parent.mkdir(parents=True)
             model.write_text('base_model = "acme/base"\n', encoding="utf-8")
 
-            written, errors, collisions = get_provider_model_stats.write_synthetic_stats(
+            written, errors, collisions = write_synthetic_stats(
                 providers_dir=providers_dir,
                 routers_dir=routers_dir,
                 stats_dir=stats_dir,
@@ -323,7 +330,7 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
                 encoding="utf-8",
             )
 
-            written, errors, collisions = get_provider_model_stats.write_synthetic_stats(
+            written, errors, collisions = write_synthetic_stats(
                 providers_dir=providers_dir,
                 routers_dir=routers_dir,
                 stats_dir=stats_dir,
@@ -354,7 +361,7 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
             model.parent.mkdir(parents=True)
             model.write_text('base_model = "acme/model"\n', encoding="utf-8")
 
-            written, errors, collisions = get_provider_model_stats.write_synthetic_stats(
+            written, errors, collisions = write_synthetic_stats(
                 providers_dir=providers_dir,
                 routers_dir=routers_dir,
                 stats_dir=stats_dir,
@@ -368,7 +375,7 @@ class SyntheticOpenRouterStatsTest(unittest.TestCase):
             self.assertFalse(synthetic_dir.exists())
 
     def test_rejects_windows_style_path_separators_in_base_model(self):
-        self.assertIsNone(get_provider_model_stats.parse_base_model(r"acme/..\..\secret"))
+        self.assertIsNone(parse_base_model(r"acme/..\..\secret"))
 
 
 if __name__ == "__main__":
