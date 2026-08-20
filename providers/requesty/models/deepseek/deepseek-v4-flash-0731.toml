@@ -3,6 +3,6 @@ base_model = "deepseek/deepseek-v4-flash"
 reasoning = false
 
 [cost]
-input = 0.44
-output = 1.32
-cache_read = 0.014
+input = 0.396
+output = 1.1880000000000002
+cache_read = 0.0126

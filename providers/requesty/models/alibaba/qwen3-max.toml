@@ -3,15 +3,15 @@ base_model = "alibaba/qwen3-max"
 reasoning = false
 
 [cost]
-input = 0.861
-output = 3.4410000000000003
+input = 0.7749
+output = 3.0968999999999998
 
 [[cost.tiers]]
 tier = { type = "context", size = 32678 }
-input = 1.434
-output = 5.735
+input = 1.2906
+output = 5.161499999999999
 
 [[cost.tiers]]
 tier = { type = "context", size = 131072 }
-input = 2.151
-output = 8.602
+input = 1.9359
+output = 7.7418

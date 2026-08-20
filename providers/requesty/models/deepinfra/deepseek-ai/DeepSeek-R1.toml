@@ -3,6 +3,6 @@ base_model = "deepseek/deepseek-r1"
 reasoning = false
 
 [cost]
-input = 0.85
-output = 2.5
-cache_read = 0.85
+input = 0.765
+output = 2.25
+cache_read = 0.765

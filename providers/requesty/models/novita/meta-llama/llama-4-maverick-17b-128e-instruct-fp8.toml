@@ -3,6 +3,6 @@ base_model = "meta/llama-4-maverick-17b-instruct"
 reasoning = false
 
 [cost]
-input = 0.19999999999999998
-output = 0.85
-cache_read = 0.19999999999999998
+input = 0.18
+output = 0.765
+cache_read = 0.18

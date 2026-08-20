@@ -3,6 +3,6 @@ base_model = "openai/gpt-oss-20b"
 reasoning = false
 
 [cost]
-input = 0.09999999999999999
-output = 0.5
-cache_read = 0.09999999999999999
+input = 0.09
+output = 0.44999999999999996
+cache_read = 0.09

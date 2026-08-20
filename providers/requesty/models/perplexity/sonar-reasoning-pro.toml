@@ -3,6 +3,6 @@ base_model = "perplexity/sonar-reasoning-pro"
 reasoning = false
 
 [cost]
-input = 2.0
-output = 8.0
-cache_read = 2.0
+input = 1.7999999999999998
+output = 7.199999999999999
+cache_read = 1.7999999999999998

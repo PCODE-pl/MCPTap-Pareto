@@ -3,6 +3,6 @@ base_model = "moonshotai/kimi-k2.5"
 reasoning = false
 
 [cost]
-input = 0.44999999999999996
-output = 2.25
-cache_read = 0.07
+input = 0.40499999999999997
+output = 2.025
+cache_read = 0.063

@@ -3,12 +3,12 @@ base_model = "xai/grok-4.1-fast"
 reasoning = false
 
 [cost]
-input = 3.0
-output = 15.0
-cache_read = 0.75
-cache_write = 3.0
+input = 2.7
+output = 13.5
+cache_read = 0.675
+cache_write = 2.7
 
 [[cost.tiers]]
 tier = { type = "context", size = 128000 }
-input = 6.0
-output = 30.0
+input = 5.4
+output = 27.0

@@ -3,6 +3,6 @@ base_model = "meta/llama-3.1-8b-instruct"
 reasoning = false
 
 [cost]
-input = 0.02
-output = 0.049999999999999996
-cache_read = 0.02
+input = 0.018
+output = 0.045
+cache_read = 0.018

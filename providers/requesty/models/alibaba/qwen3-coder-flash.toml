@@ -3,12 +3,12 @@ base_model = "alibaba/qwen3-coder-flash"
 reasoning = false
 
 [cost]
-input = 0.3
-output = 1.5
-cache_read = 0.08
-cache_write = 0.3
+input = 0.27
+output = 1.35
+cache_read = 0.072
+cache_write = 0.27
 
 [[cost.tiers]]
 tier = { type = "context", size = 32000 }
-input = 0.5
-output = 2.5
+input = 0.44999999999999996
+output = 2.25

@@ -3,6 +3,6 @@ base_model = "openai/gpt-4o-mini"
 reasoning = false
 
 [cost]
-input = 0.15
-output = 0.6
-cache_read = 0.075
+input = 0.135
+output = 0.54
+cache_read = 0.0675
