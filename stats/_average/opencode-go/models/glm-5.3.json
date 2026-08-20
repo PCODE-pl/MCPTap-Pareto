@@ -1,13 +1,13 @@
 {
   "uptime_last_30m": 100,
   "uptime_last_5m": 100,
-  "uptime_last_1d": 90.41036831925994,
-  "latency_last_30m": 5292.5,
+  "uptime_last_1d": 90.44490149539835,
+  "latency_last_30m": 5641,
   "throughput_last_30m": 30,
   "uptime_last_15m": 100,
-  "uptime_last_1h": 99.9449,
-  "latency_last_1h": 4868,
-  "throughput_last_1h": 55,
+  "uptime_last_1h": 99.865,
+  "latency_last_1h": 4634,
+  "throughput_last_1h": 60.5,
   "latency_last_1d": 5986.64126984127,
   "throughput_last_1d": 59
 }
