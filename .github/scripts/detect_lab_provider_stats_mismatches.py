@@ -59,6 +59,8 @@ class ScanResult:
     errors: tuple[str, ...]
     generated_file_count: int = 0
     generation_errors: tuple[str, ...] = ()
+    synthetic_stats_file_count: int = 0
+    synthetic_stats_errors: tuple[str, ...] = ()
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -75,6 +77,8 @@ class ScanResult:
             "errors": list(self.errors),
             "generated_file_count": self.generated_file_count,
             "generation_errors": list(self.generation_errors),
+            "synthetic_stats_file_count": self.synthetic_stats_file_count,
+            "synthetic_stats_errors": list(self.synthetic_stats_errors),
         }
 
 
@@ -353,6 +357,112 @@ def write_missing_provider_outputs(
     return written, sorted(set(errors))
 
 
+def _matching_provider_models(
+    repo_root: pathlib.Path,
+    provider: str,
+    model_id: str,
+) -> tuple[list[tuple[pathlib.Path, pathlib.Path]], list[str]]:
+    models_dir = repo_root / "providers" / provider / "models"
+    if not models_dir.is_dir():
+        return [], []
+    matches: list[tuple[pathlib.Path, pathlib.Path]] = []
+    errors: list[str] = []
+    for path in sorted(models_dir.rglob("*.toml")):
+        try:
+            document = tomllib.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeDecodeError, tomllib.TOMLDecodeError) as exc:
+            errors.append(f"{path}: cannot read TOML: {exc}")
+            continue
+        base_model = document.get("base_model")
+        if isinstance(base_model, str) and base_model.strip() == model_id:
+            matches.append((path, path.relative_to(models_dir).with_suffix(".json")))
+    return matches, errors
+
+
+def write_synthetic_missing_stats(
+    repo_root: pathlib.Path = REPO_ROOT,
+    result: ScanResult | None = None,
+    *,
+    dry_run: bool = False,
+) -> tuple[int, list[str]]:
+    """Write synthetic source stats for provider models matching missing lab models."""
+    if result is None:
+        result = scan_repository(repo_root)
+
+    outputs: dict[pathlib.Path, tuple[pathlib.Path, bytes]] = {}
+    errors: list[str] = []
+    for finding in _missing_lab_model_findings(result):
+        sources = sorted({report.source for report in finding.reports})
+        for source in sources:
+            matching_reports = [
+                report
+                for report in finding.reports
+                if report.source == source and report.reported_provider.casefold() == finding.lab_provider.casefold()
+            ]
+            if len(matching_reports) != 1:
+                if len(matching_reports) > 1:
+                    errors.append(
+                        f"{finding.model_id}/{source}: multiple stats files for the base provider; refusing ambiguity"
+                    )
+                continue
+            report = matching_reports[0]
+            source_path = repo_root / report.path
+            source_root = repo_root / "stats" / source
+            try:
+                resolved_source = source_path.resolve(strict=True)
+                if not resolved_source.is_relative_to(source_root.resolve(strict=True)):
+                    errors.append(f"{source_path}: refusing a stats symlink outside the source directory")
+                    continue
+                source_content = resolved_source.read_bytes()
+                payload = json.loads(source_content.decode("utf-8"))
+                if not isinstance(payload, dict):
+                    errors.append(f"{source_path}: JSON root must be an object")
+                    continue
+            except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+                errors.append(f"{source_path}: cannot read JSON: {exc}")
+                continue
+
+            matches, model_errors = _matching_provider_models(repo_root, source, finding.model_id)
+            errors.extend(model_errors)
+            for _, relative_model_path in matches:
+                destination = repo_root / "stats" / "_synthetic" / source / source / "models" / relative_model_path
+                existing = outputs.get(destination)
+                if existing is not None and existing[1] != source_content:
+                    errors.append(f"{destination}: conflicting synthetic stats sources")
+                    continue
+                outputs[destination] = (resolved_source, source_content)
+
+    written = 0
+    for destination, (source_path, content) in sorted(outputs.items()):
+        if destination.is_symlink():
+            errors.append(f"{destination}: refusing to replace a symlink")
+            continue
+        if destination.exists() and not destination.is_file():
+            errors.append(f"{destination}: refusing to replace a non-file")
+            continue
+        if destination.is_file():
+            try:
+                if destination.read_bytes() != content:
+                    errors.append(f"{destination}: refusing to replace different synthetic stats")
+                    continue
+            except OSError as exc:
+                errors.append(f"{destination}: cannot read existing synthetic stats: {exc}")
+                continue
+            written += 1
+            continue
+        if dry_run:
+            written += 1
+            continue
+        try:
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes(content)
+        except OSError as exc:
+            errors.append(f"{destination}: cannot write synthetic stats from {source_path}: {exc}")
+            continue
+        written += 1
+    return written, sorted(set(errors))
+
+
 def _format_finding(finding: Finding) -> Iterable[str]:
     if finding.lab_provider_exists:
         status = "model missing from lab provider"
@@ -371,6 +481,7 @@ def print_text(result: ScanResult) -> None:
     print(f"Reported canonical models: {result.reported_model_count}")
     print(f"Lab-provider mismatches: {len(result.findings)}")
     print(f"Synthetic missing-provider files: {result.generated_file_count}")
+    print(f"Synthetic stats files: {result.synthetic_stats_file_count}")
     if result.findings:
         print("\nFindings")
         print("--------")
@@ -383,6 +494,10 @@ def print_text(result: ScanResult) -> None:
     if result.generation_errors:
         print(f"\nSynthetic output errors: {len(result.generation_errors)}")
         for error in result.generation_errors:
+            print(f"  - {error}")
+    if result.synthetic_stats_errors:
+        print(f"\nSynthetic stats errors: {len(result.synthetic_stats_errors)}")
+        for error in result.synthetic_stats_errors:
             print(f"  - {error}")
 
 
@@ -418,10 +533,16 @@ def main() -> int:
         detect_labs_provider_directory_missing=args.detect_labs_provider_directory_missing,
     )
     generated_file_count, generation_errors = write_missing_provider_outputs(result=result, dry_run=args.dry_run)
+    synthetic_stats_file_count, synthetic_stats_errors = write_synthetic_missing_stats(
+        result=result,
+        dry_run=args.dry_run,
+    )
     result = replace(
         result,
         generated_file_count=generated_file_count,
         generation_errors=tuple(generation_errors),
+        synthetic_stats_file_count=synthetic_stats_file_count,
+        synthetic_stats_errors=tuple(synthetic_stats_errors),
     )
     if args.json:
         print(json.dumps(result.as_dict(), indent=2, ensure_ascii=False) + "\n")

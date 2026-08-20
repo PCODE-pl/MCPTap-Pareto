@@ -159,6 +159,38 @@ class DetectLabProviderStatsMismatchesTest(unittest.TestCase):
             {"base_model": "alibaba/qwen3.8-2.4t-a95b"},
         )
 
+    def test_writes_synthetic_stats_from_matching_provider_model(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = pathlib.Path(temporary_directory)
+            self._write(root / "models/alibaba/qwen3.8-2.4t-a95b.toml", "name = 'Qwen'\n")
+            self._write(root / "providers/alibaba/provider.toml", "name = 'Alibaba'\n")
+            self._write(
+                root / "providers/openrouter/models/qwen/qwen3.8-2.4t-a95b.toml",
+                'base_model = "alibaba/qwen3.8-2.4t-a95b"\n',
+            )
+            source = root / "stats/openrouter/alibaba/models/alibaba/qwen3.8-2.4t-a95b.json"
+            source.parent.mkdir(parents=True)
+            payload = {
+                "uptime_last_1d": 99.5,
+                "latency_last_30m": {"p50": 1671},
+                "throughput_last_30m": {"p50": 44},
+            }
+            source.write_text(json.dumps(payload) + "\n", encoding="utf-8")
+            self._write(
+                root / "stats/openrouter/deepinfra/models/alibaba/qwen3.8-2.4t-a95b.json",
+                json.dumps({"uptime_last_1d": 95}) + "\n",
+            )
+
+            result = detector.scan_repository(root)
+            written, errors = detector.write_synthetic_missing_stats(root, result)
+
+            destination = root / "stats/_synthetic/openrouter/openrouter/models/qwen/qwen3.8-2.4t-a95b.json"
+            written_payload = json.loads(destination.read_text(encoding="utf-8"))
+
+        self.assertEqual(written, 1)
+        self.assertEqual(errors, [])
+        self.assertEqual(written_payload, payload)
+
     def test_dry_run_reports_synthetic_files_without_mutating_output(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = pathlib.Path(temporary_directory)

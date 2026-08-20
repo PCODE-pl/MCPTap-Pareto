@@ -8,3 +8,4 @@ base_model = "alibaba/qwen3.8-max-preview"
 # - llmgateway/novita-ai: stats/llmgateway/novita-ai/models/alibaba/qwen3.8-max-preview.json
 # - llmgateway/scx-ai-gp: stats/llmgateway/scx-ai-gp/models/alibaba/qwen3.8-max-preview.json
 # - vercel/alibaba: stats/vercel/alibaba/models/alibaba/qwen3.8-max-preview.json
+# - vercel/fireworks-ai: stats/vercel/fireworks-ai/models/alibaba/qwen3.8-max-preview.json
