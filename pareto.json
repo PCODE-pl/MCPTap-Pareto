@@ -4393,9 +4393,9 @@
         "deepseek/deepseek-v4-flash": {
           "is_thinking": true,
           "cost": {
-            "input": 0.0826,
-            "output": 0.1652,
-            "cache_read": 0.01652
+            "input": 0.088606,
+            "output": 0.177212,
+            "cache_read": 0.017721
           }
         }
       },
@@ -14168,6 +14168,14 @@
             "output": 1.784,
             "cache_read": 0.111,
             "cache_write": 0
+          }
+        },
+        "glm-5.2-fast": {
+          "is_thinking": true,
+          "cost": {
+            "input": 1.99,
+            "output": 6.16,
+            "cache_read": 0.4
           }
         }
       },
