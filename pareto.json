@@ -8715,7 +8715,8 @@
           "is_thinking": true,
           "cost": {
             "input": 4,
-            "output": 20
+            "output": 20,
+            "cache_read": 0.8
           }
         }
       },
