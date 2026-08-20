@@ -15,8 +15,7 @@ from urllib.request import Request, urlopen
 import tomllib
 
 DEFAULT_BENCHMARK_URL = (
-    "https://openrouter.ai/api/v1/benchmarks"
-    "?benchmark_type=gpqa_diamond&source=artificial-analysis&task_type=coding"
+    "https://openrouter.ai/api/v1/benchmarks?benchmark_type=gpqa_diamond&source=artificial-analysis&task_type=coding"
 )
 DEFAULT_ACCURACY_THRESHOLD = 60
 DEFAULT_EXCLUDE_PROVIDERS_WITH_PLAN = True
@@ -73,6 +72,16 @@ def load_toml(path: Path) -> dict[str, Any] | None:
         return None
 
 
+def load_average_stats(repo_root: Path, provider_name: str, model_id: str) -> dict[str, Any]:
+    """Load average statistics for one exact provider/model path."""
+    stats_path = repo_root / "stats" / "_average" / provider_name / "models" / f"{model_id}.json"
+    try:
+        payload = json.loads(stats_path.read_text(encoding="utf-8"))
+    except (FileNotFoundError, OSError, UnicodeDecodeError, json.JSONDecodeError):
+        return {}
+    return payload if isinstance(payload, dict) else {}
+
+
 def fetch_benchmark(url: str, api_key: str) -> dict[str, Any]:
     """Fetch the authenticated OpenRouter benchmark response."""
     request = Request(
@@ -123,12 +132,8 @@ def build_openrouter_refs(repo_root: Path) -> list[dict[str, Any]]:
         refs.append(
             {
                 "model_id": model_id,
-                "base_model": base_model.strip()
-                if isinstance(base_model, str)
-                else None,
-                "family": data.get("family")
-                if isinstance(data.get("family"), str)
-                else None,
+                "base_model": base_model.strip() if isinstance(base_model, str) else None,
+                "family": data.get("family") if isinstance(data.get("family"), str) else None,
                 "name": data.get("name") if isinstance(data.get("name"), str) else None,
                 "reasoning": bool(data.get("reasoning")),
             }
@@ -164,18 +169,13 @@ def resolve_canonical_model(
         if len(canonical_models) == 1:
             ref = exact_refs[0]
             return canonical_models.pop(), ref
-        raise RuntimeError(
-            f"Ambiguous OpenRouter model mapping for {benchmark_ref}: "
-            f"{sorted(canonical_models)}"
-        )
+        raise RuntimeError(f"Ambiguous OpenRouter model mapping for {benchmark_ref}: {sorted(canonical_models)}")
 
     display_name = benchmark_record.get("display_name")
     if isinstance(display_name, str):
         display_key = normalize_display_name(display_name)
         named_refs = [
-            ref
-            for ref in openrouter_refs
-            if ref["name"] and normalize_display_name(ref["name"]) == display_key
+            ref for ref in openrouter_refs if ref["name"] and normalize_display_name(ref["name"]) == display_key
         ]
         if len(named_refs) == 1:
             ref = named_refs[0]
@@ -185,24 +185,18 @@ def resolve_canonical_model(
             model_id
             for model_id, metadata in canonical_metadata.items()
             if normalize_display_name(metadata["name"]) == display_key
-            and any(
-                ref["base_model"] == model_id or ref["model_id"] == model_id
-                for ref in openrouter_refs
-            )
+            and any(ref["base_model"] == model_id or ref["model_id"] == model_id for ref in openrouter_refs)
         }
         if len(name_matches) == 1:
             canonical_model = name_matches.pop()
             matching_refs = [
                 ref
                 for ref in openrouter_refs
-                if ref["base_model"] == canonical_model
-                or ref["model_id"] == canonical_model
+                if ref["base_model"] == canonical_model or ref["model_id"] == canonical_model
             ]
             return canonical_model, matching_refs[0]
         if len(name_matches) > 1:
-            raise RuntimeError(
-                f"Ambiguous display-name mapping for {display_name}: {sorted(name_matches)}"
-            )
+            raise RuntimeError(f"Ambiguous display-name mapping for {display_name}: {sorted(name_matches)}")
 
         heuristic_slug = slugify_display_name(display_name)
         heuristic_refs = [
@@ -222,9 +216,7 @@ def resolve_canonical_model(
             )
             return ref["base_model"] or ref["model_id"], ref
         if len(heuristic_refs) > 1:
-            canonical_models = {
-                ref["base_model"] or ref["model_id"] for ref in heuristic_refs
-            }
+            canonical_models = {ref["base_model"] or ref["model_id"] for ref in heuristic_refs}
             if len(canonical_models) == 1:
                 ref = heuristic_refs[0]
                 print(
@@ -232,10 +224,7 @@ def resolve_canonical_model(
                     file=sys.stderr,
                 )
                 return canonical_models.pop(), ref
-            raise RuntimeError(
-                f"Ambiguous display-name slug mapping for {display_name}: "
-                f"{sorted(canonical_models)}"
-            )
+            raise RuntimeError(f"Ambiguous display-name slug mapping for {display_name}: {sorted(canonical_models)}")
 
     return None
 
@@ -251,8 +240,7 @@ def collect_provider_prices(
     providers: dict[str, dict[str, dict[str, Any]]] = {}
     providers_root = repo_root / "providers"
     canonical_is_thinking = bool(
-        canonical_metadata.get(canonical_model, {}).get("reasoning")
-        or openrouter_ref.get("reasoning")
+        canonical_metadata.get(canonical_model, {}).get("reasoning") or openrouter_ref.get("reasoning")
     )
     target_family = openrouter_ref.get("family")
     target_name = openrouter_ref.get("name")
@@ -283,20 +271,14 @@ def collect_provider_prices(
             if not direct_match and not family_match:
                 continue
 
-            is_thinking = (
-                canonical_is_thinking
-                or bool(data.get("reasoning"))
-                or "thinking" in model_id.lower()
-            )
+            is_thinking = canonical_is_thinking or bool(data.get("reasoning")) or "thinking" in model_id.lower()
             provider_models = providers.setdefault(provider_dir.name, {})
             provider_models[model_id] = {
                 "is_thinking": is_thinking,
                 "cost": data.get("cost") if isinstance(data.get("cost"), dict) else {},
+                "stats": load_average_stats(repo_root, provider_dir.name, model_id),
             }
-    return {
-        provider: dict(sorted(models.items()))
-        for provider, models in sorted(providers.items())
-    }
+    return {provider: dict(sorted(models.items())) for provider, models in sorted(providers.items())}
 
 
 def compile_pareto_data(
@@ -348,9 +330,7 @@ def main() -> None:
     if not api_key:
         raise RuntimeError("OPENROUTER_API_KEY is required")
 
-    threshold = float(
-        os.environ.get("PARETO_ACCURACY_THRESHOLD", DEFAULT_ACCURACY_THRESHOLD)
-    )
+    threshold = float(os.environ.get("PARETO_ACCURACY_THRESHOLD", DEFAULT_ACCURACY_THRESHOLD))
     exclude_providers_with_plan = parse_bool(
         os.environ.get("EXCLUDE_PROVIDERS_WITH_PLAN"),
         DEFAULT_EXCLUDE_PROVIDERS_WITH_PLAN,
@@ -364,9 +344,7 @@ def main() -> None:
         threshold,
         exclude_providers_with_plan,
     )
-    output_path.write_text(
-        json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-    )
+    output_path.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Wrote {len(result)} Pareto models to {output_path}")
 
 
