@@ -3,4 +3,5 @@
 # Canonical model reported by statistics: minimax/MiniMax-M2-Her
 # Missing from providers/minimax/models.
 # Statistics evidence:
+base_model = "minimax/MiniMax-M2-Her"
 # - openrouter/minimax: stats/openrouter/minimax/models/minimax/MiniMax-M2-Her.json

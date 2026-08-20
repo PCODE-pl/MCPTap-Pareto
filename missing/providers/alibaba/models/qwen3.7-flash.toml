@@ -3,5 +3,6 @@
 # Canonical model reported by statistics: alibaba/qwen3.7-flash
 # Missing from providers/alibaba/models.
 # Statistics evidence:
+base_model = "alibaba/qwen3.7-flash"
 # - openrouter/alibaba: stats/openrouter/alibaba/models/alibaba/qwen3.7-flash.json
 # - vercel/alibaba: stats/vercel/alibaba/models/alibaba/qwen3.7-flash.json

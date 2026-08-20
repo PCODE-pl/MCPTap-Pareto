@@ -3,6 +3,7 @@
 # Canonical model reported by statistics: meta/llama-3.1-8b-instruct
 # Missing from providers/meta/models.
 # Statistics evidence:
+base_model = "meta/llama-3.1-8b-instruct"
 # - openrouter/Cloudflare: stats/openrouter/Cloudflare/models/meta/llama-3.1-8b-instruct.json
 # - openrouter/CoreWeave: stats/openrouter/CoreWeave/models/meta/llama-3.1-8b-instruct.json
 # - openrouter/deepinfra: stats/openrouter/deepinfra/models/meta/llama-3.1-8b-instruct.json

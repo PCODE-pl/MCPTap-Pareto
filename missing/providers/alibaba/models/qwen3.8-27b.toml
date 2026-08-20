@@ -3,6 +3,7 @@
 # Canonical model reported by statistics: alibaba/qwen3.8-27b
 # Missing from providers/alibaba/models.
 # Statistics evidence:
+base_model = "alibaba/qwen3.8-27b"
 # - openrouter/AkashML: stats/openrouter/AkashML/models/alibaba/qwen3.8-27b.json
 # - openrouter/Parasail: stats/openrouter/Parasail/models/alibaba/qwen3.8-27b.json
 # - openrouter/Reka: stats/openrouter/Reka/models/alibaba/qwen3.8-27b.json

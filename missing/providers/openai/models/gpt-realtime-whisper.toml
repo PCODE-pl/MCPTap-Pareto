@@ -3,4 +3,5 @@
 # Canonical model reported by statistics: openai/gpt-realtime-whisper
 # Missing from providers/openai/models.
 # Statistics evidence:
+base_model = "openai/gpt-realtime-whisper"
 # - vercel/openai: stats/vercel/openai/models/openai/gpt-realtime-whisper.json

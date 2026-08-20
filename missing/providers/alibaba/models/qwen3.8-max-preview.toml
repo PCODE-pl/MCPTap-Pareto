@@ -3,6 +3,7 @@
 # Canonical model reported by statistics: alibaba/qwen3.8-max-preview
 # Missing from providers/alibaba/models.
 # Statistics evidence:
+base_model = "alibaba/qwen3.8-max-preview"
 # - llmgateway/alibaba: stats/llmgateway/alibaba/models/alibaba/qwen3.8-max-preview.json
 # - llmgateway/novita-ai: stats/llmgateway/novita-ai/models/alibaba/qwen3.8-max-preview.json
 # - llmgateway/scx-ai-gp: stats/llmgateway/scx-ai-gp/models/alibaba/qwen3.8-max-preview.json

@@ -3,5 +3,6 @@
 # Canonical model reported by statistics: anthropic/claude-3-haiku-20240307
 # Missing from providers/anthropic/models.
 # Statistics evidence:
+base_model = "anthropic/claude-3-haiku-20240307"
 # - vercel/bedrock: stats/vercel/bedrock/models/anthropic/claude-3-haiku-20240307.json
 # - vercel/google-vertex-anthropic: stats/vercel/google-vertex-anthropic/models/anthropic/claude-3-haiku-20240307.json

@@ -3,6 +3,7 @@
 # Canonical model reported by statistics: deepseek/deepseek-v3.2
 # Missing from providers/deepseek/models.
 # Statistics evidence:
+base_model = "deepseek/deepseek-v3.2"
 # - openrouter/AtlasCloud: stats/openrouter/AtlasCloud/models/deepseek/deepseek-v3.2.json
 # - openrouter/Baidu: stats/openrouter/Baidu/models/deepseek/deepseek-v3.2.json
 # - openrouter/Phala: stats/openrouter/Phala/models/deepseek/deepseek-v3.2.json

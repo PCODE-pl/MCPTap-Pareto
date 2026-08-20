@@ -3,6 +3,7 @@
 # Canonical model reported by statistics: openai/gpt-oss-120b
 # Missing from providers/openai/models.
 # Statistics evidence:
+base_model = "openai/gpt-oss-120b"
 # - openrouter/AkashML: stats/openrouter/AkashML/models/openai/gpt-oss-120b.json
 # - openrouter/CoreWeave: stats/openrouter/CoreWeave/models/openai/gpt-oss-120b.json
 # - openrouter/Mancer 2: stats/openrouter/Mancer 2/models/openai/gpt-oss-120b.json

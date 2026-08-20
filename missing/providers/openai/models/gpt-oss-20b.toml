@@ -3,6 +3,7 @@
 # Canonical model reported by statistics: openai/gpt-oss-20b
 # Missing from providers/openai/models.
 # Statistics evidence:
+base_model = "openai/gpt-oss-20b"
 # - openrouter/CoreWeave: stats/openrouter/CoreWeave/models/openai/gpt-oss-20b.json
 # - openrouter/Parasail: stats/openrouter/Parasail/models/openai/gpt-oss-20b.json
 # - openrouter/Phala: stats/openrouter/Phala/models/openai/gpt-oss-20b.json

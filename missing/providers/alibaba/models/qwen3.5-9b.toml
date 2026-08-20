@@ -3,6 +3,7 @@
 # Canonical model reported by statistics: alibaba/qwen3.5-9b
 # Missing from providers/alibaba/models.
 # Statistics evidence:
+base_model = "alibaba/qwen3.5-9b"
 # - llmgateway/deepinfra: stats/llmgateway/deepinfra/models/alibaba/qwen3.5-9b.json
 # - openrouter/Parasail: stats/openrouter/Parasail/models/alibaba/qwen3.5-9b.json
 # - openrouter/deepinfra: stats/openrouter/deepinfra/models/alibaba/qwen3.5-9b.json

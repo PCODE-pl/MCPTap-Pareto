@@ -3,4 +3,5 @@
 # Canonical model reported by statistics: deepseek/deepseek-r1
 # Missing from providers/deepseek/models.
 # Statistics evidence:
+base_model = "deepseek/deepseek-r1"
 # - openrouter/novita-ai: stats/openrouter/novita-ai/models/deepseek/deepseek-r1.json

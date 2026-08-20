@@ -3,4 +3,5 @@
 # Canonical model reported by statistics: openai/o3-deep-research
 # Missing from providers/openai/models.
 # Statistics evidence:
+base_model = "openai/o3-deep-research"
 # - vercel/openai: stats/vercel/openai/models/openai/o3-deep-research.json

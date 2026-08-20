@@ -3,5 +3,6 @@
 # Canonical model reported by statistics: anthropic/claude-opus-4-1
 # Missing from providers/anthropic/models.
 # Statistics evidence:
+base_model = "anthropic/claude-opus-4-1"
 # - openrouter/amazon-bedrock: stats/openrouter/amazon-bedrock/models/anthropic/claude-opus-4-1.json
 # - openrouter/google: stats/openrouter/google/models/anthropic/claude-opus-4-1.json

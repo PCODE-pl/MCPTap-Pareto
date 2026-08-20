@@ -3,4 +3,5 @@
 # Canonical model reported by statistics: anthropic/claude-opus-4-20250514
 # Missing from providers/anthropic/models.
 # Statistics evidence:
+base_model = "anthropic/claude-opus-4-20250514"
 # - vercel/google-vertex-anthropic: stats/vercel/google-vertex-anthropic/models/anthropic/claude-opus-4-20250514.json

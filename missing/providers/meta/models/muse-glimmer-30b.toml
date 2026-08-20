@@ -3,6 +3,7 @@
 # Canonical model reported by statistics: meta/muse-glimmer-30b
 # Missing from providers/meta/models.
 # Statistics evidence:
+base_model = "meta/muse-glimmer-30b"
 # - openrouter/Parasail: stats/openrouter/Parasail/models/meta/muse-glimmer-30b.json
 # - openrouter/Phala: stats/openrouter/Phala/models/meta/muse-glimmer-30b.json
 # - openrouter/deepinfra: stats/openrouter/deepinfra/models/meta/muse-glimmer-30b.json

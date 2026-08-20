@@ -3,6 +3,7 @@
 # Canonical model reported by statistics: thinkingmachines/inkling-small
 # Missing from providers/thinkingmachines/models.
 # Statistics evidence:
+base_model = "thinkingmachines/inkling-small"
 # - openrouter/deepinfra: stats/openrouter/deepinfra/models/thinkingmachines/inkling-small.json
 # - openrouter/togetherai: stats/openrouter/togetherai/models/thinkingmachines/inkling-small.json
 # - vercel/baseten: stats/vercel/baseten/models/thinkingmachines/inkling-small.json

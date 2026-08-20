@@ -269,6 +269,7 @@ def _render_missing_model(finding: Finding) -> str:
         f"# Canonical model reported by statistics: {finding.model_id}",
         f"# Missing from providers/{finding.lab_provider}/models.",
         "# Statistics evidence:",
+        f"base_model = {json.dumps(finding.model_id, ensure_ascii=False)}",
     ]
     lines.extend(f"# - {report.source}/{report.reported_provider}: {report.path}" for report in finding.reports)
     return "\n".join(lines) + "\n"

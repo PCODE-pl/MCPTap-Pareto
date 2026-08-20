@@ -3,5 +3,6 @@
 # Canonical model reported by statistics: zhipuai/glm-5-turbo
 # Missing from providers/zhipuai/models.
 # Statistics evidence:
+base_model = "zhipuai/glm-5-turbo"
 # - openrouter/zhipuai: stats/openrouter/zhipuai/models/zhipuai/glm-5-turbo.json
 # - vercel/zhipuai: stats/vercel/zhipuai/models/zhipuai/glm-5-turbo.json

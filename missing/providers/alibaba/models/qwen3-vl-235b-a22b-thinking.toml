@@ -3,5 +3,6 @@
 # Canonical model reported by statistics: alibaba/qwen3-vl-235b-a22b-thinking
 # Missing from providers/alibaba/models.
 # Statistics evidence:
+base_model = "alibaba/qwen3-vl-235b-a22b-thinking"
 # - openrouter/alibaba: stats/openrouter/alibaba/models/alibaba/qwen3-vl-235b-a22b-thinking.json
 # - openrouter/novita-ai: stats/openrouter/novita-ai/models/alibaba/qwen3-vl-235b-a22b-thinking.json

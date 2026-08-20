@@ -3,6 +3,7 @@
 # Canonical model reported by statistics: deepseek/deepseek-v3.1
 # Missing from providers/deepseek/models.
 # Statistics evidence:
+base_model = "deepseek/deepseek-v3.1"
 # - vercel/deepinfra: stats/vercel/deepinfra/models/deepseek/deepseek-v3.1.json
 # - vercel/novita-ai: stats/vercel/novita-ai/models/deepseek/deepseek-v3.1.json
 # - vercel/sambanova: stats/vercel/sambanova/models/deepseek/deepseek-v3.1.json

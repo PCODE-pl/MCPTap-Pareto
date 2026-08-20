@@ -9,6 +9,8 @@ import tempfile
 import unittest
 from unittest import mock
 
+import tomllib
+
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[1]
 SCRIPT_PATH = REPO_ROOT / ".github" / "scripts" / "detect_lab_provider_stats_mismatches.py"
 
@@ -152,6 +154,10 @@ class DetectLabProviderStatsMismatchesTest(unittest.TestCase):
         self.assertIn(detector.GENERATED_MARKER, provider_content)
         self.assertIn(detector.GENERATED_MARKER, model_content)
         self.assertIn("alibaba/qwen3.8-2.4t-a95b", model_content)
+        self.assertEqual(
+            tomllib.loads(model_content),
+            {"base_model": "alibaba/qwen3.8-2.4t-a95b"},
+        )
 
     def test_dry_run_reports_synthetic_files_without_mutating_output(self):
         with tempfile.TemporaryDirectory() as temporary_directory:

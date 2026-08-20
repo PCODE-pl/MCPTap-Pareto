@@ -3,4 +3,5 @@
 # Canonical model reported by statistics: alibaba/qwen3.5-flash
 # Missing from providers/alibaba/models.
 # Statistics evidence:
+base_model = "alibaba/qwen3.5-flash"
 # - vercel/alibaba: stats/vercel/alibaba/models/alibaba/qwen3.5-flash.json
