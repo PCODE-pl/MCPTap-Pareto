@@ -6916,6 +6916,14 @@
             "output": 4.25,
             "cache_read": 0.15
           }
+        },
+        "muse-spark-1.2-contributor-free": {
+          "is_thinking": true,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cache_read": 0
+          }
         }
       },
       "opencode-go": {
