@@ -188,7 +188,11 @@ def _build_finding(
     )
 
 
-def scan_repository(repo_root: pathlib.Path = REPO_ROOT) -> ScanResult:
+def scan_repository(
+    repo_root: pathlib.Path = REPO_ROOT,
+    *,
+    detect_labs_provider_directory_missing: bool = False,
+) -> ScanResult:
     """Scan all configured statistics sources against matching lab providers."""
     reports, errors = _iter_stats_reports(repo_root)
     reports_by_model: dict[str, list[StatsReport]] = defaultdict(list)
@@ -210,7 +214,9 @@ def scan_repository(repo_root: pathlib.Path = REPO_ROOT) -> ScanResult:
             )
         )
         finding = _build_finding(repo_root, model_id, model_reports, provider_indexes[lab_provider])
-        if not finding.lab_provider_model_exists:
+        if not finding.lab_provider_model_exists and (
+            finding.lab_provider_exists or detect_labs_provider_directory_missing
+        ):
             findings.append(finding)
 
     return ScanResult(
@@ -396,12 +402,20 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Report generated files without writing or removing files",
     )
+    parser.add_argument(
+        "--detect-labs-provider-directory-missing",
+        action="store_true",
+        default=False,
+        help="Include findings where the lab provider directory is missing",
+    )
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
-    result = scan_repository()
+    result = scan_repository(
+        detect_labs_provider_directory_missing=args.detect_labs_provider_directory_missing,
+    )
     generated_file_count, generation_errors = write_missing_provider_outputs(result=result, dry_run=args.dry_run)
     result = replace(
         result,

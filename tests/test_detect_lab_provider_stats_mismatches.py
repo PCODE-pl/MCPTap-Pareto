@@ -7,6 +7,7 @@ import pathlib
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[1]
 SCRIPT_PATH = REPO_ROOT / ".github" / "scripts" / "detect_lab_provider_stats_mismatches.py"
@@ -86,9 +87,11 @@ class DetectLabProviderStatsMismatchesTest(unittest.TestCase):
             )
 
             result = detector.scan_repository(root)
+            enabled_result = detector.scan_repository(root, detect_labs_provider_directory_missing=True)
 
-        self.assertEqual(len(result.findings), 1)
-        finding = result.findings[0]
+        self.assertEqual(result.findings, ())
+        self.assertEqual(len(enabled_result.findings), 1)
+        finding = enabled_result.findings[0]
         self.assertEqual(finding.model_id, "acme/model")
         self.assertEqual(finding.lab_provider, "acme")
         self.assertFalse(finding.canonical_model_exists)
@@ -96,6 +99,16 @@ class DetectLabProviderStatsMismatchesTest(unittest.TestCase):
         self.assertFalse(finding.lab_provider_model_exists)
         self.assertEqual(len(result.errors), 1)
         self.assertIn("stats/vercel/openai/models/acme/model.json", result.errors[0])
+
+    def test_directory_missing_detection_flag_defaults_to_false(self):
+        with mock.patch.object(sys, "argv", [str(SCRIPT_PATH)]):
+            self.assertFalse(detector.parse_args().detect_labs_provider_directory_missing)
+        with mock.patch.object(
+            sys,
+            "argv",
+            [str(SCRIPT_PATH), "--detect-labs-provider-directory-missing"],
+        ):
+            self.assertTrue(detector.parse_args().detect_labs_provider_directory_missing)
 
     def test_ignores_json_files_without_stats_model_path(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
