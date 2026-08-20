@@ -22,20 +22,12 @@ from lib.provider_model_stats import (  # noqa: E402
     collect_model_endpoints,
     fetch_json,
     load_mapping_cache,
-    load_providers,  # noqa: F401
-    load_router_providers_from_models_dir_struct,  # noqa: F401
-    load_routers,  # noqa: F401
-    normalize_text,  # noqa: F401
-    parse_base_model,  # noqa: F401
+    load_providers,
     print_bucket,
-    provider_name_variants,  # noqa: F401
-    query_provider_mappings,  # noqa: F401
-    resolve_provider_deterministically,  # noqa: F401
-    router_slug_matches,  # noqa: F401
+    query_provider_mappings,
+    resolve_provider_deterministically,
     save_mapping_cache,
     write_collected_outputs,
-    write_outputs,  # noqa: F401
-    write_synthetic_stats,  # noqa: F401
 )
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]

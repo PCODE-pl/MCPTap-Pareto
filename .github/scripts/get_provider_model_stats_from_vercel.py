@@ -28,8 +28,6 @@ from lib.provider_model_stats import (  # noqa: E402
     resolve_provider_deterministically,
     save_mapping_cache,
     write_collected_outputs,
-    write_outputs,  # noqa: F401
-    write_synthetic_stats,  # noqa: F401
 )
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
