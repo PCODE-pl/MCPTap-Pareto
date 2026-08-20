@@ -17,3 +17,5 @@ act workflow_dispatch \
   --secret GITHUB_TOKEN="$GITHUB_TOKEN" \
   --secret MCPTAP_EXTRAS_TOKEN="$MCPTAP_EXTRAS_TOKEN" \
   --var EXCLUDE_PROVIDERS_WITH_PLAN=true
+
+git pull

@@ -396,7 +396,9 @@ def load_router_providers_from_models_dir_struct(
         except (OSError, UnicodeDecodeError, tomllib.TOMLDecodeError) as exc:
             errors.append(f"{router_file}: {exc}")
             continue
-        if router_file.stem != excluded_provider and document.get("router_providers_from_models_dir_struct") is True:
+        if router_file.stem != excluded_provider and (
+            document.get("router_providers_from_models_dir_struct") is True or document.get("is_router") is True
+        ):
             routers.add(router_file.stem)
     return routers, errors
 
