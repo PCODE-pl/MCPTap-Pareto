@@ -1,13 +1,13 @@
 {
-  "uptime_last_30m": 99.3684160350827,
-  "uptime_last_5m": 99.57229807534134,
-  "uptime_last_1d": 99.45350402175974,
-  "latency_last_30m": 3128.5,
-  "throughput_last_30m": 37,
+  "uptime_last_30m": 99.18078102226467,
+  "uptime_last_5m": 99.51203643461288,
+  "uptime_last_1d": 99.44911874470394,
+  "latency_last_30m": 2300,
+  "throughput_last_30m": 41,
   "uptime_last_15m": 100,
-  "uptime_last_1h": 99.9241,
-  "latency_last_1h": 2257.5,
-  "throughput_last_1h": 48.5,
-  "latency_last_1d": 9395.927263730826,
+  "uptime_last_1h": 100,
+  "latency_last_1h": 2527.5,
+  "throughput_last_1h": 49.5,
+  "latency_last_1d": 9806.444741057128,
   "throughput_last_1d": 50
 }
