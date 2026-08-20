@@ -76,10 +76,10 @@ class ComputeAverageProviderModelStatsTest(unittest.TestCase):
                     "uptime_last_30m": 91,
                     "uptime_last_1h": 93,
                     "uptime_last_1d": 90.0,
-                    "latency_last_30m": {"p50": 100},
-                    "latency_last_1h": {"p50": 120},
-                    "throughput_last_30m": {"p50": 20},
-                    "throughput_last_1h": {"p50": 30},
+                    "latency_last_30m": 100,
+                    "latency_last_1h": 120,
+                    "throughput_last_30m": 20,
+                    "throughput_last_1h": 30,
                 },
             )
 
@@ -188,9 +188,9 @@ class ComputeAverageProviderModelStatsTest(unittest.TestCase):
             self.assertEqual(
                 json.loads(destination.read_text(encoding="utf-8")),
                 {
-                    "avgTimeToFirstToken": 450,
-                    "tokensPerSecond": 80,
-                    "uptime": 99.5,
+                    "latency_last_1d": 450,
+                    "throughput_last_1d": 80,
+                    "uptime_last_1d": 99.5,
                 },
             )
 
