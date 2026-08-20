@@ -109,6 +109,58 @@ class DetectLabProviderStatsMismatchesTest(unittest.TestCase):
         self.assertEqual(result.errors, ())
         self.assertEqual(result.reported_model_count, 0)
 
+    def test_writes_synthetic_provider_tree_for_missing_lab_model(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = pathlib.Path(temporary_directory)
+            self._write(root / "models/alibaba/qwen3.8-2.4t-a95b.toml", "name = 'Qwen'\n")
+            self._write(root / "providers/alibaba/provider.toml", "name = 'Alibaba'\n")
+            self._write(
+                root / "stats/openrouter/alibaba/models/alibaba/qwen3.8-2.4t-a95b.json",
+                json.dumps({"uptime_last_1d": 99.5}) + "\n",
+            )
+            stale = root / "missing/providers/alibaba/models/stale.toml"
+            self._write(stale, detector.GENERATED_MARKER + "\n")
+            manual = root / "missing/providers/manual.txt"
+            self._write(manual, "keep\n")
+
+            result = detector.scan_repository(root)
+            written, errors = detector.write_missing_provider_outputs(root, result)
+
+            provider_output = root / "missing/providers/alibaba/provider.toml"
+            model_output = root / "missing/providers/alibaba/models/qwen3.8-2.4t-a95b.toml"
+            provider_content = provider_output.read_text(encoding="utf-8")
+            model_content = model_output.read_text(encoding="utf-8")
+            manual_exists = manual.exists()
+
+        self.assertEqual(written, 2)
+        self.assertEqual(errors, [])
+        self.assertFalse(stale.exists())
+        self.assertTrue(manual_exists)
+        self.assertIn(detector.GENERATED_MARKER, provider_content)
+        self.assertIn(detector.GENERATED_MARKER, model_content)
+        self.assertIn("alibaba/qwen3.8-2.4t-a95b", model_content)
+
+    def test_dry_run_reports_synthetic_files_without_mutating_output(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = pathlib.Path(temporary_directory)
+            self._write(root / "providers/alibaba/provider.toml", "name = 'Alibaba'\n")
+            self._write(
+                root / "stats/openrouter/alibaba/models/alibaba/qwen3.8-2.4t-a95b.json",
+                json.dumps({"uptime_last_1d": 99.5}) + "\n",
+            )
+            output = root / "missing/providers/alibaba/models/old.toml"
+            self._write(output, detector.GENERATED_MARKER + "\n")
+
+            result = detector.scan_repository(root)
+            written, errors = detector.write_missing_provider_outputs(root, result, dry_run=True)
+            output_exists = output.exists()
+            model_output_exists = (root / "missing/providers/alibaba/models/qwen3.8-2.4t-a95b.toml").exists()
+
+        self.assertEqual(written, 2)
+        self.assertEqual(errors, [])
+        self.assertTrue(output_exists)
+        self.assertFalse(model_output_exists)
+
     @staticmethod
     def _write(path: pathlib.Path, content: str) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
