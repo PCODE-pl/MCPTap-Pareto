@@ -4959,9 +4959,9 @@
         "deepseek/deepseek-v4-pro": {
           "is_thinking": true,
           "cost": {
-            "input": 1.44,
-            "output": 2.88,
-            "cache_read": 0.1215
+            "input": 1.6,
+            "output": 3.2,
+            "cache_read": 0.135
           }
         }
       },
