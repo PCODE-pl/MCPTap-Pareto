@@ -1,3 +1,5 @@
 {
-  "logsCount": 0
+  "logsCount": 10,
+  "tokensPerSecond": 313,
+  "uptime": 100
 }
