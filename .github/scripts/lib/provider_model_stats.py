@@ -72,6 +72,11 @@ def load_provider_models(
     return by_base_model, errors
 
 
+def _is_transient_http_error(status_code: int) -> bool:
+    """Transient server errors (429, 5xx) are safe to retry."""
+    return status_code == 429 or status_code >= 500
+
+
 def fetch_json(
     url: str,
     *,
@@ -87,6 +92,10 @@ def fetch_json(
             with urllib.request.urlopen(request, timeout=timeout) as response:
                 return json.load(response)
         except urllib.error.HTTPError as exc:
+            if _is_transient_http_error(exc.code) and attempt < retries:
+                if retry_delay > 0:
+                    time.sleep(retry_delay * (2**attempt))
+                continue
             body = exc.read().decode("utf-8", errors="replace")[:500]
             raise HttpRequestError(
                 f"{error_context}: HTTP {exc.code}: {body}",
@@ -111,6 +120,7 @@ def collect_model_endpoints(
     api_url: str,
     fetch_model_endpoints: Callable[[str, str], list[dict[str, Any]]],
     model_ids: Collection[str] | None = None,
+    request_interval: float = 0.0,
 ) -> tuple[
     dict[str, list[dict[str, str]]],
     list[str],
@@ -130,7 +140,9 @@ def collect_model_endpoints(
     endpoint_cache: dict[str, list[dict[str, Any]]] = {}
     api_errors: list[str] = []
     unavailable_models: list[str] = []
-    for model_id in source_model_ids:
+    for index, model_id in enumerate(source_model_ids):
+        if request_interval > 0 and index > 0:
+            time.sleep(request_interval)
         try:
             endpoint_cache[model_id] = fetch_model_endpoints(api_url, model_id)
         except HttpRequestError as exc:

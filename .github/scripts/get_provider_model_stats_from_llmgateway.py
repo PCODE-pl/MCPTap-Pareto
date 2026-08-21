@@ -37,6 +37,8 @@ MODELS_DIR = REPO_ROOT / "providers" / "llmgateway" / "models"
 OUTPUT_DIR = REPO_ROOT / "stats" / "llmgateway"
 SYNTHETIC_OUTPUT_DIR = REPO_ROOT / "stats" / "_synthetic" / "llmgateway"
 CACHE_FILE_NAME = ".llmgateway_provider_mapping_cache.json"
+# Space per-model benchmark requests so the backend is not overwhelmed.
+REQUEST_INTERVAL = float(os.environ.get("LLMGATEWAY_STATS_REQUEST_INTERVAL", "0.5"))
 STATS_KEYS = (
     "logsCount",
     "avgTimeToFirstToken",
@@ -155,6 +157,7 @@ def main() -> int:
         api_url=api_url,
         fetch_model_endpoints=fetch_model_endpoints,
         model_ids=selected_model_ids,
+        request_interval=REQUEST_INTERVAL,
     )
     source_model_ids = sorted({entry["model_id"] for entries in models.values() for entry in entries})
     provider_names = sorted(

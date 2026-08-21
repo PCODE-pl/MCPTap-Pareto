@@ -6,6 +6,7 @@ import pathlib
 import sys
 import tempfile
 import unittest
+import urllib.error
 from contextlib import redirect_stderr
 from unittest import mock
 
@@ -171,6 +172,70 @@ class ProviderModelStatsLibraryTest(unittest.TestCase):
             )
 
         self.assertEqual(urlopen.call_count, 2)
+
+    def test_fetch_json_retries_transient_http_errors(self):
+        def make_http_error(code):
+            error = urllib.error.HTTPError("https://example.test", code, "error", {}, io.BytesIO(b""))
+            return error  # type: ignore[return-value]
+
+        response = io.BytesIO(b"{}")
+        with mock.patch(
+            "lib.provider_model_stats.urllib.request.urlopen",
+            side_effect=[make_http_error(503), response],
+        ) as urlopen:
+            self.assertEqual(
+                fetch_json(
+                    "https://example.test",
+                    headers={"Accept": "application/json"},
+                    error_context="Example request failed",
+                    retries=1,
+                    retry_delay=0,
+                ),
+                {},
+            )
+        self.assertEqual(urlopen.call_count, 2)
+
+    def test_fetch_json_does_not_retry_client_errors(self):
+        def make_http_error(code):
+            error = urllib.error.HTTPError("https://example.test", code, "error", {}, io.BytesIO(b"nope"))
+            return error  # type: ignore[return-value]
+
+        with mock.patch(
+            "lib.provider_model_stats.urllib.request.urlopen",
+            side_effect=make_http_error(404),
+        ) as urlopen:
+            with self.assertRaises(HttpRequestError):
+                fetch_json(
+                    "https://example.test",
+                    headers={"Accept": "application/json"},
+                    error_context="Example request failed",
+                    retries=2,
+                    retry_delay=0,
+                )
+        self.assertEqual(urlopen.call_count, 1)
+
+    def test_collect_model_endpoints_throttles_per_model_request(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            models_dir = pathlib.Path(temporary_directory)
+            for name in ("a.toml", "b.toml"):
+                (models_dir / name).write_text('base_model = "acme/model"\n', encoding="utf-8")
+            calls: list[str] = []
+
+            def fetch(_api_url: str, model_id: str):
+                calls.append(model_id)
+                return []
+
+            with mock.patch("lib.provider_model_stats.time.sleep") as sleep:
+                models, parse_errors, endpoint_cache, api_errors, unavailable_models = collect_model_endpoints(
+                    models_dir=models_dir,
+                    api_url="https://example.test/models",
+                    fetch_model_endpoints=fetch,
+                    request_interval=2.0,
+                )
+
+        self.assertEqual(parse_errors, [])
+        self.assertEqual(sleep.call_args_list, [mock.call(2.0)])
+        self.assertEqual(len(calls), 2)
 
     def test_debug_mapping_logs_prompts_and_response_without_authorization_header(self):
         response = io.BytesIO(b'{"choices":[{"message":{"content":"{\\"Acme AI\\": \\"acme\\"}"}}]}')
