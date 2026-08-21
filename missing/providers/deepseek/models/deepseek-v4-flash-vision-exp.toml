@@ -5,3 +5,4 @@
 # Statistics evidence:
 base_model = "deepseek/deepseek-v4-flash-vision-exp"
 # - openrouter/deepseek: stats/openrouter/deepseek/models/deepseek/deepseek-v4-flash-vision-exp.json
+# - vercel/deepseek: stats/vercel/deepseek/models/deepseek/deepseek-v4-flash-vision-exp.json
