@@ -23,6 +23,7 @@ from lib.provider_model_stats import (  # noqa: E402 # type: ignore
     query_provider_mappings,
     save_mapping_cache,
     write_collected_outputs,
+    write_synthetic_stats,
 )
 
 
@@ -214,6 +215,81 @@ class ProviderModelStatsLibraryTest(unittest.TestCase):
         self.assertEqual(errors, [])
         self.assertEqual(collisions, [])
         self.assertFalse(stale_exists_after)
+
+    def test_writes_synthetic_stats_for_first_party_provider_with_router_flags_false(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = pathlib.Path(temporary_directory)
+            providers_dir = root / "providers"
+            routers_dir = root / "routers"
+            stats_dir = root / "stats" / "openrouter"
+            synthetic_dir = root / "stats" / "_synthetic" / "openrouter"
+
+            # First-party provider: is_router=false and struct=false, own-slug models.
+            model = providers_dir / "meta" / "models" / "muse-spark-1.2.toml"
+            model.parent.mkdir(parents=True)
+            model.write_text('base_model = "meta/muse-spark-1.2"\n', encoding="utf-8")
+            routers_dir.mkdir(parents=True)
+            (routers_dir / "meta.toml").write_text(
+                "is_router = false\nrouter_providers_from_models_dir_struct = false\n", encoding="utf-8"
+            )
+
+            # Direct stats collected under the nested endpoint-provider layout.
+            source = stats_dir / "meta" / "models" / "meta" / "muse-spark-1.2.json"
+            source.parent.mkdir(parents=True)
+            source.write_text('{"uptime_last_30m": 100}\n', encoding="utf-8")
+
+            written, errors, collisions = write_synthetic_stats(
+                providers_dir=providers_dir,
+                routers_dir=routers_dir,
+                stats_dir=stats_dir,
+                synthetic_dir=synthetic_dir,
+                dry_run=False,
+                excluded_provider="openrouter",
+            )
+
+            destination = synthetic_dir / "meta" / "models" / "muse-spark-1.2.json"
+            self.assertEqual(written, 1)
+            self.assertEqual(errors, [])
+            self.assertEqual(collisions, [])
+            self.assertTrue(destination.is_file())
+            self.assertEqual(destination.read_text(encoding="utf-8"), '{"uptime_last_30m": 100}\n')
+
+    def test_skips_non_router_hosting_provider_in_synthetic_stats(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = pathlib.Path(temporary_directory)
+            providers_dir = root / "providers"
+            routers_dir = root / "routers"
+            stats_dir = root / "stats" / "openrouter"
+            synthetic_dir = root / "stats" / "_synthetic" / "openrouter"
+
+            # Non-router hosting provider whose own model hosts another lab's model.
+            model = providers_dir / "azure" / "models" / "openai" / "gpt-5.json"
+            model.parent.mkdir(parents=True)
+            model.write_text('base_model = "openai/gpt-5"\n', encoding="utf-8")
+            routers_dir.mkdir(parents=True)
+            (routers_dir / "azure.toml").write_text(
+                "is_router = false\nrouter_providers_from_models_dir_struct = false\n", encoding="utf-8"
+            )
+
+            # It does have direct stats, but under azure's own namespace, not openai's.
+            source = stats_dir / "azure" / "models" / "openai" / "gpt-5.json"
+            source.parent.mkdir(parents=True)
+            source.write_text('{"uptime_last_30m": 100}\n', encoding="utf-8")
+
+            written, errors, collisions = write_synthetic_stats(
+                providers_dir=providers_dir,
+                routers_dir=routers_dir,
+                stats_dir=stats_dir,
+                synthetic_dir=synthetic_dir,
+                dry_run=False,
+                excluded_provider="openrouter",
+            )
+
+            destination = synthetic_dir / "azure" / "models" / "openai" / "gpt-5.json"
+            self.assertEqual(written, 0)
+            self.assertEqual(errors, [])
+            self.assertEqual(collisions, [])
+            self.assertFalse(destination.exists())
 
     def test_builds_outputs_with_provider_specific_resolver_and_stats_extractor(self):
         models = {

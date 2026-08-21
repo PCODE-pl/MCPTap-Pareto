@@ -497,31 +497,24 @@ def write_synthetic_stats(
         stats_provider_models_roots.append((stats_provider_dir, resolved_models_root))
 
     for provider_dir in sorted(path for path in providers_dir.iterdir() if path.is_dir()):
-        # print(provider_dir)  # TODO: remove
-
         matching_structural_routers = sorted(
             router for router in structural_routers if router_slug_matches(router, provider_dir.name)
         )
 
-        # print(matching_structural_routers) # TODO: remove
-
-        if len(matching_structural_routers) != 1:
-            if len(matching_structural_routers) > 1:
-                errors.append(
-                    f"{provider_dir}: matches multiple structured routers: {', '.join(matching_structural_routers)}"
-                )
+        if len(matching_structural_routers) > 1:
+            errors.append(
+                f"{provider_dir}: matches multiple structured routers: {', '.join(matching_structural_routers)}"
+            )
             continue
-        matched_router = matching_structural_routers[0]
-
-        if matched_router not in routers:
-            continue
+        provider_is_router = len(matching_structural_routers) == 1 and matching_structural_routers[0] in routers
 
         models_dir = provider_dir / "models"
         if not models_dir.is_dir():
             continue
 
         for model_file in sorted(models_dir.rglob("*.toml")):
-            # print(model_file) # TODO: remove
+            if model_file.is_symlink() and not model_file.exists():
+                continue
             try:
                 model_document = tomllib.loads(model_file.read_text(encoding="utf-8"))
             except (OSError, UnicodeDecodeError, tomllib.TOMLDecodeError) as exc:
@@ -535,41 +528,8 @@ def write_synthetic_stats(
             model_relative_path = model_file.relative_to(models_dir)
             source_candidates: dict[pathlib.Path, pathlib.Path] = {}
 
-            # TODO: remove
-            # if matched_router in routers:
-            #     # if "arcee" == str(provider_dir.name):
-            #     #     print(provider_dir)  # TODO: remove
-
-            #     matching_stats_provider_models_roots = []
-            #     for stats_provider_dir, resolved_models_root in stats_provider_models_roots:
-            #         if stats_provider_dir.name != base_model_provider:
-            #             continue
-
-            #         source = stats_provider_dir / "models" / base_model_provider / f"{base_model_slug}.json"
-            #         if source.is_file():
-            #             matching_stats_provider_models_roots.append((stats_provider_dir, resolved_models_root))
-            #         # else:
-            #         #     if "arcee" == str(provider_dir.name):
-            #         #         print(f"NOT FOUND: {source}")  # TODO: remove
-            # TODO: remove
-            # else:
-            #     # matching_stats_provider_models_roots = [
-            #     #     (stats_provider_dir, resolved_models_root)
-            #     #     for stats_provider_dir, resolved_models_root in stats_provider_models_roots
-            #     #     if router_slug_matches(provider_dir.name, stats_provider_dir.name)
-            #     # ]
-
-            #     matching_stats_provider_models_roots = []
-            #     for stats_provider_dir, resolved_models_root in stats_provider_models_roots:
-            #         if stats_provider_dir.name != base_model_provider:
-            #             continue
-
-            #         source = stats_provider_dir / "models" / base_model_provider / f"{base_model_slug}.json"
-            #         if source.is_file():
-            #             matching_stats_provider_models_roots.append((stats_provider_dir, resolved_models_root))
-            #         # else:
-            #         #     if "arcee" == str(provider_dir.name):
-            #         #         print(f"NOT FOUND: {source}")  # TODO: remove
+            if not provider_is_router and base_model_provider != provider_dir.name:
+                continue
 
             matching_stats_provider_models_roots = []
             for stats_provider_dir, resolved_models_root in stats_provider_models_roots:
@@ -579,14 +539,10 @@ def write_synthetic_stats(
                 source = stats_provider_dir / "models" / base_model_provider / f"{base_model_slug}.json"
                 if source.is_file():
                     matching_stats_provider_models_roots.append((stats_provider_dir, resolved_models_root))
-                # else:
-                #     if "arcee" == str(provider_dir.name):
-                #         print(f"NOT FOUND: {source}")  # TODO: remove
 
             for stats_provider_dir, resolved_models_root in matching_stats_provider_models_roots:
                 source = stats_provider_dir / "models" / base_model_provider / f"{base_model_slug}.json"
                 if not source.is_file():
-                    # print(f"NOT FOUND: {source}")  # TODO: remove
                     continue
                 try:
                     resolved_source = source.resolve(strict=True)
