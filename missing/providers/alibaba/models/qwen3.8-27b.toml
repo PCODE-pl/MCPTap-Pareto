@@ -5,6 +5,7 @@
 # Statistics evidence:
 base_model = "alibaba/qwen3.8-27b"
 # - openrouter/AkashML: stats/openrouter/AkashML/models/alibaba/qwen3.8-27b.json
+# - openrouter/CoreWeave: stats/openrouter/CoreWeave/models/alibaba/qwen3.8-27b.json
 # - openrouter/Parasail: stats/openrouter/Parasail/models/alibaba/qwen3.8-27b.json
 # - openrouter/Reka: stats/openrouter/Reka/models/alibaba/qwen3.8-27b.json
 # - openrouter/alibaba: stats/openrouter/alibaba/models/alibaba/qwen3.8-27b.json
