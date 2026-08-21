@@ -1,13 +1,13 @@
 {
   "uptime_last_15m": 100,
-  "uptime_last_1h": 99.9985,
-  "uptime_last_1d": 99.9937,
+  "uptime_last_1h": 100,
+  "uptime_last_1d": 99.9938,
   "latency_last_1h": {
-    "p50": 2225,
-    "p95": 6321
+    "p50": 2148,
+    "p95": 7058.299999999996
   },
   "throughput_last_1h": {
-    "p50": 156.5,
-    "p95": 347.15
+    "p50": 170,
+    "p95": 367.5
   }
 }
