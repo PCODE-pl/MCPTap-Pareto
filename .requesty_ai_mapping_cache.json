@@ -67,12 +67,13 @@
   "mistral/mistral-medium-3-5": null,
   "nousresearch/hermes-4-70b": null,
   "nousresearch/hermes-4-405b": null,
-  "google/gemma-3-27b-it": null,
+  "google/gemma-3-27b-it": "google/gemma-4-26b-a4b-it",
   "nvidia/nemotron-3-nano-omni": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
   "minimax/minimax-m2": "minimax/MiniMax-M2",
   "minimax/minimax-m2.5-highspeed": "minimax/MiniMax-M2.5-highspeed",
   "deepinfra/tbd": null,
   "alibaba/tbd": null,
   "deepinfra/glm-5.2": "zhipuai/glm-5.2",
-  "deepinfra/qwen3.8-2.4T-A95B": "alibaba/qwen3.8-2.4t-a95b"
+  "deepinfra/qwen3.8-2.4T-A95B": "alibaba/qwen3.8-2.4t-a95b",
+  "Microsoft/wizardlm-2-8x22b": null
 }
