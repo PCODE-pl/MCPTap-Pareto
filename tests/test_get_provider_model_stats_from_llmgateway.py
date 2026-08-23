@@ -41,6 +41,23 @@ class LlmGatewayStatsTest(unittest.TestCase):
         with self.assertRaises(TypeError):
             get_provider_model_stats.parse_public_stats_response({"data": []})
 
+    def test_fetch_public_model_ids_uses_long_backoff_for_public_index(self):
+        with mock.patch.object(
+            get_provider_model_stats,
+            "fetch_json",
+            return_value={"models": []},
+        ) as fetch_json:
+            result = get_provider_model_stats.fetch_public_model_ids("https://internal.example")
+
+        self.assertEqual(result, [])
+        fetch_json.assert_called_once_with(
+            "https://internal.example/public/models/stats?window=24h",
+            headers={"Accept": "application/json"},
+            error_context="LLM Gateway public model stats request failed",
+            retries=4,
+            retry_delay=5,
+        )
+
     def test_parse_benchmarks_maps_provider_id_to_shared_provider_name(self):
         payload = {
             "providers": [

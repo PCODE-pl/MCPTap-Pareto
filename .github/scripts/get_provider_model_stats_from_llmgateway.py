@@ -39,6 +39,8 @@ SYNTHETIC_OUTPUT_DIR = REPO_ROOT / "stats" / "_synthetic" / "llmgateway"
 CACHE_FILE_NAME = ".llmgateway_provider_mapping_cache.json"
 # Space per-model benchmark requests so the backend is not overwhelmed.
 REQUEST_INTERVAL = float(os.environ.get("LLMGATEWAY_STATS_REQUEST_INTERVAL", "0.5"))
+PUBLIC_INDEX_RETRIES = 4
+PUBLIC_INDEX_RETRY_DELAY = 5
 STATS_KEYS = (
     "logsCount",
     "avgTimeToFirstToken",
@@ -97,8 +99,8 @@ def fetch_public_model_ids(api_url: str) -> list[str]:
         f"{api_url.rstrip('/')}/public/models/stats?window=24h",
         headers={"Accept": "application/json"},
         error_context="LLM Gateway public model stats request failed",
-        retries=2,
-        retry_delay=1,
+        retries=PUBLIC_INDEX_RETRIES,
+        retry_delay=PUBLIC_INDEX_RETRY_DELAY,
     )
     return parse_public_stats_response(payload)
 
