@@ -4,10 +4,11 @@ family = "qwen3.6"
 release_date = "2026-08-21"
 last_updated = "2026-08-21"
 attachment = true
-reasoning = false
+reasoning = true
 tool_call = true
 structured_output = true
 open_weights = true
+reasoning_options = []
 
 [cost]
 input = 0.15
