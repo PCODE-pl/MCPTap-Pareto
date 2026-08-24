@@ -2,6 +2,16 @@
   "uptime_last_30m": null,
   "uptime_last_5m": null,
   "uptime_last_1d": 100,
-  "latency_last_30m": null,
-  "throughput_last_30m": null
+  "latency_last_30m": {
+    "p50": 2899.5,
+    "p75": 3335.25,
+    "p90": 3628.8000000000006,
+    "p99": 4233.96
+  },
+  "throughput_last_30m": {
+    "p50": 20.5,
+    "p75": 24,
+    "p90": 52,
+    "p99": 54.42999999999999
+  }
 }
