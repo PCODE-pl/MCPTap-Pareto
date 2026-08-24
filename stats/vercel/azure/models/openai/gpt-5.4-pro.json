@@ -3,5 +3,8 @@
   "uptime_last_1h": null,
   "uptime_last_1d": 100,
   "latency_last_1h": null,
-  "throughput_last_1h": null
+  "throughput_last_1h": {
+    "p50": 9,
+    "p95": 9
+  }
 }
