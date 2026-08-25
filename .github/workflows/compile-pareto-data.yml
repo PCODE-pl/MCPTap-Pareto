@@ -92,6 +92,21 @@ jobs:
           echo "Removed upstream catalog paths: $removed"
           echo "Already absent locally: $missing"
 
+          if ! git merge-base --is-ancestor FETCH_HEAD HEAD; then
+            # Keep the catalog-only mirror while recording the upstream commit as
+            # a merge parent. This prevents GitHub Sync fork from replaying the
+            # entire upstream history against generated fork commits.
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            catalog_tree="$(git write-tree)"
+            upstream_baseline_commit="$(printf '%s\n\nUpstream commit: %s\n\nAI-Generated-By: github-actions[bot]\n' \
+              "chore: record upstream catalog baseline" "$(git rev-parse FETCH_HEAD)" \
+              | git commit-tree "$catalog_tree" -p HEAD -p FETCH_HEAD)"
+            git reset --soft "$upstream_baseline_commit"
+            echo "UPSTREAM_BASELINE_RECORDED=true" >> "$GITHUB_ENV"
+            echo "Recorded upstream commit as a merge parent: $upstream_baseline_commit"
+          fi
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -145,7 +160,13 @@ jobs:
           set -euo pipefail
           export GIT_TERMINAL_PROMPT=0
 
-          if test -z "$(git status --porcelain -- missing models providers stats pareto.json .requesty_ai_mapping_cache.json)"; then
+          catalog_changed=false
+          if test -n "$(git status --porcelain -- missing models providers)"; then
+            catalog_changed=true
+          fi
+
+          if test "$catalog_changed" = false && [[ "${UPSTREAM_BASELINE_RECORDED:-false}" != true ]] && \
+            test -z "$(git status --porcelain -- stats pareto.json .requesty_ai_mapping_cache.json)"; then
             echo "Catalog and generated data are unchanged."
             exit 0
           fi
@@ -160,7 +181,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A -- missing models providers stats pareto.json .requesty_ai_mapping_cache.json
-          git commit -m "chore: sync upstream catalog and generated data"
+          if git diff --cached --quiet; then
+            echo "Upstream baseline recorded; generated data is unchanged."
+          else
+            git commit -m "chore: sync upstream catalog and generated data"
+          fi
 
           max_attempts=3
           for attempt in $(seq 1 "$max_attempts"); do
