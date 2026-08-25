@@ -4,6 +4,7 @@
 # Missing from providers/zhipuai/models.
 # Statistics evidence:
 base_model = "zhipuai/glm-5.3"
+# - llmgateway/baidu: stats/llmgateway/baidu/models/zhipuai/glm-5.3.json
 # - llmgateway/zhipuai: stats/llmgateway/zhipuai/models/zhipuai/glm-5.3.json
 # - openrouter/zhipuai: stats/openrouter/zhipuai/models/zhipuai/glm-5.3.json
 # - vercel/zhipuai: stats/vercel/zhipuai/models/zhipuai/glm-5.3.json

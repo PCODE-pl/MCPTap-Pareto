@@ -16,4 +16,5 @@ base_model = "alibaba/qwen3.8-27b"
 # - openrouter/venice: stats/openrouter/venice/models/alibaba/qwen3.8-27b.json
 # - vercel/alibaba: stats/vercel/alibaba/models/alibaba/qwen3.8-27b.json
 # - vercel/deepinfra: stats/vercel/deepinfra/models/alibaba/qwen3.8-27b.json
+# - vercel/morph: stats/vercel/morph/models/alibaba/qwen3.8-27b.json
 # - vercel/runinfra: stats/vercel/runinfra/models/alibaba/qwen3.8-27b.json
