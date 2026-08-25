@@ -3,11 +3,8 @@
   "uptime_last_1h": 100,
   "uptime_last_1d": 100,
   "latency_last_1h": {
-    "p50": 461,
-    "p95": 1270.5
+    "p50": 447.5,
+    "p95": 946.1499999999999
   },
-  "throughput_last_1h": {
-    "p50": 2,
-    "p95": 2
-  }
+  "throughput_last_1h": null
 }
