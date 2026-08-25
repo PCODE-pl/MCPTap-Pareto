@@ -100,6 +100,20 @@ def extract_slug_date(value: str) -> tuple[int, int] | None:
     return None
 
 
+def select_dated_ref(display_name: str, refs: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """Select one model reference matching a display-name month/day marker."""
+    display_date = extract_display_date(display_name)
+    if not display_date:
+        return None
+    dated_refs = [
+        ref
+        for ref in refs
+        if extract_slug_date(ref["model_id"]) == display_date
+        or extract_slug_date(ref["canonical_slug"] or "") == display_date
+    ]
+    return dated_refs[0] if len(dated_refs) == 1 else None
+
+
 def load_toml(path: Path) -> dict[str, Any] | None:
     """Read a TOML file, ignoring broken symlinks and malformed optional files."""
     try:
@@ -190,11 +204,12 @@ def build_openrouter_refs(repo_root: Path) -> list[dict[str, Any]]:
         if not data:
             continue
         base_model = data.get("base_model")
+        canonical_slug = catalog_canonical_slugs.get(model_id)
         refs.append(
             {
                 "model_id": model_id,
                 "base_model": base_model.strip() if isinstance(base_model, str) else None,
-                "canonical_slug": catalog_canonical_slugs.get(model_id),
+                "canonical_slug": canonical_slug,
                 "family": data.get("family") if isinstance(data.get("family"), str) else None,
                 "name": data.get("name") if isinstance(data.get("name"), str) else None,
                 "reasoning": bool(data.get("reasoning")),
@@ -213,6 +228,10 @@ def resolve_canonical_model(
     if not isinstance(benchmark_ref, str) or not benchmark_ref.strip():
         return None
 
+    exact_model_refs = [ref for ref in openrouter_refs if ref["model_id"] == benchmark_ref]
+    if len(exact_model_refs) == 1:
+        ref = exact_model_refs[0]
+        return ref["base_model"] or ref["model_id"], ref
     normalized_ref = normalize_model_ref(benchmark_ref)
     exact_refs = [
         ref
@@ -227,22 +246,14 @@ def resolve_canonical_model(
         ref = exact_refs[0]
         return ref["base_model"] or ref["model_id"], ref
     if len(exact_refs) > 1:
-        display_date = benchmark_record.get("display_name")
-        display_date = extract_display_date(display_date) if isinstance(display_date, str) else None
-        if display_date:
-            dated_refs = [
-                ref
-                for ref in exact_refs
-                if extract_slug_date(ref["model_id"]) == display_date
-                or extract_slug_date(ref["canonical_slug"] or "") == display_date
-            ]
-            if len(dated_refs) == 1:
-                ref = dated_refs[0]
-                print(
-                    f"Using display-name date mapping for {benchmark_ref!r}: {ref['model_id']}",
-                    file=sys.stderr,
-                )
-                return ref["base_model"] or ref["model_id"], ref
+        display_name = benchmark_record.get("display_name")
+        ref = select_dated_ref(display_name, exact_refs) if isinstance(display_name, str) else None
+        if ref:
+            print(
+                f"Using display-name date mapping for {benchmark_ref!r}: {ref['model_id']}",
+                file=sys.stderr,
+            )
+            return ref["base_model"] or ref["model_id"], ref
         canonical_models = {ref["base_model"] or ref["model_id"] for ref in exact_refs}
         if len(canonical_models) == 1:
             ref = exact_refs[0]
@@ -294,6 +305,13 @@ def resolve_canonical_model(
             )
             return ref["base_model"] or ref["model_id"], ref
         if len(heuristic_refs) > 1:
+            ref = select_dated_ref(display_name, heuristic_refs)
+            if ref:
+                print(
+                    f"Using display-name date mapping for {display_name!r}: {ref['model_id']}",
+                    file=sys.stderr,
+                )
+                return ref["base_model"] or ref["model_id"], ref
             canonical_models = {ref["base_model"] or ref["model_id"] for ref in heuristic_refs}
             if len(canonical_models) == 1:
                 ref = heuristic_refs[0]

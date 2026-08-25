@@ -55,6 +55,7 @@ class CompileParetoDataTest(unittest.TestCase):
         self.assertEqual(compile_pareto_data.extract_slug_date("google/model-05-06"), (5, 6))
         self.assertEqual(compile_pareto_data.extract_slug_date("google/model-20250325"), (3, 25))
         self.assertEqual(compile_pareto_data.extract_slug_date("google/model-2025-03-25"), (3, 25))
+        self.assertIsNone(compile_pareto_data.extract_slug_date("google/model"))
 
     def test_resolves_dated_display_name_to_dated_slug_when_short_slug_collides(self):
         refs = [
@@ -76,7 +77,7 @@ class CompileParetoDataTest(unittest.TestCase):
             },
         ]
         record = {
-            "model_permaslug": "google/gemini-2.5-pro-preview",
+            "model_permaslug": "google/gemini-2.5-pro-preview-unknown",
             "display_name": "Gemini 2.5 Pro Preview (Mar' 25)",
         }
 
@@ -85,6 +86,63 @@ class CompileParetoDataTest(unittest.TestCase):
         self.assertIsNotNone(resolved)
         self.assertEqual(resolved[0], "google/gemini-2.5-pro-preview-05-06")
         self.assertEqual(resolved[1]["model_id"], "google/gemini-2.5-pro-preview-05-06")
+
+    def test_resolves_benchmark_alias_using_display_date_when_ref_is_versioned(self):
+        refs = [
+            {
+                "model_id": "google/gemini-2.5-pro-preview-05-06",
+                "base_model": None,
+                "canonical_slug": "google/gemini-2.5-pro-preview-03-25",
+                "family": None,
+                "name": "Gemini 2.5 Pro Preview 05-06",
+                "reasoning": True,
+            },
+            {
+                "model_id": "google/gemini-2.5-pro-preview",
+                "base_model": None,
+                "canonical_slug": "google/gemini-2.5-pro-preview-06-05",
+                "family": None,
+                "name": "Gemini 2.5 Pro Preview 06-05",
+                "reasoning": True,
+            },
+        ]
+        record = {
+            "model_permaslug": "google/gemini-2.5-pro-preview-unknown",
+            "display_name": "Gemini 2.5 Pro Preview (Mar' 25)",
+        }
+
+        resolved = compile_pareto_data.resolve_canonical_model(record, refs, {})
+
+        self.assertEqual(resolved[0], "google/gemini-2.5-pro-preview-05-06")
+        self.assertEqual(resolved[1]["model_id"], "google/gemini-2.5-pro-preview-05-06")
+
+    def test_prefers_exact_model_id_before_normalized_aliases(self):
+        refs = [
+            {
+                "model_id": "google/gemini-2.5-pro-preview",
+                "base_model": None,
+                "canonical_slug": "google/gemini-2.5-pro-preview-06-05",
+                "family": None,
+                "name": "Gemini 2.5 Pro Preview 06-05",
+                "reasoning": True,
+            },
+            {
+                "model_id": "google/gemini-2.5-pro-preview-05-06",
+                "base_model": None,
+                "canonical_slug": "google/gemini-2.5-pro-preview-03-25",
+                "family": None,
+                "name": "Gemini 2.5 Pro Preview 05-06",
+                "reasoning": True,
+            },
+        ]
+
+        resolved = compile_pareto_data.resolve_canonical_model(
+            {"model_permaslug": "google/gemini-2.5-pro-preview"},
+            refs,
+            {},
+        )
+
+        self.assertEqual(resolved[0], "google/gemini-2.5-pro-preview")
 
     def test_attaches_average_stats_for_matching_provider_model_or_empty_stats(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
