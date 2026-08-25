@@ -20,6 +20,25 @@ DEFAULT_BENCHMARK_URL = (
 DEFAULT_ACCURACY_THRESHOLD = 60
 DEFAULT_EXCLUDE_PROVIDERS_WITH_PLAN = True
 DATE_SUFFIX_RE = re.compile(r"-(?:\d{8}|\d{4}-\d{2}-\d{2}|\d{2}-\d{2})$")
+DISPLAY_DATE_RE = re.compile(
+    r"\b(?P<month>jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)"
+    r"\s*['’]\s*(?P<day>\d{1,2})\b",
+    re.IGNORECASE,
+)
+MONTH_NUMBERS = {
+    "jan": 1,
+    "feb": 2,
+    "mar": 3,
+    "apr": 4,
+    "may": 5,
+    "jun": 6,
+    "jul": 7,
+    "aug": 8,
+    "sep": 9,
+    "oct": 10,
+    "nov": 11,
+    "dec": 12,
+}
 
 
 def parse_bool(value: str | None, default: bool) -> bool:
@@ -56,6 +75,29 @@ def slugify_display_name(value: str) -> str:
         value = stripped
     value = value.split(":", 1)[-1].strip().lower()
     return re.sub(r"[^a-z0-9.]+", "-", value).strip("-")
+
+
+def extract_display_date(value: str) -> tuple[int, int] | None:
+    """Extract a month/day marker such as ``Mar' 25`` from a display name."""
+    match = DISPLAY_DATE_RE.search(value)
+    if not match:
+        return None
+    return MONTH_NUMBERS[match.group("month").lower()], int(match.group("day"))
+
+
+def extract_slug_date(value: str) -> tuple[int, int] | None:
+    """Extract the trailing month/day marker from a canonical model slug."""
+    match = re.search(r"-\d{4}-(?P<month>\d{2})-(?P<day>\d{2})$", value)
+    if match:
+        return int(match.group("month")), int(match.group("day"))
+    match = re.search(r"-(?P<date>\d{8})$", value)
+    if match:
+        date = match.group("date")
+        return int(date[4:6]), int(date[6:8])
+    match = re.search(r"-(?P<month>\d{2})-(?P<day>\d{2})$", value)
+    if match:
+        return int(match.group("month")), int(match.group("day"))
+    return None
 
 
 def load_toml(path: Path) -> dict[str, Any] | None:
@@ -119,9 +161,28 @@ def build_canonical_metadata(repo_root: Path) -> dict[str, dict[str, Any]]:
     return metadata
 
 
+def build_catalog_canonical_slugs(repo_root: Path) -> dict[str, str]:
+    """Build model-ID to canonical-slug mappings from the local catalog export."""
+    try:
+        payload = json.loads((repo_root / "models.json").read_text(encoding="utf-8"))
+    except (FileNotFoundError, OSError, UnicodeDecodeError, json.JSONDecodeError):
+        return {}
+    records = payload.get("data") if isinstance(payload, dict) else None
+    if not isinstance(records, list):
+        return {}
+    return {
+        record["id"]: record["canonical_slug"]
+        for record in records
+        if isinstance(record, dict)
+        and isinstance(record.get("id"), str)
+        and isinstance(record.get("canonical_slug"), str)
+    }
+
+
 def build_openrouter_refs(repo_root: Path) -> list[dict[str, Any]]:
     """Return OpenRouter model files and their canonical/family metadata."""
     refs: list[dict[str, Any]] = []
+    catalog_canonical_slugs = build_catalog_canonical_slugs(repo_root)
     models_root = repo_root / "providers" / "openrouter" / "models"
     for path in models_root.rglob("*.toml"):
         model_id = path.relative_to(models_root).with_suffix("").as_posix()
@@ -133,6 +194,7 @@ def build_openrouter_refs(repo_root: Path) -> list[dict[str, Any]]:
             {
                 "model_id": model_id,
                 "base_model": base_model.strip() if isinstance(base_model, str) else None,
+                "canonical_slug": catalog_canonical_slugs.get(model_id),
                 "family": data.get("family") if isinstance(data.get("family"), str) else None,
                 "name": data.get("name") if isinstance(data.get("name"), str) else None,
                 "reasoning": bool(data.get("reasoning")),
@@ -165,6 +227,22 @@ def resolve_canonical_model(
         ref = exact_refs[0]
         return ref["base_model"] or ref["model_id"], ref
     if len(exact_refs) > 1:
+        display_date = benchmark_record.get("display_name")
+        display_date = extract_display_date(display_date) if isinstance(display_date, str) else None
+        if display_date:
+            dated_refs = [
+                ref
+                for ref in exact_refs
+                if extract_slug_date(ref["model_id"]) == display_date
+                or extract_slug_date(ref["canonical_slug"] or "") == display_date
+            ]
+            if len(dated_refs) == 1:
+                ref = dated_refs[0]
+                print(
+                    f"Using display-name date mapping for {benchmark_ref!r}: {ref['model_id']}",
+                    file=sys.stderr,
+                )
+                return ref["base_model"] or ref["model_id"], ref
         canonical_models = {ref["base_model"] or ref["model_id"] for ref in exact_refs}
         if len(canonical_models) == 1:
             ref = exact_refs[0]

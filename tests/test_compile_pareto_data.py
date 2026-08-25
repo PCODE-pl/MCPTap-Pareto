@@ -26,6 +26,66 @@ compile_pareto_data = load_script()
 
 
 class CompileParetoDataTest(unittest.TestCase):
+    def test_builds_openrouter_refs_with_canonical_slugs_from_models_catalog(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = pathlib.Path(temporary_directory)
+            model_path = root / "providers" / "openrouter" / "models" / "google" / "model.toml"
+            model_path.parent.mkdir(parents=True)
+            model_path.write_text('name = "Google model"\n', encoding="utf-8")
+            (root / "models.json").write_text(
+                json.dumps(
+                    {
+                        "data": [
+                            {
+                                "id": "google/model",
+                                "canonical_slug": "google/model-03-25",
+                            }
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            refs = compile_pareto_data.build_openrouter_refs(root)
+
+        self.assertEqual(refs[0]["canonical_slug"], "google/model-03-25")
+
+    def test_extracts_dated_slug_variants(self):
+        self.assertEqual(compile_pareto_data.extract_display_date("Preview (Mar' 25)"), (3, 25))
+        self.assertEqual(compile_pareto_data.extract_slug_date("google/model-05-06"), (5, 6))
+        self.assertEqual(compile_pareto_data.extract_slug_date("google/model-20250325"), (3, 25))
+        self.assertEqual(compile_pareto_data.extract_slug_date("google/model-2025-03-25"), (3, 25))
+
+    def test_resolves_dated_display_name_to_dated_slug_when_short_slug_collides(self):
+        refs = [
+            {
+                "model_id": "google/gemini-2.5-pro-preview",
+                "base_model": None,
+                "family": "gemini",
+                "name": "Gemini 2.5 Pro Preview 06-05",
+                "canonical_slug": "google/gemini-2.5-pro-preview-06-05",
+                "reasoning": True,
+            },
+            {
+                "model_id": "google/gemini-2.5-pro-preview-05-06",
+                "base_model": None,
+                "family": "gemini-pro",
+                "name": "Gemini 2.5 Pro Preview 05-06",
+                "canonical_slug": "google/gemini-2.5-pro-preview-03-25",
+                "reasoning": True,
+            },
+        ]
+        record = {
+            "model_permaslug": "google/gemini-2.5-pro-preview",
+            "display_name": "Gemini 2.5 Pro Preview (Mar' 25)",
+        }
+
+        resolved = compile_pareto_data.resolve_canonical_model(record, refs, {})
+
+        self.assertIsNotNone(resolved)
+        self.assertEqual(resolved[0], "google/gemini-2.5-pro-preview-05-06")
+        self.assertEqual(resolved[1]["model_id"], "google/gemini-2.5-pro-preview-05-06")
+
     def test_attaches_average_stats_for_matching_provider_model_or_empty_stats(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = pathlib.Path(temporary_directory)
