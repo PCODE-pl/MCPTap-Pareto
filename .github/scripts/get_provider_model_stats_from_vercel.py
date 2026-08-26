@@ -27,6 +27,7 @@ from lib.provider_model_stats import (  # noqa: E402
     query_provider_mappings,
     resolve_provider_deterministically,
     save_mapping_cache,
+    should_run_ai_query,
     write_collected_outputs,
 )
 
@@ -139,15 +140,16 @@ def main() -> int:
             unresolved_names.append(provider_name)
 
     if unresolved_names and not args.disable_ai and api_key:
-        ai_mapping = query_provider_mappings(
-            unresolved_names,
-            providers,
-            args.ai_model,
-            api_key,
-            debug=args.debug,
-        )
-        mapping.update(ai_mapping)
-        cache.update(ai_mapping)
+        if should_run_ai_query():
+            ai_mapping = query_provider_mappings(
+                unresolved_names,
+                providers,
+                args.ai_model,
+                api_key,
+                debug=args.debug,
+            )
+            mapping.update(ai_mapping)
+            cache.update(ai_mapping)
     elif unresolved_names and not args.disable_ai:
         print(
             "Warning: OPENROUTER_API_KEY is not set; unresolved provider names will use their original names.",

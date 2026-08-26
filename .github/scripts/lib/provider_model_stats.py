@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import pathlib
+import random
 import re
 import shutil
 import sys
@@ -16,7 +17,9 @@ from typing import Any
 import tomllib
 
 DEFAULT_PROVIDER_MAPPING_CHAT_URL = "https://openrouter.ai/api/v1/chat/completions"
-DEFAULT_AI_MODEL = "meta-llama/llama-3.3-70b-instruct"
+DEFAULT_AI_MODEL = "google/gemini-2.5-flash"
+# DEFAULT_AI_MODEL = "meta-llama/llama-3.3-70b-instruct"
+AI_QUERY_AVERAGE_INTERVAL = 12
 DEFAULT_PROVIDER_DIR = "providers"
 DEFAULT_ROUTERS_DIR = "routers"
 
@@ -27,6 +30,10 @@ class HttpRequestError(RuntimeError):
     def __init__(self, message: str, *, status_code: int):
         super().__init__(message)
         self.status_code = status_code
+
+
+def should_run_ai_query() -> bool:
+    return random.randrange(AI_QUERY_AVERAGE_INTERVAL) == 0
 
 
 def parse_base_model(value: object) -> tuple[str, str] | None:

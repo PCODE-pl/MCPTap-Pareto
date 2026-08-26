@@ -16,6 +16,7 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from lib.provider_model_stats import (  # noqa: E402 # type: ignore
+    AI_QUERY_AVERAGE_INTERVAL,
     HttpRequestError,
     build_provider_outputs,
     collect_model_endpoints,
@@ -23,12 +24,21 @@ from lib.provider_model_stats import (  # noqa: E402 # type: ignore
     load_mapping_cache,
     query_provider_mappings,
     save_mapping_cache,
+    should_run_ai_query,
     write_collected_outputs,
     write_synthetic_stats,
 )
 
 
 class ProviderModelStatsLibraryTest(unittest.TestCase):
+    def test_ai_query_sampling_uses_configured_average_interval(self):
+        with mock.patch("lib.provider_model_stats.random.randrange", return_value=0) as random_call:
+            self.assertTrue(should_run_ai_query())
+        random_call.assert_called_once_with(AI_QUERY_AVERAGE_INTERVAL)
+
+        with mock.patch("lib.provider_model_stats.random.randrange", return_value=1):
+            self.assertFalse(should_run_ai_query())
+
     def test_collects_model_endpoints_through_shared_pipeline(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             models_dir = pathlib.Path(temporary_directory)
