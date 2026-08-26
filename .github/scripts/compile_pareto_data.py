@@ -19,6 +19,12 @@ DEFAULT_BENCHMARK_URL = (
 )
 DEFAULT_ACCURACY_THRESHOLD = 60
 DEFAULT_EXCLUDE_PROVIDERS_WITH_PLAN = True
+DEFAULT_EXCLUDE_PROVIDERS = frozenset(
+    {
+        "gitlab",
+        "kimi-for-coding",
+    }
+)
 DATE_SUFFIX_RE = re.compile(r"-(?:\d{8}|\d{4}-\d{2}-\d{2}|\d{2}-\d{2})$")
 DISPLAY_DATE_RE = re.compile(
     r"\b(?P<month>jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)"
@@ -51,6 +57,13 @@ def parse_bool(value: str | None, default: bool) -> bool:
     if normalized in {"0", "false", "no", "off"}:
         return False
     raise ValueError(f"Invalid boolean value: {value}")
+
+
+def parse_provider_list(value: str | None, default: frozenset[str]) -> frozenset[str]:
+    """Parse a comma-separated provider exclusion list."""
+    if value is None:
+        return default
+    return frozenset(provider.strip().lower() for provider in value.split(",") if provider.strip())
 
 
 def normalize_model_ref(value: str) -> str:
@@ -331,6 +344,7 @@ def collect_provider_prices(
     canonical_metadata: dict[str, dict[str, Any]],
     openrouter_ref: dict[str, Any],
     exclude_providers_with_plan: bool,
+    exclude_providers: frozenset[str] = frozenset(),
 ) -> dict[str, dict[str, dict[str, Any]]]:
     """Collect provider records by canonical ID and OpenRouter family fallback."""
     providers: dict[str, dict[str, dict[str, Any]]] = {}
@@ -342,7 +356,10 @@ def collect_provider_prices(
     target_name = openrouter_ref.get("name")
     target_name_key = normalize_display_name(target_name) if target_name else None
     for provider_dir in providers_root.iterdir():
-        if exclude_providers_with_plan and "-plan" in provider_dir.name.lower():
+        provider_name = provider_dir.name.lower()
+        if provider_name in exclude_providers:
+            continue
+        if exclude_providers_with_plan and "-plan" in provider_name:
             continue
         models_root = provider_dir / "models"
         if not models_root.is_dir():
@@ -382,6 +399,7 @@ def compile_pareto_data(
     benchmark_payload: dict[str, Any],
     accuracy_threshold: float,
     exclude_providers_with_plan: bool,
+    exclude_providers: frozenset[str] = frozenset(),
 ) -> dict[str, dict[str, Any]]:
     """Compile the requested canonical-model-to-provider-price structure."""
     canonical_metadata = build_canonical_metadata(repo_root)
@@ -414,6 +432,7 @@ def compile_pareto_data(
                 canonical_metadata,
                 openrouter_ref,
                 exclude_providers_with_plan,
+                exclude_providers,
             ),
         }
 
@@ -431,6 +450,10 @@ def main() -> None:
         os.environ.get("EXCLUDE_PROVIDERS_WITH_PLAN"),
         DEFAULT_EXCLUDE_PROVIDERS_WITH_PLAN,
     )
+    exclude_providers = parse_provider_list(
+        os.environ.get("EXCLUDE_PROVIDERS"),
+        DEFAULT_EXCLUDE_PROVIDERS,
+    )
     output_path = Path(os.environ.get("PARETO_OUTPUT_PATH", repo_root / "pareto.json"))
     benchmark_url = os.environ.get("OPENROUTER_BENCHMARK_URL", DEFAULT_BENCHMARK_URL)
     payload = fetch_benchmark(benchmark_url, api_key)
@@ -439,6 +462,7 @@ def main() -> None:
         payload,
         threshold,
         exclude_providers_with_plan,
+        exclude_providers,
     )
     output_path.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Wrote {len(result)} Pareto models to {output_path}")

@@ -190,6 +190,28 @@ class CompileParetoDataTest(unittest.TestCase):
             },
         )
 
+    def test_excludes_providers_from_configured_exclusion_list(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = pathlib.Path(temporary_directory)
+            for provider in ("acme", "gitlab"):
+                model = root / "providers" / provider / "models" / "lab" / "model.toml"
+                model.parent.mkdir(parents=True)
+                model.write_text(
+                    'base_model = "lab/model"\n[cost]\ninput = 1\noutput = 2\n',
+                    encoding="utf-8",
+                )
+
+            providers = compile_pareto_data.collect_provider_prices(
+                root,
+                "lab/model",
+                {},
+                {"family": None, "name": None, "reasoning": False},
+                True,
+                compile_pareto_data.DEFAULT_EXCLUDE_PROVIDERS,
+            )
+
+        self.assertEqual(list(providers), ["acme"])
+
 
 if __name__ == "__main__":
     unittest.main()
