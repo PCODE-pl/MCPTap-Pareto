@@ -23,6 +23,7 @@ DEFAULT_EXCLUDE_PROVIDERS = frozenset(
     {
         "gitlab",
         "kimi-for-coding",
+        "hetzner",
     }
 )
 DATE_SUFFIX_RE = re.compile(r"-(?:\d{8}|\d{4}-\d{2}-\d{2}|\d{2}-\d{2})$")
