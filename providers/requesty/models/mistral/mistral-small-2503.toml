@@ -1,5 +1,5 @@
 # mcp-tap-auto-source = requesty
-base_model = "mistral/mistral-small-2506"
+base_model = "mistral/mistral-small-3-1-24b-instruct-2503"
 reasoning = false
 
 [cost]

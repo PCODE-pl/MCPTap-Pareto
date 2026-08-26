@@ -1,9 +1,0 @@
-# mcp-tap-auto-source = requesty
-base_model = "zhipuai/glm-5.2"
-reasoning = true
-reasoning_options = []
-
-[cost]
-input = 0.54
-output = 1.728
-cache_read = 0.1008

@@ -1,8 +1,0 @@
-# mcp-tap-auto-source = requesty
-base_model = "microsoft/phi-4-mini"
-reasoning = false
-
-[cost]
-input = 0.063
-output = 0.126
-cache_read = 0.063

@@ -1,8 +1,0 @@
-# mcp-tap-auto-source = requesty
-base_model = "aisingapore/gemma-sea-lion-v4-27b-it"
-reasoning = false
-
-[cost]
-input = 0.27
-output = 0.44999999999999996
-cache_read = 0.27
