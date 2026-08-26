@@ -25,8 +25,8 @@ TOKENS_PER_MILLION = 1_000_000
 PRICE_DECIMALS = 1_000_000
 AUTO_SOURCE_MARKER = "# mcp-tap-auto-source = requesty"
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
-# DEFAULT_AI_MODEL = "google/gemini-2.5-flash"
-DEFAULT_AI_MODEL = "meta-llama/llama-3.3-70b-instruct"
+DEFAULT_AI_MODEL = "google/gemini-2.5-flash"
+# DEFAULT_AI_MODEL = "meta-llama/llama-3.3-70b-instruct"
 CACHE_FILE_NAME = ".requesty_ai_mapping_cache.json"
 
 ANTHROPIC_DOT_ZERO = re.compile(r"^claude-(?:opus|sonnet|haiku)-(\d+)$")
@@ -211,6 +211,10 @@ def price_per_million(value: Any) -> float | None:
     return round(value * TOKENS_PER_MILLION, PRICE_DECIMALS)
 
 
+def display_name_for_record(record: dict[str, Any], lab: str, name: str) -> str:
+    return str(record.get("name") or record.get("display_name") or record.get("description") or f"{lab}/{name}")
+
+
 def load_ai_cache(repo_root: pathlib.Path) -> dict[str, str | None]:
     cache_path = repo_root / CACHE_FILE_NAME
     if not cache_path.is_file():
@@ -266,7 +270,7 @@ def query_openrouter_for_mappings(
                 {
                     "model_lab": lab,
                     "model_canonical_name": name,
-                    "display_name": r.get("name") or r.get("display_name"),
+                    "display_name": display_name_for_record(r, lab, name),
                 }
             )
 

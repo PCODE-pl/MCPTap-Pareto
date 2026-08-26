@@ -9,10 +9,12 @@ fi
 
 MCPTAP_EXTRAS_TOKEN="${MCPTAP_EXTRAS_TOKEN:-$GITHUB_TOKEN}"
 
+git pull
+
 act workflow_dispatch \
   --workflows .github/workflows/compile-pareto-data.yml \
   --job compile \
-  --input accuracy_threshold=60 \
+  --input accuracy_threshold=40 \
   --secret OPENROUTER_API_KEY="$OPENROUTER_API_KEY" \
   --secret GITHUB_TOKEN="$GITHUB_TOKEN" \
   --secret MCPTAP_EXTRAS_TOKEN="$MCPTAP_EXTRAS_TOKEN" \

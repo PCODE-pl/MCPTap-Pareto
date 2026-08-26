@@ -27,6 +27,40 @@ sync_requesty_models = load_script()
 
 
 class SyncRequestyModelsTest(unittest.TestCase):
+    def test_display_name_falls_back_to_record_description(self):
+        self.assertEqual(
+            sync_requesty_models.display_name_for_record(
+                {"description": "Requesty model description"},
+                "openai",
+                "gpt-5.4",
+            ),
+            "Requesty model description",
+        )
+
+    def test_display_name_prefers_name_and_then_display_name(self):
+        self.assertEqual(
+            sync_requesty_models.display_name_for_record(
+                {"name": "Name", "display_name": "Display", "description": "Description"},
+                "openai",
+                "gpt-5.4",
+            ),
+            "Name",
+        )
+        self.assertEqual(
+            sync_requesty_models.display_name_for_record(
+                {"display_name": "Display", "description": "Description"},
+                "openai",
+                "gpt-5.4",
+            ),
+            "Display",
+        )
+
+    def test_display_name_falls_back_to_lab_and_model_name(self):
+        self.assertEqual(
+            sync_requesty_models.display_name_for_record({}, "openai", "gpt-5.4"),
+            "openai/gpt-5.4",
+        )
+
     def test_model_path_requires_a_nested_provider_directory(self):
         self.assertIsNone(sync_requesty_models.model_path("gpt-5.4"))
         self.assertEqual(
