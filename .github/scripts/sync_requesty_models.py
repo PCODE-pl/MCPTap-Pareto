@@ -14,6 +14,7 @@ import argparse
 import json
 import os
 import pathlib
+import random
 import re
 import sys
 import urllib.error
@@ -28,6 +29,7 @@ OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 DEFAULT_AI_MODEL = "google/gemini-2.5-flash"
 # DEFAULT_AI_MODEL = "meta-llama/llama-3.3-70b-instruct"
 CACHE_FILE_NAME = ".requesty_ai_mapping_cache.json"
+AI_QUERY_AVERAGE_INTERVAL = 12
 
 ANTHROPIC_DOT_ZERO = re.compile(r"^claude-(?:opus|sonnet|haiku)-(\d+)$")
 MODEL_LAB_ALIASES = {
@@ -519,7 +521,7 @@ def sync(
                 unresolved_for_ai.append(record)
 
         # Query OpenRouter for missing items in cache
-        if unresolved_for_ai:
+        if unresolved_for_ai and random.randrange(AI_QUERY_AVERAGE_INTERVAL) == 0:
             ai_mappings = query_openrouter_for_mappings(unresolved_for_ai, canonical_ids, ai_model, ai_key)
             for k, v in ai_mappings.items():
                 ai_cache[k] = v

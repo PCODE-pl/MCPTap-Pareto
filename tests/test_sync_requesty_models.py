@@ -27,6 +27,48 @@ sync_requesty_models = load_script()
 
 
 class SyncRequestyModelsTest(unittest.TestCase):
+    def test_ai_query_runs_only_when_random_limiter_allows_it(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = pathlib.Path(temporary_directory)
+            canonical = root / "models" / "openai" / "gpt-5.4.toml"
+            canonical.parent.mkdir(parents=True)
+            canonical.write_text('name = "GPT-5.4"\n', encoding="utf-8")
+            record = {
+                "id": "unknown/provider-model",
+                "model_lab": "unknown",
+                "model_canonical_name": "provider-model",
+                "input_price": 0.000001,
+                "output_price": 0.000002,
+            }
+
+            with (
+                mock.patch.dict("os.environ", {"OPENROUTER_API_KEY": "test-key"}),
+                mock.patch.object(sync_requesty_models.random, "randrange", return_value=0) as random_call,
+                mock.patch.object(
+                    sync_requesty_models,
+                    "query_openrouter_for_mappings",
+                    return_value={"unknown/provider-model": "openai/gpt-5.4"},
+                ) as query,
+            ):
+                summary = sync_requesty_models.sync(root, [record], False)
+
+            random_call.assert_called_once_with(sync_requesty_models.AI_QUERY_AVERAGE_INTERVAL)
+            query.assert_called_once()
+            self.assertEqual(summary["written"], ["unknown/provider-model.toml"])
+
+            (root / sync_requesty_models.CACHE_FILE_NAME).unlink()
+            with (
+                mock.patch.dict("os.environ", {"OPENROUTER_API_KEY": "test-key"}),
+                mock.patch.object(sync_requesty_models.random, "randrange", return_value=1),
+                mock.patch.object(sync_requesty_models, "query_openrouter_for_mappings") as query,
+            ):
+                summary = sync_requesty_models.sync(root, [record], False)
+
+            query.assert_not_called()
+            self.assertEqual(
+                summary["skipped_mapping"], ["unknown/provider-model (lab='unknown', canonical='provider-model')"]
+            )
+
     def test_display_name_falls_back_to_record_description(self):
         self.assertEqual(
             sync_requesty_models.display_name_for_record(
