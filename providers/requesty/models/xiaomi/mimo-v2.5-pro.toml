@@ -3,6 +3,6 @@ base_model = "xiaomi/mimo-v2.5-pro"
 reasoning = false
 
 [cost]
-input = 0.39149999999999996
-output = 0.7829999999999999
-cache_read = 0.00324
+input = 0.435
+output = 0.87
+cache_read = 0.0036

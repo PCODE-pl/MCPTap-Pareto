@@ -3,6 +3,6 @@ base_model = "mistral/mistral-large-latest"
 reasoning = false
 
 [cost]
-input = 0.49500000000000005
-output = 1.4849999999999999
-cache_read = 0.49500000000000005
+input = 0.55
+output = 1.6500000000000001
+cache_read = 0.55

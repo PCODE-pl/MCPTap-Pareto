@@ -3,6 +3,6 @@ base_model = "alibaba/qwen2-5-vl-72b-instruct"
 reasoning = false
 
 [cost]
-input = 0.342
-output = 0.36
-cache_read = 0.342
+input = 0.38
+output = 0.39999999999999997
+cache_read = 0.38

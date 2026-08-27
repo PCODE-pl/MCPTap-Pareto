@@ -3,20 +3,20 @@ base_model = "alibaba/qwen3-coder-plus"
 reasoning = false
 
 [cost]
-input = 0.8999999999999999
-output = 4.5
+input = 1.0
+output = 5.0
 
 [[cost.tiers]]
 tier = { type = "context", size = 32678 }
-input = 1.6199999999999999
-output = 8.1
+input = 1.7999999999999998
+output = 9.0
 
 [[cost.tiers]]
 tier = { type = "context", size = 131072 }
-input = 2.7
-output = 13.5
+input = 3.0
+output = 15.0
 
 [[cost.tiers]]
 tier = { type = "context", size = 262144 }
-input = 5.4
-output = 54.0
+input = 6.0
+output = 60.0

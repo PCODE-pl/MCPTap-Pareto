@@ -10,4 +10,5 @@ base_model = "meta/muse-glimmer-30b"
 # - openrouter/fireworks-ai: stats/openrouter/fireworks-ai/models/meta/muse-glimmer-30b.json
 # - openrouter/togetherai: stats/openrouter/togetherai/models/meta/muse-glimmer-30b.json
 # - vercel/fireworks-ai: stats/vercel/fireworks-ai/models/meta/muse-glimmer-30b.json
+# - vercel/parasail: stats/vercel/parasail/models/meta/muse-glimmer-30b.json
 # - vercel/togetherai: stats/vercel/togetherai/models/meta/muse-glimmer-30b.json

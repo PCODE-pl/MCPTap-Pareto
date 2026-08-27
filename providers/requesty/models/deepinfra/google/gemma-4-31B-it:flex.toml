@@ -4,5 +4,5 @@ reasoning = true
 reasoning_options = []
 
 [cost]
-input = 0.0936
-output = 0.2736
+input = 0.10400000000000001
+output = 0.30400000000000005

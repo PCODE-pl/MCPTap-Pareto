@@ -3,6 +3,6 @@ base_model = "alibaba/qwen3-coder-480b-a35b-instruct"
 reasoning = false
 
 [cost]
-input = 0.216
-output = 0.72
-cache_read = 0.072
+input = 0.24
+output = 0.7999999999999999
+cache_read = 0.08

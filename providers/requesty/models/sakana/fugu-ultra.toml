@@ -3,11 +3,11 @@ base_model = "sakana/fugu-ultra"
 reasoning = false
 
 [cost]
-input = 4.5
-output = 27.0
-cache_read = 0.44999999999999996
+input = 5.0
+output = 30.0
+cache_read = 0.5
 
 [[cost.tiers]]
 tier = { type = "context", size = 272000 }
-input = 9.0
-output = 40.5
+input = 10.0
+output = 45.0

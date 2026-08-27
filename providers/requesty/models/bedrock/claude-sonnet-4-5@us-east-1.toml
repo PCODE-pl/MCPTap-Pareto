@@ -4,12 +4,12 @@ reasoning = true
 reasoning_options = []
 
 [cost]
-input = 2.9699999999999998
-output = 14.85
-cache_read = 0.27
-cache_write = 3.7125
+input = 3.3000000000000003
+output = 16.5
+cache_read = 0.3
+cache_write = 4.125
 
 [[cost.tiers]]
 tier = { type = "context", size = 200000 }
-input = 5.9399999999999995
-output = 22.275
+input = 6.6000000000000005
+output = 24.75

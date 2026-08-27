@@ -7,6 +7,7 @@ base_model = "alibaba/qwen3.8-2.4t-a95b"
 # - openrouter/alibaba: stats/openrouter/alibaba/models/alibaba/qwen3.8-2.4t-a95b.json
 # - openrouter/deepinfra: stats/openrouter/deepinfra/models/alibaba/qwen3.8-2.4t-a95b.json
 # - openrouter/modal: stats/openrouter/modal/models/alibaba/qwen3.8-2.4t-a95b.json
+# - openrouter/novita-ai: stats/openrouter/novita-ai/models/alibaba/qwen3.8-2.4t-a95b.json
 # - openrouter/siliconflow: stats/openrouter/siliconflow/models/alibaba/qwen3.8-2.4t-a95b.json
 # - openrouter/togetherai: stats/openrouter/togetherai/models/alibaba/qwen3.8-2.4t-a95b.json
 # - openrouter/venice: stats/openrouter/venice/models/alibaba/qwen3.8-2.4t-a95b.json

@@ -3,6 +3,6 @@ base_model = "openai/gpt-4.1-mini"
 reasoning = false
 
 [cost]
-input = 0.36
-output = 1.44
-cache_read = 0.09
+input = 0.39999999999999997
+output = 1.5999999999999999
+cache_read = 0.09999999999999999

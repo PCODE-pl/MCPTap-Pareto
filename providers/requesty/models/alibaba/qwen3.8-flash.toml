@@ -4,7 +4,7 @@ reasoning = true
 reasoning_options = []
 
 [cost]
-input = 0.144
-output = 0.42300000000000004
-cache_read = 0.0144
-cache_write = 0.18
+input = 0.16
+output = 0.47
+cache_read = 0.016
+cache_write = 0.19999999999999998

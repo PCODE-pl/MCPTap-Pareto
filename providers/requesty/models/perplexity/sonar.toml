@@ -3,6 +3,6 @@ base_model = "perplexity/sonar"
 reasoning = false
 
 [cost]
-input = 0.8999999999999999
-output = 0.8999999999999999
-cache_read = 0.8999999999999999
+input = 1.0
+output = 1.0
+cache_read = 1.0
