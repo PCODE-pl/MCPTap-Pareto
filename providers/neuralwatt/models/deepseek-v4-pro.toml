@@ -13,6 +13,7 @@
 # https://portal.neuralwatt.com/docs/guides/preview-models
 base_model = "deepseek/deepseek-v4-pro"
 status = "beta"
+interleaved = true
 
 # Effort: reasoning_effort = none|low|high|max (off is effort=none; aliases
 # medium/minimal -> low, xhigh -> high)
@@ -23,9 +24,6 @@ values = ["none", "low", "high", "max"]
 # Budget: thinking_token_budget (integer reasoning tokens)
 [[reasoning_options]]
 type = "budget_tokens"
-
-[interleaved]
-field = "reasoning_content"
 
 [cost]
 input = 1.0
