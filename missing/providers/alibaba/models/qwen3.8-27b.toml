@@ -13,7 +13,6 @@ base_model = "alibaba/qwen3.8-27b"
 # - openrouter/alibaba: stats/openrouter/alibaba/models/alibaba/qwen3.8-27b.json
 # - openrouter/chutes: stats/openrouter/chutes/models/alibaba/qwen3.8-27b.json
 # - openrouter/io-net: stats/openrouter/io-net/models/alibaba/qwen3.8-27b.json
-# - openrouter/morph: stats/openrouter/morph/models/alibaba/qwen3.8-27b.json
 # - openrouter/novita-ai: stats/openrouter/novita-ai/models/alibaba/qwen3.8-27b.json
 # - openrouter/venice: stats/openrouter/venice/models/alibaba/qwen3.8-27b.json
 # - vercel/alibaba: stats/vercel/alibaba/models/alibaba/qwen3.8-27b.json
