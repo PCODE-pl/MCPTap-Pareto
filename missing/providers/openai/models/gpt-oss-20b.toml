@@ -18,7 +18,6 @@ base_model = "openai/gpt-oss-20b"
 # - openrouter/togetherai: stats/openrouter/togetherai/models/openai/gpt-oss-20b.json
 # - vercel/bedrock: stats/vercel/bedrock/models/openai/gpt-oss-20b.json
 # - vercel/deepinfra: stats/vercel/deepinfra/models/openai/gpt-oss-20b.json
-# - vercel/fireworks-ai: stats/vercel/fireworks-ai/models/openai/gpt-oss-20b.json
 # - vercel/groq: stats/vercel/groq/models/openai/gpt-oss-20b.json
 # - vercel/novita-ai: stats/vercel/novita-ai/models/openai/gpt-oss-20b.json
 # - vercel/parasail: stats/vercel/parasail/models/openai/gpt-oss-20b.json
