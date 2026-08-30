@@ -1,9 +1,0 @@
-# mcp-tap-auto-source = requesty
-base_model = "deepseek/deepseek-v4-pro"
-reasoning = true
-reasoning_options = []
-
-[cost]
-input = 1.75
-output = 3.5
-cache_read = 0.44

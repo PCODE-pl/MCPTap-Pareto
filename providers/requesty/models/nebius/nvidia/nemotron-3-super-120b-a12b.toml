@@ -1,9 +1,0 @@
-# mcp-tap-auto-source = requesty
-base_model = "nvidia/nemotron-3-super-120b-a12b"
-reasoning = true
-reasoning_options = []
-
-[cost]
-input = 0.3
-output = 0.8999999999999999
-cache_read = 0.3
