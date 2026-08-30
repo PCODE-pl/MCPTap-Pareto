@@ -72,5 +72,10 @@
   "nvidia/nemotron-3-nano-omni": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
   "google/gemma-3-27b-it": null,
   "nvidia/nvidia-nemotron-3-ultra": "nvidia/nemotron-3-ultra-550b-a55b",
-  "nvidia/nemotron-3.5-lightning-30b-a3b": "nvidia/nemotron-3.5-lightning"
+  "nvidia/nemotron-3.5-lightning-30b-a3b": "nvidia/nemotron-3.5-lightning",
+  "deepseek/deepseek-v4-flash-0424": null,
+  "deepseek/deepseek-v4-pro-0424": null,
+  "google/gemma-4-31b": "google/gemma-4-31b-it",
+  "qwen/qwen3.5-4b": null,
+  "qwen/qwen3.5-9b": "alibaba/qwen3.5-9b"
 }
