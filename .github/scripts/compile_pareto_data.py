@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import statistics
 import sys
 from pathlib import Path
 from typing import Any
@@ -395,6 +396,22 @@ def collect_provider_prices(
     return {provider: dict(sorted(models.items())) for provider, models in sorted(providers.items())}
 
 
+def compute_medians(pareto_stats: dict[str, dict[str, Any]]) -> dict[str, float]:
+    """Compute global medians for each distinct stats key across all provider models.
+
+    Only numeric stats values are considered; boolean values are ignored.
+    Missing keys are omitted from the result (no ``None`` placeholders).
+    """
+    buckets: dict[str, list[float]] = {}
+    for model_data in pareto_stats.values():
+        for provider_models in model_data.get("providers", {}).values():
+            for m in provider_models.values():
+                for key, value in m.get("stats", {}).items():
+                    if isinstance(value, (int, float)) and not isinstance(value, bool):
+                        buckets.setdefault(key, []).append(float(value))
+    return {key: statistics.median(sorted(values)) for key, values in sorted(buckets.items()) if values}
+
+
 def compile_pareto_data(
     repo_root: Path,
     benchmark_payload: dict[str, Any],
@@ -458,15 +475,17 @@ def main() -> None:
     output_path = Path(os.environ.get("PARETO_OUTPUT_PATH", repo_root / "pareto.json"))
     benchmark_url = os.environ.get("OPENROUTER_BENCHMARK_URL", DEFAULT_BENCHMARK_URL)
     payload = fetch_benchmark(benchmark_url, api_key)
-    result = compile_pareto_data(
+    stats = compile_pareto_data(
         repo_root,
         payload,
         threshold,
         exclude_providers_with_plan,
         exclude_providers,
     )
-    output_path.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"Wrote {len(result)} Pareto models to {output_path}")
+    medians = compute_medians(stats)
+    output: dict[str, Any] = {"stats": stats, "medians": medians}
+    output_path.write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(f"Wrote {len(stats)} Pareto models to {output_path} (medians: {len(medians)} keys)")
 
 
 if __name__ == "__main__":
