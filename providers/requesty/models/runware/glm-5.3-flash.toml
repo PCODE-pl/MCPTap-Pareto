@@ -1,6 +1,7 @@
 # mcp-tap-auto-source = requesty
 base_model = "zhipuai/glm-5.3-flash"
-reasoning = false
+reasoning = true
+reasoning_options = []
 
 [cost]
 input = 0.075

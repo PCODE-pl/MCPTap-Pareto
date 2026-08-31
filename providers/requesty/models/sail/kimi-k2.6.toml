@@ -1,6 +1,7 @@
 # mcp-tap-auto-source = requesty
 base_model = "moonshotai/kimi-k2.6"
-reasoning = false
+reasoning = true
+reasoning_options = []
 
 [cost]
 input = 1.0
