@@ -8,8 +8,3 @@ input = 0.275
 output = 1.6500000000000001
 cache_read = 0.0275
 cache_write = 0.09166300000000001
-
-[[cost.tiers]]
-tier = { type = "context", size = 200000 }
-input = 0.55
-output = 2.475
