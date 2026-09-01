@@ -1,4 +1,5 @@
 base_model = "anthropic/claude-fable-5-1"
+name = "Claude Fable 5.1 (Anthropic)"
 structured_output = true
 
 [[reasoning_options]]

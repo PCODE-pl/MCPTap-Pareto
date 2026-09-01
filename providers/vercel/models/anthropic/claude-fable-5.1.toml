@@ -1,5 +1,5 @@
 base_model = "anthropic/claude-fable-5-1"
-structured_output = true
+description = "Claude model for creative writing, analysis, and controlled agent workflows"
 
 [[reasoning_options]]
 type = "effort"
