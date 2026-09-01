@@ -4,6 +4,7 @@
 # Missing from providers/openai/models.
 # Statistics evidence:
 base_model = "openai/gpt-oss-20b"
+# - openrouter/AkashML: stats/openrouter/AkashML/models/openai/gpt-oss-20b.json
 # - openrouter/CoreWeave: stats/openrouter/CoreWeave/models/openai/gpt-oss-20b.json
 # - openrouter/Darkbloom: stats/openrouter/Darkbloom/models/openai/gpt-oss-20b.json
 # - openrouter/Parasail: stats/openrouter/Parasail/models/openai/gpt-oss-20b.json

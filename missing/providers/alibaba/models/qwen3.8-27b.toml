@@ -4,7 +4,6 @@
 # Missing from providers/alibaba/models.
 # Statistics evidence:
 base_model = "alibaba/qwen3.8-27b"
-# - llmgateway/novita-ai: stats/llmgateway/novita-ai/models/alibaba/qwen3.8-27b.json
 # - openrouter/AkashML: stats/openrouter/AkashML/models/alibaba/qwen3.8-27b.json
 # - openrouter/Cloudflare: stats/openrouter/Cloudflare/models/alibaba/qwen3.8-27b.json
 # - openrouter/CoreWeave: stats/openrouter/CoreWeave/models/alibaba/qwen3.8-27b.json
