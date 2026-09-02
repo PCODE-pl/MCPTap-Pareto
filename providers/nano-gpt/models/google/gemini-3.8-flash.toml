@@ -1,6 +1,4 @@
-# Not included in subscription
-# Tracks Gemini 3.5 Flash (current flash-latest target).
-base_model = "google/gemini-flash-latest"
+base_model = "google/gemini-3.8-flash"
 
 [[reasoning_options]]
 type = "effort"
