@@ -1,6 +1,7 @@
 # mcp-tap-auto-source = requesty
 base_model = "sakana/fugu-ultra"
-reasoning = false
+reasoning = true
+reasoning_options = []
 
 [cost]
 input = 5.0
