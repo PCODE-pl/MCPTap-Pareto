@@ -1,5 +1,5 @@
-base_model = "moonshotai/kimi-k2.7-code"
-structured_output = false
+base_model = "anthropic/claude-fable-5-1"
+structured_output = true
 
 [[reasoning_options]]
 type = "effort"
@@ -9,6 +9,7 @@ values = ["none", "low", "medium", "high", "max"]
 type = "budget_tokens"
 
 [cost]
-input = 0.95
-output = 4
-cache_read = 0.19
+input = 10
+output = 50
+cache_read = 0.25
+cache_write = 12.5

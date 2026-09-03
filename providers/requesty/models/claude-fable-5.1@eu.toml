@@ -1,5 +1,5 @@
-base_model = "tencent/hy3"
-base_model_omit = ["limit.input"]
+base_model = "anthropic/claude-fable-5-1"
+name = "Claude Fable 5.1 (EU)"
 structured_output = true
 
 [[reasoning_options]]
@@ -10,10 +10,7 @@ values = ["none", "low", "medium", "high", "max"]
 type = "budget_tokens"
 
 [cost]
-input = 0.14
-output = 0.58
-cache_read = 0.035
-
-[limit]
-context = 262_144
-output = 262_144
+input = 11
+output = 55
+cache_read = 0.275
+cache_write = 13.75
