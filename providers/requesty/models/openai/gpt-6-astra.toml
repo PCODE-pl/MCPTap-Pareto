@@ -1,0 +1,14 @@
+# mcp-tap-auto-source = requesty
+base_model = "openai/gpt-6-astra"
+reasoning = true
+reasoning_options = []
+
+[cost]
+input = 5.0
+output = 25.0
+cache_read = 0.5
+
+[[cost.tiers]]
+tier = { type = "context", size = 272000 }
+input = 10.0
+output = 37.5
