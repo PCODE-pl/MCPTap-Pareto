@@ -7,6 +7,7 @@ base_model = "alibaba/qwen3.8-27b"
 # - openrouter/AkashML: stats/openrouter/AkashML/models/alibaba/qwen3.8-27b.json
 # - openrouter/Cloudflare: stats/openrouter/Cloudflare/models/alibaba/qwen3.8-27b.json
 # - openrouter/CoreWeave: stats/openrouter/CoreWeave/models/alibaba/qwen3.8-27b.json
+# - openrouter/Darkbloom: stats/openrouter/Darkbloom/models/alibaba/qwen3.8-27b.json
 # - openrouter/Ionstream: stats/openrouter/Ionstream/models/alibaba/qwen3.8-27b.json
 # - openrouter/Parasail: stats/openrouter/Parasail/models/alibaba/qwen3.8-27b.json
 # - openrouter/Phala: stats/openrouter/Phala/models/alibaba/qwen3.8-27b.json
