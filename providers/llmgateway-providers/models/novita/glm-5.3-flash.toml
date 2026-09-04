@@ -1,5 +1,6 @@
 base_model = "zhipuai/glm-5.3-flash"
-name = "GLM-5.3 Flash"
+name = "GLM-5.3 Flash (NovitaAI)"
+structured_output = false
 
 [[reasoning_options]]
 type = "effort"
@@ -9,3 +10,6 @@ values = ["low", "high", "max"]
 input = 0.075
 output = 0.25
 cache_read = 0.015
+
+[limit]
+context = 1_048_576
