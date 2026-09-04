@@ -4,4 +4,4 @@
 # Missing from providers/nvidia/models.
 # Statistics evidence:
 base_model = "nvidia/nemotron-3.5-content-safety"
-# - openrouter/nvidia: stats/openrouter/nvidia/models/nvidia/nemotron-3.5-content-safety.json
+# - openrouter/deepinfra: stats/openrouter/deepinfra/models/nvidia/nemotron-3.5-content-safety.json
