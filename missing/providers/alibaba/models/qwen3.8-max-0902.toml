@@ -4,4 +4,5 @@
 # Missing from providers/alibaba/models.
 # Statistics evidence:
 base_model = "alibaba/qwen3.8-max-0902"
+# - openrouter/alibaba: stats/openrouter/alibaba/models/alibaba/qwen3.8-max-0902.json
 # - vercel/alibaba: stats/vercel/alibaba/models/alibaba/qwen3.8-max-0902.json
