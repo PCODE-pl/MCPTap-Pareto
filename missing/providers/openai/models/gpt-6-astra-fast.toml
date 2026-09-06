@@ -4,4 +4,5 @@
 # Missing from providers/openai/models.
 # Statistics evidence:
 base_model = "openai/gpt-6-astra-fast"
+# - vercel/azure: stats/vercel/azure/models/openai/gpt-6-astra-fast.json
 # - vercel/openai: stats/vercel/openai/models/openai/gpt-6-astra-fast.json
