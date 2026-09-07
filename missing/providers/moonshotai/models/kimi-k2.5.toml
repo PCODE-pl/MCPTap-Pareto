@@ -13,7 +13,6 @@ base_model = "moonshotai/kimi-k2.5"
 # - openrouter/AtlasCloud: stats/openrouter/AtlasCloud/models/moonshotai/kimi-k2.5.json
 # - openrouter/Phala: stats/openrouter/Phala/models/moonshotai/kimi-k2.5.json
 # - openrouter/amazon-bedrock: stats/openrouter/amazon-bedrock/models/moonshotai/kimi-k2.5.json
-# - openrouter/deepinfra: stats/openrouter/deepinfra/models/moonshotai/kimi-k2.5.json
 # - openrouter/digitalocean: stats/openrouter/digitalocean/models/moonshotai/kimi-k2.5.json
 # - openrouter/novita-ai: stats/openrouter/novita-ai/models/moonshotai/kimi-k2.5.json
 # - openrouter/siliconflow: stats/openrouter/siliconflow/models/moonshotai/kimi-k2.5.json
