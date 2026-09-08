@@ -20,5 +20,6 @@ base_model = "alibaba/qwen3.8-27b"
 # - vercel/alibaba: stats/vercel/alibaba/models/alibaba/qwen3.8-27b.json
 # - vercel/deepinfra: stats/vercel/deepinfra/models/alibaba/qwen3.8-27b.json
 # - vercel/morph: stats/vercel/morph/models/alibaba/qwen3.8-27b.json
+# - vercel/novita-ai: stats/vercel/novita-ai/models/alibaba/qwen3.8-27b.json
 # - vercel/parasail: stats/vercel/parasail/models/alibaba/qwen3.8-27b.json
 # - vercel/runinfra: stats/vercel/runinfra/models/alibaba/qwen3.8-27b.json
