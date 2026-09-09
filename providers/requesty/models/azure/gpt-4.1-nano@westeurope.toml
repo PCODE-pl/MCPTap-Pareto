@@ -1,0 +1,8 @@
+# mcp-tap-auto-source = requesty
+base_model = "openai/gpt-4.1-nano"
+reasoning = false
+
+[cost]
+input = 0.11
+output = 0.44
+cache_read = 0.0275
