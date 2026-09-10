@@ -242,14 +242,17 @@ class ResolveApiKeysTest(unittest.TestCase):
         env = {tfm.BULK_KEYS_ENV: json.dumps({"ZENMUX_API_KEY": " a ", "NAN_API_KEY": " n "})}
         self.assertEqual(tfm.resolve_api_keys(env), {"ZENMUX_API_KEY": "a", "NAN_API_KEY": "n"})
 
-    def test_missing_bulk_env_yields_empty_map(self):
-        self.assertEqual(tfm.resolve_api_keys({}), {})
+    def test_missing_bulk_env_is_fatal(self):
+        with self.assertRaises(RuntimeError):
+            tfm.resolve_api_keys({})
 
-    def test_invalid_json_yields_empty_map(self):
-        self.assertEqual(tfm.resolve_api_keys({tfm.BULK_KEYS_ENV: "{not json"}), {})
+    def test_invalid_json_is_fatal(self):
+        with self.assertRaises(RuntimeError):
+            tfm.resolve_api_keys({tfm.BULK_KEYS_ENV: "{not json"})
 
-    def test_non_object_json_yields_empty_map(self):
-        self.assertEqual(tfm.resolve_api_keys({tfm.BULK_KEYS_ENV: "[]"}), {})
+    def test_non_object_json_is_fatal(self):
+        with self.assertRaises(RuntimeError):
+            tfm.resolve_api_keys({tfm.BULK_KEYS_ENV: "[]"})
 
     def test_blank_values_are_dropped(self):
         tfm.resolve_api_keys({tfm.BULK_KEYS_ENV: json.dumps({"A_API_KEY": "", "B_API_KEY": "  "})})
@@ -257,13 +260,13 @@ class ResolveApiKeysTest(unittest.TestCase):
         self.assertEqual(tfm.resolve_api_keys({tfm.BULK_KEYS_ENV: json.dumps({"A_API_KEY": "x"})}), {"A_API_KEY": "x"})
 
     def test_no_fallback_to_individual_env_vars(self):
-        result = tfm.test_free_models(
-            pathlib.Path("."),
-            pareto_fixture(),
-            env={"ZENMUX_API_KEY": "individual-env-value"},
-            tester=lambda api, key, model: (1, "responses"),
-        )
-        self.assertEqual(result, {"free": {}})
+        with self.assertRaises(RuntimeError):
+            tfm.test_free_models(
+                pathlib.Path("."),
+                pareto_fixture(),
+                env={"ZENMUX_API_KEY": "individual-env-value"},
+                tester=lambda api, key, model: (1, "responses"),
+            )
 
 
 class OutputLoadingTest(unittest.TestCase):

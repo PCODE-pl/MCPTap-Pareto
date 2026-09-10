@@ -154,21 +154,18 @@ def resolve_api_keys(env: dict[str, str]) -> dict[str, str]:
     """Parse the bulk FREE_PROVIDER_API_KEYS secret into an env_var -> api_key map.
 
     There is no fallback to individual *_API_KEY environment variables: the
-    bulk secret is the only key source. Invalid JSON yields an empty map
-    (providers are skipped with a message instead of failing the run).
+    bulk secret is the only key source. A missing, invalid, or non-object
+    payload is a fatal error — without it no provider can be tested.
     """
     raw = env.get(BULK_KEYS_ENV, "").strip()
     if not raw:
-        print(f"skip all providers: {BULK_KEYS_ENV} is not set", file=sys.stderr)
-        return {}
+        raise RuntimeError(f"{BULK_KEYS_ENV} is not set; bulk secret is required to test free models")
     try:
         data = json.loads(raw)
     except json.JSONDecodeError as exc:
-        print(f"skip all providers: {BULK_KEYS_ENV} is not valid JSON ({exc})", file=sys.stderr)
-        return {}
+        raise RuntimeError(f"{BULK_KEYS_ENV} is not valid JSON: {exc}") from exc
     if not isinstance(data, dict):
-        print(f"skip all providers: {BULK_KEYS_ENV} is not a JSON object", file=sys.stderr)
-        return {}
+        raise RuntimeError(f"{BULK_KEYS_ENV} is not a JSON object")
     return {str(name): str(value).strip() for name, value in data.items() if str(value).strip()}
 
 
