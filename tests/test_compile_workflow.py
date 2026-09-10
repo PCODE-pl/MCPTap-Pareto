@@ -37,6 +37,21 @@ class CompileWorkflowTest(unittest.TestCase):
             WORKFLOW,
         )
 
+    def test_free_provider_keys_are_passed_via_single_bulk_secret(self):
+        self.assertIn("FREE_PROVIDER_API_KEYS: ${{ secrets.FREE_PROVIDER_API_KEYS }}", WORKFLOW)
+        # individual per-provider API key mappings must not reappear
+        for leaked in (
+            "AIHUBMIX_API_KEY",
+            "AI_GATEWAY_API_KEY",
+            "INFERX_API_KEY",
+            "OPENCODE_API_KEY",
+            "ORCAROUTER_API_KEY",
+            "PENDRA_API_KEY",
+            "TOKENROUTER_API_KEY",
+            "ZENMUX_API_KEY",
+        ):
+            self.assertNotIn(f"{leaked}: ${{{{ secrets.{leaked} }}}}", WORKFLOW)
+
     def test_provider_stats_collectors_run_in_parallel_and_all_failures_propagate(self):
         match = re.search(
             r"      - name: Get provider model stats\n(.*?)\n      - name: Compute average provider model stats",

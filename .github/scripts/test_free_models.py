@@ -32,6 +32,7 @@ REQUEST_PROMPT = "jaki model?"
 REQUEST_TIMEOUT_S = 30
 MAX_COMPLETION_TOKENS = 16
 FREE_BRANCH = "free"
+BULK_KEYS_ENV = "FREE_PROVIDER_API_KEYS"
 
 # Providers whose provider.toml lacks the api field; endpoints come from
 # the provider's documented OpenAI-compatible base URL.
@@ -149,6 +150,28 @@ def test_triple(api_base: str, api_key: str, provider_model: str) -> tuple[int, 
     return None
 
 
+def resolve_api_keys(env: dict[str, str]) -> dict[str, str]:
+    """Parse the bulk FREE_PROVIDER_API_KEYS secret into an env_var -> api_key map.
+
+    There is no fallback to individual *_API_KEY environment variables: the
+    bulk secret is the only key source. Invalid JSON yields an empty map
+    (providers are skipped with a message instead of failing the run).
+    """
+    raw = env.get(BULK_KEYS_ENV, "").strip()
+    if not raw:
+        print(f"skip all providers: {BULK_KEYS_ENV} is not set", file=sys.stderr)
+        return {}
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        print(f"skip all providers: {BULK_KEYS_ENV} is not valid JSON ({exc})", file=sys.stderr)
+        return {}
+    if not isinstance(data, dict):
+        print(f"skip all providers: {BULK_KEYS_ENV} is not a JSON object", file=sys.stderr)
+        return {}
+    return {str(name): str(value).strip() for name, value in data.items() if str(value).strip()}
+
+
 def test_free_models(
     repo_root: Path,
     pareto_data: dict,
@@ -158,6 +181,7 @@ def test_free_models(
 ) -> dict:
     """Rebuild only the "free" branch; preserve every other top-level branch of existing."""
     env = dict(os.environ) if env is None else env
+    api_keys = resolve_api_keys(env)
     preserved = {k: v for k, v in (existing or {}).items() if k != FREE_BRANCH}
     free_section: dict = {}
     for lab_model, provider, provider_model in collect_free_triples(pareto_data):
@@ -166,9 +190,9 @@ def test_free_models(
             print(f"skip {provider}/{provider_model}: no API endpoint", file=sys.stderr)
             continue
         env_var = provider_env_var(repo_root, provider)
-        api_key = env.get(env_var, "").strip()
+        api_key = api_keys.get(env_var, "")
         if not api_key:
-            print(f"skip {provider} {provider_model}: missing {env_var}", file=sys.stderr)
+            print(f"skip {provider} {provider_model}: missing {env_var} in {BULK_KEYS_ENV}", file=sys.stderr)
             continue
         outcome = (
             test_triple(api_base, api_key, provider_model)

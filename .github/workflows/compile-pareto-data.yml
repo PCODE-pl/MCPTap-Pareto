@@ -25,14 +25,7 @@ jobs:
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
       PARETO_ACCURACY_THRESHOLD: ${{ inputs.accuracy_threshold || vars.PARETO_ACCURACY_THRESHOLD || '40' }}
       EXCLUDE_PROVIDERS_WITH_PLAN: ${{ vars.EXCLUDE_PROVIDERS_WITH_PLAN || 'true' }}
-      AIHUBMIX_API_KEY: ${{ secrets.AIHUBMIX_API_KEY }}
-      AI_GATEWAY_API_KEY: ${{ secrets.AI_GATEWAY_API_KEY }}
-      INFERX_API_KEY: ${{ secrets.INFERX_API_KEY }}
-      OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
-      ORCAROUTER_API_KEY: ${{ secrets.ORCAROUTER_API_KEY }}
-      PENDRA_API_KEY: ${{ secrets.PENDRA_API_KEY }}
-      TOKENROUTER_API_KEY: ${{ secrets.TOKENROUTER_API_KEY }}
-      ZENMUX_API_KEY: ${{ secrets.ZENMUX_API_KEY }}
+      FREE_PROVIDER_API_KEYS: ${{ secrets.FREE_PROVIDER_API_KEYS }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

@@ -176,7 +176,7 @@ class TestFreeModelsTest(unittest.TestCase):
             result = tfm.test_free_models(
                 repo_root,
                 pareto_fixture(),
-                env={"ZENMUX_API_KEY": "ZM"},  # NAN_API_KEY missing -> skip
+                env={tfm.BULK_KEYS_ENV: json.dumps({"ZENMUX_API_KEY": "ZM"})},  # NAN_API_KEY missing -> skip
                 tester=fake_tester,
             )
 
@@ -205,7 +205,7 @@ class TestFreeModelsTest(unittest.TestCase):
                 repo_root,
                 pareto_fixture(),
                 existing=existing,
-                env={"ZENMUX_API_KEY": "ZM", "NAN_API_KEY": "N"},
+                env={tfm.BULK_KEYS_ENV: json.dumps({"ZENMUX_API_KEY": "ZM", "NAN_API_KEY": "N"})},
                 tester=lambda api, key, model: (5, "chat/completions"),
             )
         self.assertIn("paid", result)
@@ -227,7 +227,7 @@ class TestFreeModelsTest(unittest.TestCase):
             result = tfm.test_free_models(
                 repo_root,
                 pareto_fixture(),
-                env={"ZENMUX_API_KEY": "k", "INFERX_API_KEY": "k", "NAN_API_KEY": "k"},
+                env={tfm.BULK_KEYS_ENV: json.dumps({"ZENMUX_API_KEY": "k", "INFERX_API_KEY": "k", "NAN_API_KEY": "k"})},
                 tester=lambda api, key, model: (5, "responses"),
             )
 
@@ -235,6 +235,35 @@ class TestFreeModelsTest(unittest.TestCase):
         self.assertEqual(labs, sorted(labs))
         providers = list(result["free"]["openai/gpt-5"]["providers"].keys())
         self.assertEqual(providers, sorted(providers))
+
+
+class ResolveApiKeysTest(unittest.TestCase):
+    def test_parses_bulk_secret(self):
+        env = {tfm.BULK_KEYS_ENV: json.dumps({"ZENMUX_API_KEY": " a ", "NAN_API_KEY": " n "})}
+        self.assertEqual(tfm.resolve_api_keys(env), {"ZENMUX_API_KEY": "a", "NAN_API_KEY": "n"})
+
+    def test_missing_bulk_env_yields_empty_map(self):
+        self.assertEqual(tfm.resolve_api_keys({}), {})
+
+    def test_invalid_json_yields_empty_map(self):
+        self.assertEqual(tfm.resolve_api_keys({tfm.BULK_KEYS_ENV: "{not json"}), {})
+
+    def test_non_object_json_yields_empty_map(self):
+        self.assertEqual(tfm.resolve_api_keys({tfm.BULK_KEYS_ENV: "[]"}), {})
+
+    def test_blank_values_are_dropped(self):
+        tfm.resolve_api_keys({tfm.BULK_KEYS_ENV: json.dumps({"A_API_KEY": "", "B_API_KEY": "  "})})
+        self.assertEqual(tfm.resolve_api_keys({tfm.BULK_KEYS_ENV: "{}"}), {})
+        self.assertEqual(tfm.resolve_api_keys({tfm.BULK_KEYS_ENV: json.dumps({"A_API_KEY": "x"})}), {"A_API_KEY": "x"})
+
+    def test_no_fallback_to_individual_env_vars(self):
+        result = tfm.test_free_models(
+            pathlib.Path("."),
+            pareto_fixture(),
+            env={"ZENMUX_API_KEY": "individual-env-value"},
+            tester=lambda api, key, model: (1, "responses"),
+        )
+        self.assertEqual(result, {"free": {}})
 
 
 class OutputLoadingTest(unittest.TestCase):
