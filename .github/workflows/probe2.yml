@@ -1,0 +1,11 @@
+name: Probe bulk secret
+on:
+  workflow_dispatch:
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    env:
+      A: ${{ secrets.FREE_PROVIDER_API_KEYS_TEST }}
+    steps:
+      - name: Probe
+        run: python3 -c "import os;raw=os.environ.get('A','');print('TEST2 len:',len(raw),repr(raw[:20]))"
