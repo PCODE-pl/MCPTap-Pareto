@@ -21,5 +21,4 @@ base_model = "deepseek/deepseek-v3.2"
 # - openrouter/venice: stats/openrouter/venice/models/deepseek/deepseek-v3.2.json
 # - vercel/bedrock: stats/vercel/bedrock/models/deepseek/deepseek-v3.2.json
 # - vercel/deepinfra: stats/vercel/deepinfra/models/deepseek/deepseek-v3.2.json
-# - vercel/deepseek: stats/vercel/deepseek/models/deepseek/deepseek-v3.2.json
 # - vercel/novita-ai: stats/vercel/novita-ai/models/deepseek/deepseek-v3.2.json
