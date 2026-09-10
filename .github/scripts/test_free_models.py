@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
-"""Live-test free provider models and regenerate tested_models.json.
+"""Live-test free provider models and update the "free" branch of tested_models.json.
 
 For every (lab_model, provider, provider_model) triple in the freshly
 compiled pareto.json whose cost is fully zero, probe the provider API
 with a tiny "jaki model?" request: first the OpenAI Responses endpoint,
-then (on failure) chat/completions. A triple is tested when either probe
-returns HTTP 200 with non-empty text; its wall-time latency in
-milliseconds is recorded. The output file is regenerated from scratch on
-every run — triples that do not answer simply do not land in it.
+then (only if that fails) chat/completions. A triple is tested when the
+first successful probe returns HTTP 200 with non-empty text; its
+wall-time latency in milliseconds and the winning endpoint type
+("responses" or "chat/completions") are recorded. Other top-level
+branches of the output file are preserved untouched; triples that do
+not answer simply do not land in the "free" branch.
 """
 
 from __future__ import annotations
@@ -29,6 +31,7 @@ OUTPUT_PATH = REPO_ROOT / "tested_models.json"
 REQUEST_PROMPT = "jaki model?"
 REQUEST_TIMEOUT_S = 30
 MAX_COMPLETION_TOKENS = 16
+FREE_BRANCH = "free"
 
 # Providers whose provider.toml lacks the api field; endpoints come from
 # the provider's documented OpenAI-compatible base URL.
@@ -110,19 +113,21 @@ def extract_text(payload: dict) -> str:
     return ""
 
 
-def test_triple(api_base: str, api_key: str, provider_model: str) -> int | None:
-    """Probe one provider model; return latency_ms on success, None when both probes fail.
+def test_triple(api_base: str, api_key: str, provider_model: str) -> tuple[int, str] | None:
+    """Probe one provider model; return (latency_ms, endpoint_type) or None on failure.
 
-    Probe order: /responses first, then /chat/completions as fallback.
+    Probe order: /responses first; chat/completions runs only when the
+    responses probe did not succeed.
     """
     probes = [
-        (f"{api_base}/responses", {"model": provider_model, "input": REQUEST_PROMPT}),
+        ("responses", f"{api_base}/responses", {"model": provider_model, "input": REQUEST_PROMPT}),
         (
+            "chat/completions",
             f"{api_base}/chat/completions",
             {"model": provider_model, "messages": [{"role": "user", "content": REQUEST_PROMPT}], "max_tokens": 16},
         ),
     ]
-    for url, payload in probes:
+    for endpoint_type, url, payload in probes:
         started = time.monotonic()
         try:
             status, body = post_json(url, api_key, payload)
@@ -139,7 +144,7 @@ def test_triple(api_base: str, api_key: str, provider_model: str) -> int | None:
             print(f"  probe {url} returned non-JSON body", file=sys.stderr)
             continue
         if text.strip():
-            return elapsed_ms
+            return elapsed_ms, endpoint_type
         print(f"  probe {url} returned 200 with empty text", file=sys.stderr)
     return None
 
@@ -147,13 +152,14 @@ def test_triple(api_base: str, api_key: str, provider_model: str) -> int | None:
 def test_free_models(
     repo_root: Path,
     pareto_data: dict,
+    existing: dict | None = None,
     env: dict[str, str] | None = None,
     tester=None,
 ) -> dict:
-    """Regenerate the tested_models.json payload from live probes of free triples."""
+    """Rebuild only the "free" branch; preserve every other top-level branch of existing."""
     env = dict(os.environ) if env is None else env
-    tested: dict = {"free": {}}
-    free_section = tested["free"]
+    preserved = {k: v for k, v in (existing or {}).items() if k != FREE_BRANCH}
+    free_section: dict = {}
     for lab_model, provider, provider_model in collect_free_triples(pareto_data):
         api_base = provider_api_base(repo_root, provider)
         if not api_base:
@@ -164,39 +170,51 @@ def test_free_models(
         if not api_key:
             print(f"skip {provider} {provider_model}: missing {env_var}", file=sys.stderr)
             continue
-        latency_ms = (
+        outcome = (
             test_triple(api_base, api_key, provider_model)
             if tester is None
             else tester(api_base, api_key, provider_model)
         )
-        if latency_ms is None:
+        if outcome is None:
             print(f"not tested {provider} {provider_model} (lab: {lab_model}): both probes failed", file=sys.stderr)
             continue
-        print(f"tested {provider} {provider_model} -> {latency_ms} ms")
+        latency_ms, endpoint_type = outcome
+        print(f"tested {provider} {provider_model} -> {latency_ms} ms ({endpoint_type})")
         free_section.setdefault(lab_model, {"providers": {}})["providers"].setdefault(provider, {})[provider_model] = {
-            "latency_ms": latency_ms
+            "latency_ms": latency_ms,
+            "endpoint_type": endpoint_type,
         }
     return {
-        "free": {
+        **preserved,
+        FREE_BRANCH: {
             lab: {"providers": dict(sorted(info["providers"].items()))} for lab, info in sorted(free_section.items())
-        }
+        },
     }
 
 
+def load_pareto(path: Path) -> dict:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def load_output(path: Path) -> dict:
+    """Load the current tested_models.json; a missing or invalid file yields an empty payload."""
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"Reading {path} failed ({exc}); starting from an empty payload", file=sys.stderr)
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
 def main() -> None:
-    repo_root = REPO_ROOT
     pareto_data = load_pareto(PARETO_PATH)
-    result = test_free_models(repo_root, pareto_data)
-    free_section = result["free"]
+    existing = load_output(OUTPUT_PATH)
+    result = test_free_models(REPO_ROOT, pareto_data, existing=existing)
+    free_section = result[FREE_BRANCH]
     tested_count = sum(len(models) for info in free_section.values() for models in info["providers"].values())
     OUTPUT_PATH.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"Wrote {OUTPUT_PATH} ({tested_count} tested free model triples)")
-
-
-def load_pareto(path: Path) -> dict:
-    import json
-
-    return json.loads(path.read_text(encoding="utf-8"))
+    preserved_count = len(result) - 1
+    print(f"Wrote {OUTPUT_PATH} ({tested_count} tested free model triples; {preserved_count} other branches preserved)")
 
 
 if __name__ == "__main__":

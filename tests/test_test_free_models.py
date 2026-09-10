@@ -5,6 +5,7 @@ import importlib.util
 import json
 import pathlib
 import sys
+import tempfile
 import unittest
 from unittest import mock
 
@@ -63,7 +64,7 @@ class CollectFreeTriplesTest(unittest.TestCase):
 
 class ProviderConfigTest(unittest.TestCase):
     def setUp(self):
-        self._tmp = __import__("tempfile").TemporaryDirectory()
+        self._tmp = tempfile.TemporaryDirectory()
         self.repo_root = pathlib.Path(self._tmp.name)
         (self.repo_root / "providers" / "zenmux").mkdir(parents=True)
         (self.repo_root / "providers" / "zenmux" / "provider.toml").write_text(
@@ -118,54 +119,59 @@ class TestTripleProbeOrderTest(unittest.TestCase):
             return status, json.dumps(body)
 
         with mock.patch.object(tfm, "post_json", side_effect=fake_post):
-            latency = tfm.test_triple("https://x/v1", "key", "model-a")
-        return latency, calls
+            outcome = tfm.test_triple("https://x/v1", "key", "model-a")
+        return outcome, calls
 
-    def test_responses_first_success(self):
-        latency, calls = self._run([(200, {"output_text": "model-a"})])
+    def test_responses_success_short_circuits_chat_completions(self):
+        outcome, calls = self._run([(200, {"output_text": "model-a"})])
         self.assertEqual(calls, ["https://x/v1/responses"])
-        self.assertIsInstance(latency, int)
-        self.assertGreaterEqual(latency, 0)
+        latency_ms, endpoint_type = outcome
+        self.assertIsInstance(latency_ms, int)
+        self.assertGreaterEqual(latency_ms, 0)
+        self.assertEqual(endpoint_type, "responses")
 
     def test_falls_back_to_chat_completions(self):
-        latency, calls = self._run(
+        outcome, calls = self._run(
             [
                 (404, {"error": "no responses endpoint"}),
                 (200, {"choices": [{"message": {"content": "model-a"}}]}),
             ]
         )
         self.assertEqual(calls, ["https://x/v1/responses", "https://x/v1/chat/completions"])
-        self.assertIsInstance(latency, int)
+        self.assertEqual(outcome[1], "chat/completions")
 
     def test_both_fail_returns_none(self):
-        latency, calls = self._run([(500, {}), (429, {})])
-        self.assertIsNone(latency)
+        outcome, calls = self._run([(500, {}), (429, {})])
+        self.assertIsNone(outcome)
         self.assertEqual(len(calls), 2)
 
     def test_200_with_empty_text_is_not_success(self):
-        latency, _ = self._run([(200, {"output": []}), (200, {"choices": []})])
-        self.assertIsNone(latency)
+        outcome, _ = self._run([(200, {"output": []}), (200, {"choices": []})])
+        self.assertIsNone(outcome)
 
 
 class TestFreeModelsTest(unittest.TestCase):
-    def test_regenerates_file_shape_and_skips_untestable(self):
-        with __import__("tempfile").TemporaryDirectory() as tmp:
-            repo_root = pathlib.Path(tmp)
-            (repo_root / "providers" / "zenmux").mkdir(parents=True)
-            (repo_root / "providers" / "zenmux" / "provider.toml").write_text(
-                'api = "https://zenmux.ai/api/v1"\nenv = ["ZENMUX_API_KEY"]\n', encoding="utf-8"
-            )
-            (repo_root / "providers" / "nan").mkdir()
-            (repo_root / "providers" / "nan" / "provider.toml").write_text(
-                'api = "https://nan.example/v1"\nenv = ["NAN_API_KEY"]\n', encoding="utf-8"
-            )
+    def _prepare_repo(self, repo_root: pathlib.Path) -> None:
+        (repo_root / "providers" / "zenmux").mkdir(parents=True)
+        (repo_root / "providers" / "zenmux" / "provider.toml").write_text(
+            'api = "https://zenmux.ai/api/v1"\nenv = ["ZENMUX_API_KEY"]\n', encoding="utf-8"
+        )
+        (repo_root / "providers" / "nan").mkdir()
+        (repo_root / "providers" / "nan" / "provider.toml").write_text(
+            'api = "https://nan.example/v1"\nenv = ["NAN_API_KEY"]\n', encoding="utf-8"
+        )
 
-            latencies = {
-                ("https://zenmux.ai/api/v1", "ZM", "Qwen/Qwen3.5-122B-A10B"): 123,
+    def test_regenerates_free_branch_and_skips_untestable(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo_root = pathlib.Path(tmp)
+            self._prepare_repo(repo_root)
+
+            outcomes = {
+                ("https://zenmux.ai/api/v1", "ZM", "Qwen/Qwen3.5-122B-A10B"): (123, "responses"),
             }
 
             def fake_tester(api_base, api_key, provider_model):
-                return latencies.get((api_base, api_key, provider_model))
+                return outcomes.get((api_base, api_key, provider_model))
 
             result = tfm.test_free_models(
                 repo_root,
@@ -179,33 +185,50 @@ class TestFreeModelsTest(unittest.TestCase):
             {
                 "free": {
                     "alibaba/qwen3.5-122b-a10b": {
-                        "providers": {"zenmux": {"Qwen/Qwen3.5-122B-A10B": {"latency_ms": 123}}}
+                        "providers": {
+                            "zenmux": {"Qwen/Qwen3.5-122B-A10B": {"latency_ms": 123, "endpoint_type": "responses"}}
+                        }
                     }
                 }
             },
         )
 
-    def test_sorted_output_regardless_of_input_order(self):
-        with __import__("tempfile").TemporaryDirectory() as tmp:
+    def test_preserves_other_branches_of_existing_payload(self):
+        with tempfile.TemporaryDirectory() as tmp:
             repo_root = pathlib.Path(tmp)
-            (repo_root / "providers" / "zenmux").mkdir(parents=True)
-            (repo_root / "providers" / "zenmux" / "provider.toml").write_text(
-                'api = "https://z/v1"\nenv = ["ZENMUX_API_KEY"]\n', encoding="utf-8"
+            self._prepare_repo(repo_root)
+            existing = {
+                "paid": {"openai/gpt-5": {"providers": {"inferx": {"openai/gpt-5": {"latency_ms": 7}}}}},
+                "manual": {"note": "kept as-is"},
+            }
+            result = tfm.test_free_models(
+                repo_root,
+                pareto_fixture(),
+                existing=existing,
+                env={"ZENMUX_API_KEY": "ZM", "NAN_API_KEY": "N"},
+                tester=lambda api, key, model: (5, "chat/completions"),
             )
+        self.assertIn("paid", result)
+        self.assertIn("manual", result)
+        self.assertEqual(result["paid"], existing["paid"])
+        self.assertEqual(result["manual"], existing["manual"])
+        free_labs = list(result["free"].keys())
+        self.assertEqual(free_labs, sorted(free_labs))
+
+    def test_sorted_output_regardless_of_input_order(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo_root = pathlib.Path(tmp)
+            self._prepare_repo(repo_root)
             (repo_root / "providers" / "inferx").mkdir()
             (repo_root / "providers" / "inferx" / "provider.toml").write_text(
                 'api = "https://i/v1"\nenv = ["INFERX_API_KEY"]\n', encoding="utf-8"
-            )
-            (repo_root / "providers" / "nan").mkdir()
-            (repo_root / "providers" / "nan" / "provider.toml").write_text(
-                'api = "https://n/v1"\nenv = ["NAN_API_KEY"]\n', encoding="utf-8"
             )
 
             result = tfm.test_free_models(
                 repo_root,
                 pareto_fixture(),
                 env={"ZENMUX_API_KEY": "k", "INFERX_API_KEY": "k", "NAN_API_KEY": "k"},
-                tester=lambda api, key, model: 5,
+                tester=lambda api, key, model: (5, "responses"),
             )
 
         labs = list(result["free"].keys())
@@ -214,23 +237,53 @@ class TestFreeModelsTest(unittest.TestCase):
         self.assertEqual(providers, sorted(providers))
 
 
-class OutputDeterminismTest(unittest.TestCase):
-    def test_main_writes_file(self):
-        with __import__("tempfile").TemporaryDirectory() as tmp:
+class OutputLoadingTest(unittest.TestCase):
+    def test_load_output_missing_file_yields_empty(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            self.assertEqual(tfm.load_output(pathlib.Path(tmp) / "missing.json"), {})
+
+    def test_load_output_invalid_json_yields_empty(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = pathlib.Path(tmp) / "broken.json"
+            path.write_text("{not json", encoding="utf-8")
+            self.assertEqual(tfm.load_output(path), {})
+
+    def test_load_output_non_object_yields_empty(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = pathlib.Path(tmp) / "array.json"
+            path.write_text("[]", encoding="utf-8")
+            self.assertEqual(tfm.load_output(path), {})
+
+    def test_main_merges_into_existing_file(self):
+        with tempfile.TemporaryDirectory() as tmp:
             repo_root = pathlib.Path(tmp)
             pareto_path = repo_root / "pareto.json"
             output_path = repo_root / "tested_models.json"
             pareto_path.write_text(json.dumps(pareto_fixture()), encoding="utf-8")
+            output_path.write_text(
+                json.dumps({"paid": {"keep": True}}),
+                encoding="utf-8",
+            )
+            free_result = {
+                "free": {
+                    "openai/gpt-5": {
+                        "providers": {"inferx": {"openai/gpt-5": {"latency_ms": 1, "endpoint_type": "responses"}}}
+                    }
+                }
+            }
             with (
                 mock.patch.object(tfm, "REPO_ROOT", repo_root),
                 mock.patch.object(tfm, "PARETO_PATH", pareto_path),
                 mock.patch.object(tfm, "OUTPUT_PATH", output_path),
-                mock.patch.object(tfm, "test_free_models", return_value={"free": {}}) as tester,
+                mock.patch.object(
+                    tfm, "test_free_models", return_value={"paid": {"keep": True}, **free_result}
+                ) as tester,
             ):
                 tfm.main()
-            self.assertTrue(output_path.exists())
-            self.assertEqual(json.loads(output_path.read_text(encoding="utf-8")), {"free": {}})
-            tester.assert_called_once()
+            merged = json.loads(output_path.read_text(encoding="utf-8"))
+            self.assertEqual(merged, {"paid": {"keep": True}, **free_result})
+            # existing payload was passed into test_free_models
+            self.assertEqual(tester.call_args.kwargs["existing"], {"paid": {"keep": True}})
 
 
 if __name__ == "__main__":
