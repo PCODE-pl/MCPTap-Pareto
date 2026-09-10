@@ -4,7 +4,7 @@
       "providers": {
         "orcarouter": {
           "deepseek/deepseek-v4-flash-free": {
-            "latency_ms": 3563,
+            "latency_ms": 3679,
             "endpoint_type": "responses"
           }
         }
@@ -14,7 +14,7 @@
       "providers": {
         "inferx": {
           "gemma-4-31B-it-fp8": {
-            "latency_ms": 461,
+            "latency_ms": 519,
             "endpoint_type": "chat/completions"
           }
         }
@@ -24,13 +24,13 @@
       "providers": {
         "aihubmix": {
           "xiaomi-mimo-v2.5-free": {
-            "latency_ms": 262,
+            "latency_ms": 113,
             "endpoint_type": "responses"
           }
         },
         "kenari": {
           "mimo-v2-5:free": {
-            "latency_ms": 6198,
+            "latency_ms": 3694,
             "endpoint_type": "responses"
           }
         }
@@ -40,7 +40,7 @@
       "providers": {
         "aihubmix": {
           "xiaomi-mimo-v2.5-pro-free": {
-            "latency_ms": 125,
+            "latency_ms": 114,
             "endpoint_type": "responses"
           }
         }
@@ -50,7 +50,7 @@
       "providers": {
         "tokenrouter": {
           "z-ai/glm-5.3-free": {
-            "latency_ms": 11786,
+            "latency_ms": 16829,
             "endpoint_type": "responses"
           }
         }
@@ -60,7 +60,7 @@
       "providers": {
         "orcarouter": {
           "z-ai/glm-5.3-flash-free": {
-            "latency_ms": 5905,
+            "latency_ms": 4820,
             "endpoint_type": "responses"
           }
         }
