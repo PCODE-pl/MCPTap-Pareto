@@ -29,11 +29,11 @@ class CompileWorkflowTest(unittest.TestCase):
             WORKFLOW,
         )
         self.assertIn(
-            "git status --porcelain -- models providers stats pareto.json .requesty_ai_mapping_cache.json",
+            "git status --porcelain -- stats pareto.json tested_models.json .requesty_ai_mapping_cache.json",
             WORKFLOW,
         )
         self.assertIn(
-            "git add -A -- models providers stats pareto.json .requesty_ai_mapping_cache.json",
+            "git add -A -- missing models providers stats pareto.json tested_models.json .requesty_ai_mapping_cache.json",
             WORKFLOW,
         )
 

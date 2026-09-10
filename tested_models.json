@@ -1,0 +1,49 @@
+{
+  "free": {
+    "deepseek/deepseek-v4-flash": {
+      "providers": {
+        "orcarouter": {
+          "deepseek/deepseek-v4-flash-free": {
+            "latency_ms": 4966
+          }
+        }
+      }
+    },
+    "google/gemma-4-31b-it": {
+      "providers": {
+        "inferx": {
+          "gemma-4-31B-it-fp8": {
+            "latency_ms": 1047
+          }
+        }
+      }
+    },
+    "xiaomi/mimo-v2.5": {
+      "providers": {
+        "aihubmix": {
+          "xiaomi-mimo-v2.5-free": {
+            "latency_ms": 5273
+          }
+        }
+      }
+    },
+    "xiaomi/mimo-v2.5-pro": {
+      "providers": {
+        "aihubmix": {
+          "xiaomi-mimo-v2.5-pro-free": {
+            "latency_ms": 8938
+          }
+        }
+      }
+    },
+    "zhipuai/glm-5.3-flash": {
+      "providers": {
+        "orcarouter": {
+          "z-ai/glm-5.3-flash-free": {
+            "latency_ms": 3397
+          }
+        }
+      }
+    }
+  }
+}

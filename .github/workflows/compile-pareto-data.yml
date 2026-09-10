@@ -25,6 +25,14 @@ jobs:
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
       PARETO_ACCURACY_THRESHOLD: ${{ inputs.accuracy_threshold || vars.PARETO_ACCURACY_THRESHOLD || '40' }}
       EXCLUDE_PROVIDERS_WITH_PLAN: ${{ vars.EXCLUDE_PROVIDERS_WITH_PLAN || 'true' }}
+      AIHUBMIX_API_KEY: ${{ secrets.AIHUBMIX_API_KEY }}
+      AI_GATEWAY_API_KEY: ${{ secrets.AI_GATEWAY_API_KEY }}
+      INFERX_API_KEY: ${{ secrets.INFERX_API_KEY }}
+      OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+      ORCAROUTER_API_KEY: ${{ secrets.ORCAROUTER_API_KEY }}
+      PENDRA_API_KEY: ${{ secrets.PENDRA_API_KEY }}
+      TOKENROUTER_API_KEY: ${{ secrets.TOKENROUTER_API_KEY }}
+      ZENMUX_API_KEY: ${{ secrets.ZENMUX_API_KEY }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -153,6 +161,9 @@ jobs:
       - name: Compile Pareto data
         run: python .github/scripts/compile_pareto_data.py
 
+      - name: Test free models
+        run: python .github/scripts/test_free_models.py
+
       - name: Commit changed catalog and generated data
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -166,7 +177,7 @@ jobs:
           fi
 
           if test "$catalog_changed" = false && [[ "${UPSTREAM_BASELINE_RECORDED:-false}" != true ]] && \
-            test -z "$(git status --porcelain -- stats pareto.json .requesty_ai_mapping_cache.json)"; then
+            test -z "$(git status --porcelain -- stats pareto.json tested_models.json .requesty_ai_mapping_cache.json)"; then
             echo "Catalog and generated data are unchanged."
             exit 0
           fi
@@ -180,7 +191,7 @@ jobs:
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A -- missing models providers stats pareto.json .requesty_ai_mapping_cache.json
+          git add -A -- missing models providers stats pareto.json tested_models.json .requesty_ai_mapping_cache.json
           if git diff --cached --quiet; then
             echo "Upstream baseline recorded; generated data is unchanged."
           else
