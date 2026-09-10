@@ -8,3 +8,4 @@ base_model = "deepseek/deepseek-v4.1-flash"
 # - openrouter/deepinfra: stats/openrouter/deepinfra/models/deepseek/deepseek-v4.1-flash.json
 # - openrouter/deepseek: stats/openrouter/deepseek/models/deepseek/deepseek-v4.1-flash.json
 # - openrouter/novita-ai: stats/openrouter/novita-ai/models/deepseek/deepseek-v4.1-flash.json
+# - openrouter/venice: stats/openrouter/venice/models/deepseek/deepseek-v4.1-flash.json
