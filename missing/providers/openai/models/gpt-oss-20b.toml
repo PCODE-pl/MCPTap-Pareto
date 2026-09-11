@@ -7,6 +7,7 @@ base_model = "openai/gpt-oss-20b"
 # - openrouter/AkashML: stats/openrouter/AkashML/models/openai/gpt-oss-20b.json
 # - openrouter/CoreWeave: stats/openrouter/CoreWeave/models/openai/gpt-oss-20b.json
 # - openrouter/Darkbloom: stats/openrouter/Darkbloom/models/openai/gpt-oss-20b.json
+# - openrouter/DekaLLM: stats/openrouter/DekaLLM/models/openai/gpt-oss-20b.json
 # - openrouter/Parasail: stats/openrouter/Parasail/models/openai/gpt-oss-20b.json
 # - openrouter/Phala: stats/openrouter/Phala/models/openai/gpt-oss-20b.json
 # - openrouter/amazon-bedrock: stats/openrouter/amazon-bedrock/models/openai/gpt-oss-20b.json
