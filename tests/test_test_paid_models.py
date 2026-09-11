@@ -134,15 +134,12 @@ class TestTripleProbeOrderTest(unittest.TestCase):
     def test_402_on_responses_short_circuits_chat_completions(self):
         outcome, calls = self._run([(402, {"error": "no credit"})])
         self.assertEqual(len(calls), 1)
-        latency_ms, endpoint_type = outcome
-        self.assertIsInstance(latency_ms, int)
-        self.assertGreaterEqual(latency_ms, 0)
-        self.assertEqual(endpoint_type, "responses")
+        self.assertEqual(outcome, "responses")
 
     def test_403_counts_as_existing(self):
         outcome, calls = self._run([(403, {"error": "insufficient balance"})])
         self.assertEqual(len(calls), 1)
-        self.assertEqual(outcome[1], "responses")
+        self.assertEqual(outcome, "responses")
 
     def test_falls_back_to_chat_completions_on_404(self):
         outcome, calls = self._run(
@@ -153,7 +150,7 @@ class TestTripleProbeOrderTest(unittest.TestCase):
         )
         self.assertEqual(calls[0][0], "https://x/v1/responses")
         self.assertEqual(calls[1][0], "https://x/v1/chat/completions")
-        self.assertEqual(outcome[1], "chat/completions")
+        self.assertEqual(outcome, "chat/completions")
 
     def test_200_counts_as_missing(self):
         outcome, calls = self._run([(200, {"output": []}), (200, {"choices": []})])
@@ -183,7 +180,7 @@ class TestTripleProbeOrderTest(unittest.TestCase):
         # custom codes: 429 proves existence
         with mock.patch.object(tpm, "post_json", return_value=(429, "{}")):
             outcome = tpm.test_triple("https://x/v1", "key", "model-a", exists_codes=(429,))
-        self.assertEqual(outcome[1], "responses")
+        self.assertEqual(outcome, "responses")
 
 
 class TestPaidModelsTest(unittest.TestCase):
@@ -203,7 +200,7 @@ class TestPaidModelsTest(unittest.TestCase):
             self._prepare_repo(repo_root)
 
             outcomes = {
-                ("https://nan.example/v1", "N", "gpt-5"): (123, "responses"),
+                ("https://nan.example/v1", "N", "gpt-5"): "responses",
             }
 
             def fake_tester(api_base, api_key, provider_model):
@@ -218,11 +215,7 @@ class TestPaidModelsTest(unittest.TestCase):
 
         self.assertEqual(
             result,
-            {
-                "paid": {
-                    "openai/gpt-5": {"providers": {"nan": {"gpt-5": {"latency_ms": 123, "endpoint_type": "responses"}}}}
-                }
-            },
+            {"paid": {"openai/gpt-5": {"providers": {"nan": {"gpt-5": {"endpoint_type": "responses"}}}}}},
         )
 
     def test_excluded_provider_triples_are_skipped(self):
@@ -238,7 +231,7 @@ class TestPaidModelsTest(unittest.TestCase):
 
             def fake_tester(api_base, api_key, provider_model):
                 calls.append((api_base, api_key, provider_model))
-                return (1, "responses")
+                return "responses"
 
             with mock.patch.dict(tpm.EXCLUDED_PROVIDERS, {"cortecs": "blocked"}):
                 result = tpm.test_paid_models(
@@ -255,7 +248,7 @@ class TestPaidModelsTest(unittest.TestCase):
         self.assertIn(("https://nan.example/v1", "N", "gpt-5"), tested)
         self.assertEqual(
             result["paid"],
-            {"openai/gpt-5": {"providers": {"nan": {"gpt-5": {"latency_ms": 1, "endpoint_type": "responses"}}}}},
+            {"openai/gpt-5": {"providers": {"nan": {"gpt-5": {"endpoint_type": "responses"}}}}},
         )
 
     def test_models_determinant_uses_catalogue(self):
@@ -302,7 +295,7 @@ class TestPaidModelsTest(unittest.TestCase):
         # listed model recorded via the catalogue without any inference probe
         self.assertEqual(
             result["paid"],
-            {"openai/gpt-5": {"providers": {"kilo": {"gpt-5": {"latency_ms": 0, "endpoint_type": "models"}}}}},
+            {"openai/gpt-5": {"providers": {"kilo": {"gpt-5": {"endpoint_type": "models"}}}}},
         )
         self.assertEqual(probes, [])
 
@@ -319,7 +312,7 @@ class TestPaidModelsTest(unittest.TestCase):
                 pareto_fixture(),
                 existing=existing,
                 env={tpm.BULK_KEYS_ENV: json.dumps({"ZENMUX_API_KEY": "z", "NAN_API_KEY": "N"})},
-                tester=lambda api, key, model: (5, "chat/completions"),
+                tester=lambda api, key, model: "chat/completions",
             )
         self.assertIn("free", result)
         self.assertIn("manual", result)
@@ -343,7 +336,7 @@ class TestPaidModelsTest(unittest.TestCase):
                 env={
                     tpm.BULK_KEYS_ENV: json.dumps({"ZENMUX_API_KEY": "k", "CORTECS_API_KEY": "k", "NAN_API_KEY": "k"})
                 },
-                tester=lambda api, key, model: (5, "responses"),
+                tester=lambda api, key, model: "responses",
             )
 
         labs = list(result["paid"].keys())
@@ -366,7 +359,7 @@ class TestPaidModelsTest(unittest.TestCase):
                 env={
                     tpm.BULK_KEYS_ENV: json.dumps({"CORTECS_API_KEY": "k", "NAN_API_KEY": "k"}),
                 },
-                tester=lambda api, key, model: (1, "responses"),
+                tester=lambda api, key, model: "responses",
                 max_workers=4,
             )
 
@@ -402,7 +395,7 @@ class ResolveApiKeysTest(unittest.TestCase):
                 pathlib.Path("."),
                 pareto_fixture(),
                 env={"NAN_API_KEY": "individual-env-value"},
-                tester=lambda api, key, model: (1, "responses"),
+                tester=lambda api, key, model: "responses",
             )
 
 
@@ -433,11 +426,7 @@ class OutputLoadingTest(unittest.TestCase):
                 json.dumps({"free": {"keep": True}}),
                 encoding="utf-8",
             )
-            paid_result = {
-                "paid": {
-                    "openai/gpt-5": {"providers": {"nan": {"gpt-5": {"latency_ms": 1, "endpoint_type": "responses"}}}}
-                }
-            }
+            paid_result = {"paid": {"openai/gpt-5": {"providers": {"nan": {"gpt-5": {"endpoint_type": "responses"}}}}}}
             with (
                 mock.patch.object(tpm, "REPO_ROOT", repo_root),
                 mock.patch.object(tpm, "PARETO_PATH", pareto_path),

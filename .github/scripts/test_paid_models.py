@@ -35,7 +35,6 @@ from __future__ import annotations
 import json
 import os
 import sys
-import time
 import urllib.error
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -147,15 +146,15 @@ def test_triple(
     api_key: str,
     provider_model: str,
     exists_codes: tuple[int, ...] = (402, 403),
-) -> tuple[int, str] | None:
+) -> str | None:
     """Probe one provider model with a one-character minimal request.
 
     Probe order: /responses first; chat/completions runs only when the
     responses probe did not prove the model exists. A status from
     exists_codes (402 no-credit guard, 403 insufficient balance /
     model busy — returned only after model-name validation) proves the
-    model exists; every other answer proves it does not. Returns
-    (latency_ms, endpoint_type) or None.
+    model exists; every other answer proves it does not. Returns the
+    winning endpoint type or None.
     """
     probes = [
         ("responses", f"{api_base}/responses", {"model": provider_model, "input": "."}),
@@ -166,15 +165,13 @@ def test_triple(
         ),
     ]
     for endpoint_type, url, payload in probes:
-        started = time.monotonic()
         try:
             status, _body = post_json(url, api_key, payload)
         except (urllib.error.URLError, TimeoutError, OSError) as exc:
             print(f"  probe {url} failed: {exc}", file=sys.stderr)
             continue
-        elapsed_ms = int((time.monotonic() - started) * 1000)
         if status in exists_codes:
-            return elapsed_ms, endpoint_type
+            return endpoint_type
         print(f"  probe {url} -> HTTP {status} (treated as model missing)", file=sys.stderr)
     return None
 
@@ -222,8 +219,8 @@ def _probe_one(
     provider_model: str,
     api_keys: dict[str, str],
     tester=None,
-) -> tuple[str, str, str, tuple[int, str] | None]:
-    """Probe a single triple; returns (lab, provider, model, outcome)."""
+) -> tuple[str, str, str, str | None]:
+    """Probe a single triple; returns (lab, provider, model, endpoint_type-or-None)."""
     if provider in EXCLUDED_PROVIDERS:
         print(f"skip {provider} {provider_model}: provider excluded ({EXCLUDED_PROVIDERS[provider]})", file=sys.stderr)
         return lab_model, provider, provider_model, None
@@ -244,7 +241,7 @@ def _probe_one(
             print(f"  {provider} {provider_model}: not in /models catalogue", file=sys.stderr)
             outcome = None
         else:
-            outcome = 0, "models"
+            outcome = "models"
     else:
         outcome = test_triple(api_base, api_key, provider_model)
     return lab_model, provider, provider_model, outcome
@@ -277,12 +274,11 @@ def test_paid_models(
                     file=sys.stderr,
                 )
                 continue
-            latency_ms, endpoint_type = outcome
-            print(f"tested {provider} {provider_model} -> {latency_ms} ms ({endpoint_type})")
+            endpoint_type = outcome
+            print(f"tested {provider} {provider_model} ({endpoint_type})")
             paid_section.setdefault(lab_model, {"providers": {}})["providers"].setdefault(provider, {})[
                 provider_model
             ] = {
-                "latency_ms": latency_ms,
                 "endpoint_type": endpoint_type,
             }
     return {
