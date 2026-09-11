@@ -5,3 +5,5 @@
 # Statistics evidence:
 base_model = "deepseek/deepseek-r1"
 # - openrouter/novita-ai: stats/openrouter/novita-ai/models/deepseek/deepseek-r1.json
+# - vercel/bedrock: stats/vercel/bedrock/models/deepseek/deepseek-r1.json
+# - vercel/deepinfra: stats/vercel/deepinfra/models/deepseek/deepseek-r1.json
