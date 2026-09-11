@@ -32,7 +32,7 @@ REQUEST_PROMPT = "jaki model?"
 REQUEST_TIMEOUT_S = 30
 MAX_COMPLETION_TOKENS = 16
 FREE_BRANCH = "free"
-BULK_KEYS_ENV = "FREE_PROVIDER_API_KEYS"
+BULK_KEYS_ENV = "PROVIDERS_API_KEYS"
 
 # Providers whose provider.toml lacks the api field; endpoints come from
 # the provider's documented OpenAI-compatible base URL.
@@ -151,7 +151,7 @@ def test_triple(api_base: str, api_key: str, provider_model: str) -> tuple[int, 
 
 
 def resolve_api_keys(env: dict[str, str]) -> dict[str, str]:
-    """Parse the bulk FREE_PROVIDER_API_KEYS secret into an env_var -> api_key map.
+    """Parse the bulk PROVIDERS_API_KEYS secret into an env_var -> api_key map.
 
     There is no fallback to individual *_API_KEY environment variables: the
     bulk secret is the only key source. A missing, invalid, or non-object

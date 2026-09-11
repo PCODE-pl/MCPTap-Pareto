@@ -38,7 +38,7 @@ class CompileWorkflowTest(unittest.TestCase):
         )
 
     def test_free_provider_keys_are_passed_via_single_bulk_secret(self):
-        self.assertIn("FREE_PROVIDER_API_KEYS: ${{ secrets.FREE_PROVIDER_API_KEYS }}", WORKFLOW)
+        self.assertIn("PROVIDERS_API_KEYS: ${{ secrets.PROVIDERS_API_KEYS }}", WORKFLOW)
         # individual per-provider API key mappings must not reappear
         for leaked in (
             "AIHUBMIX_API_KEY",

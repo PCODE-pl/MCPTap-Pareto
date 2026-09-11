@@ -25,7 +25,7 @@ jobs:
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
       PARETO_ACCURACY_THRESHOLD: ${{ inputs.accuracy_threshold || vars.PARETO_ACCURACY_THRESHOLD || '40' }}
       EXCLUDE_PROVIDERS_WITH_PLAN: ${{ vars.EXCLUDE_PROVIDERS_WITH_PLAN || 'true' }}
-      FREE_PROVIDER_API_KEYS: ${{ secrets.FREE_PROVIDER_API_KEYS }}
+      PROVIDERS_API_KEYS: ${{ secrets.PROVIDERS_API_KEYS }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
