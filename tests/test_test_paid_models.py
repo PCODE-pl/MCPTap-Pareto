@@ -116,19 +116,22 @@ class TestTripleProbeOrderTest(unittest.TestCase):
             outcome = tpm.test_triple("https://x/v1", "key", "model-a")
         return outcome, calls
 
-    def test_empty_input_payload_for_responses(self):
+    def test_dot_input_payload_for_responses(self):
         outcome, calls = self._run([(402, {})])
         (url, payload) = calls[0]
         self.assertEqual(url, "https://x/v1/responses")
-        self.assertEqual(payload, {"model": "model-a", "input": []})
+        self.assertEqual(payload, {"model": "model-a", "input": "."})
 
-    def test_empty_messages_payload_for_chat_completions(self):
+    def test_dot_message_payload_for_chat_completions(self):
         outcome, calls = self._run([(404, {}), (402, {})])
         (url, payload) = calls[1]
         self.assertEqual(url, "https://x/v1/chat/completions")
-        self.assertEqual(payload, {"model": "model-a", "messages": []})
+        self.assertEqual(
+            payload,
+            {"model": "model-a", "messages": [{"role": "user", "content": "."}]},
+        )
 
-    def test_non_404_on_responses_short_circuits_chat_completions(self):
+    def test_402_on_responses_short_circuits_chat_completions(self):
         outcome, calls = self._run([(402, {"error": "no credit"})])
         self.assertEqual(len(calls), 1)
         latency_ms, endpoint_type = outcome
@@ -140,16 +143,22 @@ class TestTripleProbeOrderTest(unittest.TestCase):
         outcome, calls = self._run(
             [
                 (404, {"error": "no responses endpoint"}),
-                (400, {"error": "messages must not be empty"}),
+                (402, {"error": "no credit"}),
             ]
         )
         self.assertEqual(calls[0][0], "https://x/v1/responses")
         self.assertEqual(calls[1][0], "https://x/v1/chat/completions")
         self.assertEqual(outcome[1], "chat/completions")
 
-    def test_200_counts_as_existing(self):
-        outcome, _ = self._run([(200, {"output": []})])
-        self.assertEqual(outcome[1], "responses")
+    def test_200_counts_as_missing(self):
+        outcome, calls = self._run([(200, {"output": []}), (200, {"choices": []})])
+        self.assertIsNone(outcome)
+        self.assertEqual(len(calls), 2)
+
+    def test_400_counts_as_missing(self):
+        outcome, calls = self._run([(400, {"error": "bad request"}), (400, {"error": "bad request"})])
+        self.assertIsNone(outcome)
+        self.assertEqual(len(calls), 2)
 
     def test_both_404_returns_none(self):
         outcome, calls = self._run([(404, {}), (404, {})])

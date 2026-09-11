@@ -4,18 +4,17 @@
 For every (lab_model, provider, provider_model) triple in the freshly
 compiled pareto.json whose cost is not fully zero, but only for
 providers whose API key is present in the bulk PROVIDERS_API_KEYS
-secret, send cheap validation probes: POST /responses with an empty
-input array, then POST /chat/completions with an empty messages array.
-HTTP 404 proves the model does not exist on that endpoint; any other
-non-404 answer (400 validation error, 402 no-credit anti-abuse guard,
-200, ...) means the model is served there. Either a single non-404
-probe is enough to record the triple. No completion is ever generated,
-so the cost stays zero.
+secret, send minimal one-character probes: POST /responses with
+"input": ".", then POST /chat/completions with a single "user" message
+".". HTTP 402 (no-credit anti-abuse guard) proves the model exists on
+that endpoint; every other answer (404, 400 validation error, 200,
+...) means it does not. Either a single 402 probe is enough to record
+the triple. No completion is ever generated, so the cost stays zero.
 
 Each probe runs with a short timeout; probes for all triples run in a
 small thread pool. Other top-level branches of the output file are
-preserved untouched; triples answered with 404 on both probes simply do
-not land in the "paid" branch.
+preserved untouched; triples never answered with 402 simply do not
+land in the "paid" branch.
 """
 
 from __future__ import annotations
@@ -114,16 +113,21 @@ def post_json(url: str, api_key: str, payload: dict, timeout_s: float = REQUEST_
 
 
 def test_triple(api_base: str, api_key: str, provider_model: str) -> tuple[int, str] | None:
-    """Probe one provider model with empty-input requests.
+    """Probe one provider model with a one-character minimal request.
 
     Probe order: /responses first; chat/completions runs only when the
-    responses probe answered 404 (model missing on that endpoint). Any
-    non-404 answer proves the model exists; returns (latency_ms,
-    endpoint_type) or None when both probes answered 404 or failed.
+    responses probe answered 404 (model missing on that endpoint).
+    HTTP 402 (no-credit anti-abuse guard) proves the model exists;
+    every other answer proves it does not. Returns (latency_ms,
+    endpoint_type) or None when no probe answered 402.
     """
     probes = [
-        ("responses", f"{api_base}/responses", {"model": provider_model, "input": []}),
-        ("chat/completions", f"{api_base}/chat/completions", {"model": provider_model, "messages": []}),
+        ("responses", f"{api_base}/responses", {"model": provider_model, "input": "."}),
+        (
+            "chat/completions",
+            f"{api_base}/chat/completions",
+            {"model": provider_model, "messages": [{"role": "user", "content": "."}]},
+        ),
     ]
     for endpoint_type, url, payload in probes:
         started = time.monotonic()
@@ -133,10 +137,9 @@ def test_triple(api_base: str, api_key: str, provider_model: str) -> tuple[int, 
             print(f"  probe {url} failed: {exc}", file=sys.stderr)
             continue
         elapsed_ms = int((time.monotonic() - started) * 1000)
-        if status == 404:
-            print(f"  probe {url} -> HTTP 404 (model missing)", file=sys.stderr)
-            continue
-        return elapsed_ms, endpoint_type
+        if status == 402:
+            return elapsed_ms, endpoint_type
+        print(f"  probe {url} -> HTTP {status} (treated as model missing)", file=sys.stderr)
     return None
 
 
@@ -206,7 +209,7 @@ def test_paid_models(
             lab_model, provider, provider_model, outcome = future.result()
             if outcome is None:
                 print(
-                    f"not tested {provider} {provider_model} (lab: {lab_model}): both probes 404 or failed",
+                    f"not tested {provider} {provider_model} (lab: {lab_model}): no probe answered 402",
                     file=sys.stderr,
                 )
                 continue
