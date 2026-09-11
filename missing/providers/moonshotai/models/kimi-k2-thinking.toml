@@ -4,6 +4,10 @@
 # Missing from providers/moonshotai/models.
 # Statistics evidence:
 base_model = "moonshotai/kimi-k2-thinking"
+# - llmgateway/alibaba: stats/llmgateway/alibaba/models/moonshotai/kimi-k2-thinking.json
+# - llmgateway/bytedance: stats/llmgateway/bytedance/models/moonshotai/kimi-k2-thinking.json
+# - llmgateway/moonshotai: stats/llmgateway/moonshotai/models/moonshotai/kimi-k2-thinking.json
+# - llmgateway/vertex-openai: stats/llmgateway/vertex-openai/models/moonshotai/kimi-k2-thinking.json
 # - openrouter/google: stats/openrouter/google/models/moonshotai/kimi-k2-thinking.json
 # - openrouter/novita-ai: stats/openrouter/novita-ai/models/moonshotai/kimi-k2-thinking.json
 # - vercel/deepinfra: stats/vercel/deepinfra/models/moonshotai/kimi-k2-thinking.json
