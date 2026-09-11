@@ -6,15 +6,28 @@ compiled pareto.json whose cost is not fully zero, but only for
 providers whose API key is present in the bulk PROVIDERS_API_KEYS
 secret, send minimal one-character probes: POST /responses with
 "input": ".", then POST /chat/completions with a single "user" message
-".". HTTP 402 (no-credit anti-abuse guard) proves the model exists on
-that endpoint; every other answer (404, 400 validation error, 200,
-...) means it does not. Either a single 402 probe is enough to record
-the triple. No completion is ever generated, so the cost stays zero.
+".". The probe generates no completion, so the cost stays zero.
+
+Whether a probe answer proves the model exists is provider-specific
+(live-verified 2026-09-11) and configured in PROVIDER_DETERMINANTS:
+
+- "402/403" (default): HTTP 402 (no-credit anti-abuse guard) or 403
+  (insufficient balance / model busy) proves the model exists — both
+  statuses are only returned after the provider validated the model
+  name. Used for zenmux, orcarouter, aihubmix, unorouter.
+- "models": the provider's credit gate answers 402 even for
+  nonexistent models, so probes cannot distinguish; the authoritative
+  GET /models catalogue is used instead (kilo).
+- Excluded providers (EXCLUDED_PROVIDERS) are skipped entirely:
+  opencode and opencode-go sit behind a Cloudflare gate that answers
+  403 to everything, vercel answers 403 card-gate before validating
+  the model, and nvidia actually generates (billed) output for an
+  existing model. Their triples never land in the "paid" branch.
 
 Each probe runs with a short timeout; probes for all triples run in a
 small thread pool. Other top-level branches of the output file are
-preserved untouched; triples never answered with 402 simply do not
-land in the "paid" branch.
+preserved untouched; triples never proven to exist simply do not land
+in the "paid" branch.
 """
 
 from __future__ import annotations
@@ -38,6 +51,23 @@ REQUEST_TIMEOUT_S = 12
 MAX_WORKERS = 8
 PAID_BRANCH = "paid"
 BULK_KEYS_ENV = "PROVIDERS_API_KEYS"
+
+# Determinant strategy per provider. Anything not listed here uses the
+# default "402/403" probe rule. "models" resolves existence from the
+# provider's GET /models catalogue instead of probing inference.
+DEFAULT_DETERMINANT = "402/403"
+PROVIDER_DETERMINANTS: dict[str, str] = {
+    "kilo": "models",
+}
+
+# Providers that cannot be tested truthfully with zero-cost probes and
+# are therefore skipped entirely (their triples never enter "paid").
+EXCLUDED_PROVIDERS: dict[str, str] = {
+    "opencode": "Cloudflare gate answers 403 to every request",
+    "opencode-go": "same Cloudflare gate as opencode",
+    "vercel": "card-gate 403 fires before model validation",
+    "nvidia": "an existing model actually generates (billed) output for the probe",
+}
 
 # Providers whose provider.toml lacks the api field; endpoints come from
 # the provider's documented OpenAI-compatible base URL.
@@ -112,14 +142,20 @@ def post_json(url: str, api_key: str, payload: dict, timeout_s: float = REQUEST_
         return exc.code, exc.read().decode("utf-8", errors="replace")
 
 
-def test_triple(api_base: str, api_key: str, provider_model: str) -> tuple[int, str] | None:
+def test_triple(
+    api_base: str,
+    api_key: str,
+    provider_model: str,
+    exists_codes: tuple[int, ...] = (402, 403),
+) -> tuple[int, str] | None:
     """Probe one provider model with a one-character minimal request.
 
     Probe order: /responses first; chat/completions runs only when the
-    responses probe answered 404 (model missing on that endpoint).
-    HTTP 402 (no-credit anti-abuse guard) proves the model exists;
-    every other answer proves it does not. Returns (latency_ms,
-    endpoint_type) or None when no probe answered 402.
+    responses probe did not prove the model exists. A status from
+    exists_codes (402 no-credit guard, 403 insufficient balance /
+    model busy — returned only after model-name validation) proves the
+    model exists; every other answer proves it does not. Returns
+    (latency_ms, endpoint_type) or None.
     """
     probes = [
         ("responses", f"{api_base}/responses", {"model": provider_model, "input": "."}),
@@ -137,10 +173,27 @@ def test_triple(api_base: str, api_key: str, provider_model: str) -> tuple[int, 
             print(f"  probe {url} failed: {exc}", file=sys.stderr)
             continue
         elapsed_ms = int((time.monotonic() - started) * 1000)
-        if status == 402:
+        if status in exists_codes:
             return elapsed_ms, endpoint_type
         print(f"  probe {url} -> HTTP {status} (treated as model missing)", file=sys.stderr)
     return None
+
+
+def fetch_model_ids(api_base: str, api_key: str) -> set[str] | None:
+    """Fetch the provider's GET /models catalogue; None on failure."""
+    request = urllib.request.Request(f"{api_base}/models", headers={"Authorization": f"Bearer {api_key}"})
+    try:
+        with urllib.request.urlopen(request, timeout=REQUEST_TIMEOUT_S) as response:
+            payload = json.loads(response.read().decode("utf-8", errors="replace"))
+    except (urllib.error.URLError, TimeoutError, OSError, json.JSONDecodeError) as exc:
+        print(f"  GET {api_base}/models failed: {exc}", file=sys.stderr)
+        return None
+    ids = payload.get("data") if isinstance(payload, dict) else None
+    if not isinstance(ids, list):
+        print(f"  GET {api_base}/models returned unexpected payload", file=sys.stderr)
+        return None
+    model_ids = {m.get("id") for m in ids if isinstance(m, dict) and isinstance(m.get("id"), str)}
+    return {str(mid) for mid in model_ids if mid is not None}
 
 
 def resolve_api_keys(env: dict[str, str]) -> dict[str, str]:
@@ -171,6 +224,9 @@ def _probe_one(
     tester=None,
 ) -> tuple[str, str, str, tuple[int, str] | None]:
     """Probe a single triple; returns (lab, provider, model, outcome)."""
+    if provider in EXCLUDED_PROVIDERS:
+        print(f"skip {provider} {provider_model}: provider excluded ({EXCLUDED_PROVIDERS[provider]})", file=sys.stderr)
+        return lab_model, provider, provider_model, None
     api_base = provider_api_base(repo_root, provider)
     if not api_base:
         print(f"skip {provider}/{provider_model}: no API endpoint", file=sys.stderr)
@@ -180,9 +236,17 @@ def _probe_one(
     if not api_key:
         print(f"skip {provider} {provider_model}: missing {env_var} in {BULK_KEYS_ENV}", file=sys.stderr)
         return lab_model, provider, provider_model, None
-    outcome = (
-        test_triple(api_base, api_key, provider_model) if tester is None else tester(api_base, api_key, provider_model)
-    )
+    if tester is not None:
+        outcome = tester(api_base, api_key, provider_model)
+    elif PROVIDER_DETERMINANTS.get(provider, DEFAULT_DETERMINANT) == "models":
+        model_ids = fetch_model_ids(api_base, api_key)
+        if model_ids is None or provider_model not in model_ids:
+            print(f"  {provider} {provider_model}: not in /models catalogue", file=sys.stderr)
+            outcome = None
+        else:
+            outcome = 0, "models"
+    else:
+        outcome = test_triple(api_base, api_key, provider_model)
     return lab_model, provider, provider_model, outcome
 
 
@@ -209,7 +273,7 @@ def test_paid_models(
             lab_model, provider, provider_model, outcome = future.result()
             if outcome is None:
                 print(
-                    f"not tested {provider} {provider_model} (lab: {lab_model}): no probe answered 402",
+                    f"not tested {provider} {provider_model} (lab: {lab_model}): model not proven to exist",
                     file=sys.stderr,
                 )
                 continue

@@ -139,6 +139,11 @@ class TestTripleProbeOrderTest(unittest.TestCase):
         self.assertGreaterEqual(latency_ms, 0)
         self.assertEqual(endpoint_type, "responses")
 
+    def test_403_counts_as_existing(self):
+        outcome, calls = self._run([(403, {"error": "insufficient balance"})])
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(outcome[1], "responses")
+
     def test_falls_back_to_chat_completions_on_404(self):
         outcome, calls = self._run(
             [
@@ -169,6 +174,16 @@ class TestTripleProbeOrderTest(unittest.TestCase):
         with mock.patch.object(tpm, "post_json", side_effect=OSError("boom")):
             outcome = tpm.test_triple("https://x/v1", "key", "model-a")
         self.assertIsNone(outcome)
+
+    def test_custom_exists_codes(self):
+        # default codes: 429 does not prove existence
+        outcome, calls = self._run([(404, {}), (429, {"error": "rate limited"})])
+        self.assertIsNone(outcome)
+        self.assertEqual(len(calls), 2)
+        # custom codes: 429 proves existence
+        with mock.patch.object(tpm, "post_json", return_value=(429, "{}")):
+            outcome = tpm.test_triple("https://x/v1", "key", "model-a", exists_codes=(429,))
+        self.assertEqual(outcome[1], "responses")
 
 
 class TestPaidModelsTest(unittest.TestCase):
@@ -209,6 +224,87 @@ class TestPaidModelsTest(unittest.TestCase):
                 }
             },
         )
+
+    def test_excluded_provider_triples_are_skipped(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo_root = pathlib.Path(tmp)
+            self._prepare_repo(repo_root)
+            (repo_root / "providers" / "cortecs").mkdir()
+            (repo_root / "providers" / "cortecs" / "provider.toml").write_text(
+                'api = "https://c/v1"\nenv = ["CORTECS_API_KEY"]\n', encoding="utf-8"
+            )
+
+            calls = []
+
+            def fake_tester(api_base, api_key, provider_model):
+                calls.append((api_base, api_key, provider_model))
+                return (1, "responses")
+
+            with mock.patch.dict(tpm.EXCLUDED_PROVIDERS, {"cortecs": "blocked"}):
+                result = tpm.test_paid_models(
+                    repo_root,
+                    pareto_fixture(),
+                    env={tpm.BULK_KEYS_ENV: json.dumps({"CORTECS_API_KEY": "k", "NAN_API_KEY": "N"})},
+                    tester=fake_tester,
+                )
+
+        tested = {(api, key, model) for api, key, model in calls}
+        # cortecs triple must not reach the tester
+        self.assertNotIn(("https://c/v1", "k", "qwen3.5-122b-a10b"), tested)
+        # nan triple was probed and recorded
+        self.assertIn(("https://nan.example/v1", "N", "gpt-5"), tested)
+        self.assertEqual(
+            result["paid"],
+            {"openai/gpt-5": {"providers": {"nan": {"gpt-5": {"latency_ms": 1, "endpoint_type": "responses"}}}}},
+        )
+
+    def test_models_determinant_uses_catalogue(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo_root = pathlib.Path(tmp)
+            self._prepare_repo(repo_root)
+            (repo_root / "providers" / "kilo").mkdir()
+            (repo_root / "providers" / "kilo" / "provider.toml").write_text(
+                'api = "https://kilo.example/v1"\nenv = ["KILO_API_KEY"]\n', encoding="utf-8"
+            )
+
+            probes = []
+
+            def fake_probe(api_base, api_key, provider_model, exists_codes=(402, 403)):
+                probes.append(provider_model)
+                return None
+
+            catalogue = {"gpt-5"}
+
+            def fake_fetch(api_base, api_key):
+                return catalogue
+
+            pareto = {
+                "stats": {
+                    "openai/gpt-5": {
+                        "providers": {
+                            "kilo": {"gpt-5": {"cost": {"input": 0.5, "output": 1.5}}},
+                            "kilo-missing": {"ghost": {"cost": {"input": 0.5, "output": 1.5}}},
+                        }
+                    }
+                }
+            }
+            with (
+                mock.patch.dict(tpm.PROVIDER_DETERMINANTS, {"kilo": "models", "kilo-missing": "models"}),
+                mock.patch.object(tpm, "fetch_model_ids", side_effect=fake_fetch),
+                mock.patch.object(tpm, "test_triple", side_effect=fake_probe),
+            ):
+                result = tpm.test_paid_models(
+                    repo_root,
+                    pareto,
+                    env={tpm.BULK_KEYS_ENV: json.dumps({"KILO_API_KEY": "k"})},
+                )
+
+        # listed model recorded via the catalogue without any inference probe
+        self.assertEqual(
+            result["paid"],
+            {"openai/gpt-5": {"providers": {"kilo": {"gpt-5": {"latency_ms": 0, "endpoint_type": "models"}}}}},
+        )
+        self.assertEqual(probes, [])
 
     def test_preserves_other_branches_of_existing_payload(self):
         with tempfile.TemporaryDirectory() as tmp:
