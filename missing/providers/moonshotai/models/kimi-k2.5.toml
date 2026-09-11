@@ -4,12 +4,6 @@
 # Missing from providers/moonshotai/models.
 # Statistics evidence:
 base_model = "moonshotai/kimi-k2.5"
-# - llmgateway/alibaba: stats/llmgateway/alibaba/models/moonshotai/kimi-k2.5.json
-# - llmgateway/deepinfra: stats/llmgateway/deepinfra/models/moonshotai/kimi-k2.5.json
-# - llmgateway/embercloud: stats/llmgateway/embercloud/models/moonshotai/kimi-k2.5.json
-# - llmgateway/moonshotai: stats/llmgateway/moonshotai/models/moonshotai/kimi-k2.5.json
-# - llmgateway/nebius: stats/llmgateway/nebius/models/moonshotai/kimi-k2.5.json
-# - llmgateway/togetherai: stats/llmgateway/togetherai/models/moonshotai/kimi-k2.5.json
 # - openrouter/AtlasCloud: stats/openrouter/AtlasCloud/models/moonshotai/kimi-k2.5.json
 # - openrouter/Phala: stats/openrouter/Phala/models/moonshotai/kimi-k2.5.json
 # - openrouter/amazon-bedrock: stats/openrouter/amazon-bedrock/models/moonshotai/kimi-k2.5.json
