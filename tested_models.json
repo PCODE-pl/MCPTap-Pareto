@@ -1,10 +1,10 @@
 {
   "free": {
-    "google/gemma-4-31b-it": {
+    "nvidia/nemotron-3-ultra-550b-a55b": {
       "providers": {
-        "inferx": {
-          "gemma-4-31B-it-fp8": {
-            "latency_ms": 807,
+        "kilo": {
+          "nvidia/nemotron-3-ultra-550b-a55b:free": {
+            "latency_ms": 9939,
             "endpoint_type": "chat/completions"
           }
         }
@@ -14,13 +14,13 @@
       "providers": {
         "aihubmix": {
           "xiaomi-mimo-v2.5-free": {
-            "latency_ms": 220,
+            "latency_ms": 236,
             "endpoint_type": "responses"
           }
         },
         "kenari": {
           "mimo-v2-5:free": {
-            "latency_ms": 12026,
+            "latency_ms": 22925,
             "endpoint_type": "responses"
           }
         }
@@ -30,7 +30,17 @@
       "providers": {
         "aihubmix": {
           "xiaomi-mimo-v2.5-pro-free": {
-            "latency_ms": 252,
+            "latency_ms": 183,
+            "endpoint_type": "responses"
+          }
+        }
+      }
+    },
+    "zhipuai/glm-5.3": {
+      "providers": {
+        "tokenrouter": {
+          "z-ai/glm-5.3-free": {
+            "latency_ms": 7677,
             "endpoint_type": "responses"
           }
         }
