@@ -16,6 +16,5 @@ base_model = "meta/llama-3.3-70b-instruct"
 # - openrouter/deepinfra: stats/openrouter/deepinfra/models/meta/llama-3.3-70b-instruct.json
 # - openrouter/google: stats/openrouter/google/models/meta/llama-3.3-70b-instruct.json
 # - openrouter/groq: stats/openrouter/groq/models/meta/llama-3.3-70b-instruct.json
-# - openrouter/nebius: stats/openrouter/nebius/models/meta/llama-3.3-70b-instruct.json
 # - openrouter/novita-ai: stats/openrouter/novita-ai/models/meta/llama-3.3-70b-instruct.json
 # - openrouter/togetherai: stats/openrouter/togetherai/models/meta/llama-3.3-70b-instruct.json
