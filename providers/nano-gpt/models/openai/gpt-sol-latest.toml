@@ -1,12 +1,10 @@
-# Tracks the current GPT frontier alias target on Kilo (GPT-5.5).
-name = "OpenAI GPT Latest"
-description = "GPT model for general reasoning, writing, coding, and tool-assisted tasks"
-family = "gpt"
-release_date = "2026-04-27"
-last_updated = "2026-04-27"
+name = "GPT Sol Latest"
+description = "Compatibility alias that routes to GPT 5.6 Sol, the latest supported GPT Sol model."
+family = "gpt-sol"
+release_date = "2026-09-11"
+last_updated = "2026-09-11"
 attachment = true
 reasoning = true
-temperature = false
 tool_call = true
 structured_output = true
 open_weights = false
@@ -23,8 +21,9 @@ cache_write = 2.5
 
 [limit]
 context = 1_050_000
+input = 1_050_000
 output = 128_000
 
 [modalities]
-input = ["pdf", "image", "text"]
+input = ["text", "image", "pdf"]
 output = ["text"]
