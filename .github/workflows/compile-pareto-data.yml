@@ -157,6 +157,9 @@ jobs:
       - name: Test free models
         run: python .github/scripts/test_free_models.py
 
+      - name: Test paid models
+        run: python .github/scripts/test_paid_models.py
+
       - name: Commit changed catalog and generated data
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
