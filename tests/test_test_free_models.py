@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
 import pathlib
 import sys
 import tempfile
@@ -310,10 +311,11 @@ class OutputLoadingTest(unittest.TestCase):
                 mock.patch.object(
                     tfm, "test_free_models", return_value={"paid": {"keep": True}, **free_result}
                 ) as tester,
+                mock.patch.dict(os.environ, {tfm.BULK_KEYS_ENV: "{}"}),
             ):
                 tfm.main()
             merged = json.loads(output_path.read_text(encoding="utf-8"))
-            self.assertEqual(merged, {"paid": {"keep": True}, **free_result})
+            self.assertEqual(merged, {"paid": {"keep": True}, **free_result, "providers": []})
             # existing payload was passed into test_free_models
             self.assertEqual(tester.call_args.kwargs["existing"], {"paid": {"keep": True}})
 

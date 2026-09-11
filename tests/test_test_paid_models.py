@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
 import pathlib
 import sys
 import tempfile
@@ -434,12 +435,59 @@ class OutputLoadingTest(unittest.TestCase):
                 mock.patch.object(
                     tpm, "test_paid_models", return_value={"free": {"keep": True}, **paid_result}
                 ) as tester,
+                mock.patch.dict(os.environ, {tpm.BULK_KEYS_ENV: "{}"}),
             ):
                 tpm.main()
             merged = json.loads(output_path.read_text(encoding="utf-8"))
-            self.assertEqual(merged, {"free": {"keep": True}, **paid_result})
+            self.assertEqual(merged, {"free": {"keep": True}, **paid_result, "providers": []})
             # existing payload was passed into test_paid_models
             self.assertEqual(tester.call_args.kwargs["existing"], {"free": {"keep": True}})
+
+
+class KeyedProvidersTest(unittest.TestCase):
+    def _prepare_repo(self, repo_root: pathlib.Path) -> None:
+        for name, env in (
+            ("zenmux", "ZENMUX_API_KEY"),
+            ("nan", "NAN_API_KEY"),
+            ("keyless", ""),
+        ):
+            d = repo_root / "providers" / name
+            d.mkdir(parents=True)
+            env_line = f'env = ["{env}"]\n' if env else ""
+            (d / "provider.toml").write_text(f'api = "https://{name}.example/v1"\n{env_line}', encoding="utf-8")
+
+    def test_lists_only_providers_with_keys(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo_root = pathlib.Path(tmp)
+            self._prepare_repo(repo_root)
+            names = tpm.keyed_providers(repo_root, {"ZENMUX_API_KEY": "z", "NAN_API_KEY": "n"})
+        self.assertEqual(names, ["nan", "zenmux"])
+
+    def test_missing_providers_dir_yields_empty(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            self.assertEqual(tpm.keyed_providers(pathlib.Path(tmp), {"A": "1"}), [])
+
+    def test_main_writes_providers_key(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo_root = pathlib.Path(tmp)
+            self._prepare_repo(repo_root)
+            pareto_path = repo_root / "pareto.json"
+            output_path = repo_root / "tested_models.json"
+            pareto_path.write_text(json.dumps(pareto_fixture()), encoding="utf-8")
+            paid_result = {"paid": {}}
+            with (
+                mock.patch.object(tpm, "REPO_ROOT", repo_root),
+                mock.patch.object(tpm, "PARETO_PATH", pareto_path),
+                mock.patch.object(tpm, "OUTPUT_PATH", output_path),
+                mock.patch.dict(tpm.EXCLUDED_PROVIDERS, {"zenmux": "x", "nan": "x"}, clear=False),
+                mock.patch.object(tpm, "test_paid_models", return_value=dict(paid_result)),
+                mock.patch.dict(
+                    os.environ, {tpm.BULK_KEYS_ENV: json.dumps({"ZENMUX_API_KEY": "z", "NAN_API_KEY": "n"})}
+                ),
+            ):
+                tpm.main()
+            written = json.loads(output_path.read_text(encoding="utf-8"))
+            self.assertEqual(written["providers"], ["nan", "zenmux"])
 
 
 if __name__ == "__main__":

@@ -10,6 +10,10 @@ wall-time latency in milliseconds and the winning endpoint type
 ("responses" or "chat/completions") are recorded. Other top-level
 branches of the output file are preserved untouched; triples that do
 not answer simply do not land in the "free" branch.
+
+The output file also carries a top-level "providers" key: the sorted
+list of provider names whose API key is present in the bulk
+PROVIDERS_API_KEYS secret (recomputed on every run).
 """
 
 from __future__ import annotations
@@ -64,6 +68,19 @@ def provider_env_var(repo_root: Path, provider: str) -> str:
     if isinstance(env_vars, list) and env_vars and isinstance(env_vars[0], str):
         return env_vars[0]
     return ""
+
+
+def keyed_providers(repo_root: Path, api_keys: dict[str, str]) -> list[str]:
+    """Return sorted provider names whose api key is present in the bulk secret."""
+    providers_dir = repo_root / "providers"
+    names = []
+    if providers_dir.is_dir():
+        for provider_dir in sorted(providers_dir.iterdir()):
+            if not provider_dir.is_dir():
+                continue
+            if provider_env_var(repo_root, provider_dir.name) in api_keys:
+                names.append(provider_dir.name)
+    return names
 
 
 def collect_free_triples(pareto_data: dict) -> list[tuple[str, str, str]]:
@@ -231,6 +248,7 @@ def main() -> None:
     pareto_data = load_pareto(PARETO_PATH)
     existing = load_output(OUTPUT_PATH)
     result = test_free_models(REPO_ROOT, pareto_data, existing=existing)
+    result["providers"] = keyed_providers(REPO_ROOT, resolve_api_keys(dict(os.environ)))
     free_section = result[FREE_BRANCH]
     tested_count = sum(len(models) for info in free_section.values() for models in info["providers"].values())
     OUTPUT_PATH.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
