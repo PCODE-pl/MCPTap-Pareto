@@ -1,10 +1,10 @@
 {
   "uptime_last_15m": null,
   "uptime_last_1h": null,
-  "uptime_last_1d": 97.561,
+  "uptime_last_1d": 100,
   "latency_last_1h": {
-    "p50": 84223,
-    "p95": 140118.3
+    "p50": 62513,
+    "p95": 101406.5
   },
   "throughput_last_1h": null
 }
