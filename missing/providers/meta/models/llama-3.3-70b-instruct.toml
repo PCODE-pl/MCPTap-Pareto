@@ -4,9 +4,6 @@
 # Missing from providers/meta/models.
 # Statistics evidence:
 base_model = "meta/llama-3.3-70b-instruct"
-# - llmgateway/cerebras: stats/llmgateway/cerebras/models/meta/llama-3.3-70b-instruct.json
-# - llmgateway/nebius: stats/llmgateway/nebius/models/meta/llama-3.3-70b-instruct.json
-# - llmgateway/novita-ai: stats/llmgateway/novita-ai/models/meta/llama-3.3-70b-instruct.json
 # - openrouter/AkashML: stats/openrouter/AkashML/models/meta/llama-3.3-70b-instruct.json
 # - openrouter/Cloudflare: stats/openrouter/Cloudflare/models/meta/llama-3.3-70b-instruct.json
 # - openrouter/CoreWeave: stats/openrouter/CoreWeave/models/meta/llama-3.3-70b-instruct.json
