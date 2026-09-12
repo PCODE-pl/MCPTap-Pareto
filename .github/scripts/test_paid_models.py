@@ -61,6 +61,7 @@ BULK_KEYS_ENV = "PROVIDERS_API_KEYS"
 DEFAULT_DETERMINANT = "402/403"
 PROVIDER_DETERMINANTS: dict[str, str] = {
     "kilo": "models",
+    "nano-gpt": "models",
 }
 
 # Providers that cannot be tested truthfully with zero-cost probes and
