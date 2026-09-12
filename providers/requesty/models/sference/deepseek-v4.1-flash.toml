@@ -1,9 +1,9 @@
 # mcp-tap-auto-source = requesty
-base_model = "alibaba/qwen3.6-27b"
+base_model = "deepseek/deepseek-v4.1-flash"
 reasoning = true
 reasoning_options = []
 
 [cost]
-input = 0.39999999999999997
-output = 2.6
+input = 0.5
+output = 1.5
 cache_read = 0.049999999999999996
