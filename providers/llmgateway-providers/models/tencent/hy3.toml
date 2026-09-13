@@ -1,9 +1,11 @@
 base_model = "tencent/hy3"
+base_model_omit = ["limit.input"]
+name = "Hy3 (Tencent Cloud)"
 structured_output = true
 
 [[reasoning_options]]
 type = "effort"
-values = ["none", "low", "high"]
+values = ["none", "minimal", "low", "medium", "high", "xhigh"]
 
 [cost]
 input = 0.132
@@ -12,3 +14,4 @@ cache_read = 0.033
 
 [limit]
 context = 262_144
+output = 131_072
