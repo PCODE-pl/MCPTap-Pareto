@@ -24,6 +24,7 @@ import sys
 import time
 import urllib.error
 import urllib.request
+import uuid
 from pathlib import Path
 
 import tomllib
@@ -100,10 +101,13 @@ def collect_free_triples(pareto_data: dict) -> list[tuple[str, str, str]]:
 
 
 def post_json(url: str, api_key: str, payload: dict, timeout_s: float = REQUEST_TIMEOUT_S) -> tuple[int, str]:
+    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+    if "opencode.ai" in url:
+        headers["x-opencode-session"] = f"pareto-probe-{uuid.uuid4().hex[:16]}"
     request = urllib.request.Request(
         url,
         data=json.dumps(payload).encode("utf-8"),
-        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+        headers=headers,
         method="POST",
     )
     try:

@@ -238,6 +238,101 @@ class TestFreeModelsTest(unittest.TestCase):
         self.assertEqual(providers, sorted(providers))
 
 
+class OpencodeSessionHeaderTest(unittest.TestCase):
+    def _prepare_opencode_repo(self, repo_root: pathlib.Path) -> None:
+        (repo_root / "providers" / "opencode").mkdir(parents=True)
+        (repo_root / "providers" / "opencode" / "provider.toml").write_text(
+            'api = "https://opencode.ai/zen/v1"\\nenv = ["OPENCODE_API_KEY"]\\n',
+            encoding="utf-8",
+        )
+
+    def test_opencode_probes_carry_random_session_header(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo_root = pathlib.Path(tmp)
+            self._prepare_opencode_repo(repo_root)
+            seen_headers: list[dict] = []
+
+            def fake_urlopen(request, timeout=None):
+                seen_headers.append(dict(request.header_items()))
+
+                class _FakeResponse:
+                    status = 200
+
+                    def __enter__(self):
+                        return self
+
+                    def __exit__(self, *args):
+                        return False
+
+                    def read(self):
+                        return json.dumps({"output_text": "Muse Spark 1.2"}).encode("utf-8")
+
+                return _FakeResponse()
+
+            with mock.patch.object(tfm.urllib.request, "urlopen", side_effect=fake_urlopen):
+                outcome = tfm.test_triple("https://opencode.ai/zen/v1", "key", "muse-spark-1.2-contributor-free")
+            self.assertIsNotNone(outcome)
+            self.assertEqual(len(seen_headers), 1)
+            lowered = {key.lower(): value for key, value in seen_headers[0].items()}
+            session = lowered.get("x-opencode-session")
+            self.assertIsInstance(session, str)
+            self.assertTrue(session.strip())
+
+    def test_opencode_session_values_differ_between_probes(self):
+        seen: list[str] = []
+
+        def fake_urlopen(request, timeout=None):
+            lowered = {key.lower(): value for key, value in dict(request.header_items()).items()}
+            seen.append(lowered.get("x-opencode-session", ""))
+
+            class _FakeResponse:
+                status = 200
+
+                def __enter__(self):
+                    return self
+
+                def __exit__(self, *args):
+                    return False
+
+                def read(self):
+                    return json.dumps({"output_text": "ok"}).encode("utf-8")
+
+            return _FakeResponse()
+
+        with mock.patch.object(tfm.urllib.request, "urlopen", side_effect=fake_urlopen):
+            tfm.test_triple("https://opencode.ai/zen/v1", "key", "model-a")
+            tfm.test_triple("https://opencode.ai/zen/v1", "key", "model-b")
+        self.assertEqual(len(seen), 2)
+        self.assertTrue(all(seen))
+        self.assertNotEqual(seen[0], seen[1])
+
+    def test_other_providers_send_no_session_header(self):
+        seen_headers: list[dict] = []
+
+        def fake_urlopen(request, timeout=None):
+            seen_headers.append(dict(request.header_items()))
+
+            class _FakeResponse:
+                status = 200
+
+                def __enter__(self):
+                    return self
+
+                def __exit__(self, *args):
+                    return False
+
+                def read(self):
+                    return json.dumps({"output_text": "ok"}).encode("utf-8")
+
+            return _FakeResponse()
+
+        with mock.patch.object(tfm.urllib.request, "urlopen", side_effect=fake_urlopen):
+            tfm.test_triple("https://zenmux.ai/api/v1", "key", "model-a")
+        self.assertEqual(len(seen_headers), 1)
+        lowered = {key.lower() for key in seen_headers[0]}
+        self.assertNotIn("x-opencode-session", lowered)
+
+
 class ResolveApiKeysTest(unittest.TestCase):
     def test_parses_bulk_secret(self):
         env = {tfm.BULK_KEYS_ENV: json.dumps({"ZENMUX_API_KEY": " a ", "NAN_API_KEY": " n "})}
