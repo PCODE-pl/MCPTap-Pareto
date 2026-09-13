@@ -368,6 +368,58 @@ class TestPaidModelsTest(unittest.TestCase):
         self.assertEqual(tested, 2)
 
 
+class OpencodeSessionHeaderTest(unittest.TestCase):
+    def _fake_urlopen(self, seen: list[dict], body: str = '{"error": "no credit"}'):
+        def fake_urlopen(request, timeout=None):
+            seen.append(dict(request.header_items()))
+
+            class _FakeResponse:
+                status = 403
+
+                def __enter__(self):
+                    return self
+
+                def __exit__(self, *args):
+                    return False
+
+                def read(self):
+                    return body.encode("utf-8")
+
+            return _FakeResponse()
+
+        return fake_urlopen
+
+    def _lowered(self, headers: dict) -> dict:
+        return {key.lower(): value for key, value in headers.items()}
+
+    def test_opencode_probes_carry_random_session_header(self):
+        seen: list[dict] = []
+        with mock.patch.object(tpm.urllib.request, "urlopen", side_effect=self._fake_urlopen(seen)):
+            outcome = tpm.test_triple("https://opencode.ai/zen/v1", "key", "glm-5.3-flash")
+        self.assertEqual(outcome, "responses")
+        self.assertEqual(len(seen), 1)
+        session = self._lowered(seen[0]).get("x-opencode-session")
+        self.assertIsInstance(session, str)
+        self.assertTrue(session.strip())
+
+    def test_opencode_session_values_differ_between_probes(self):
+        seen: list[dict] = []
+        with mock.patch.object(tpm.urllib.request, "urlopen", side_effect=self._fake_urlopen(seen)):
+            tpm.test_triple("https://opencode.ai/zen/v1", "key", "model-a")
+            tpm.test_triple("https://opencode.ai/zen/v1", "key", "model-b")
+        sessions = [self._lowered(headers).get("x-opencode-session", "") for headers in seen]
+        self.assertEqual(len(sessions), 2)
+        self.assertTrue(all(sessions))
+        self.assertNotEqual(sessions[0], sessions[1])
+
+    def test_other_providers_send_no_session_header(self):
+        seen: list[dict] = []
+        with mock.patch.object(tpm.urllib.request, "urlopen", side_effect=self._fake_urlopen(seen)):
+            tpm.test_triple("https://zenmux.ai/api/v1", "key", "model-a")
+        self.assertEqual(len(seen), 1)
+        self.assertNotIn("x-opencode-session", self._lowered(seen[0]))
+
+
 class ResolveApiKeysTest(unittest.TestCase):
     def test_parses_bulk_secret(self):
         env = {tpm.BULK_KEYS_ENV: json.dumps({"ZENMUX_API_KEY": " a ", "NAN_API_KEY": " n "})}

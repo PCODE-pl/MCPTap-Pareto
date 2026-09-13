@@ -19,10 +19,11 @@ Whether a probe answer proves the model exists is provider-specific
   nonexistent models, so probes cannot distinguish; the authoritative
   GET /models catalogue is used instead (kilo).
 - Excluded providers (EXCLUDED_PROVIDERS) are skipped entirely:
-  opencode and opencode-go sit behind a Cloudflare gate that answers
-  403 to everything, vercel answers 403 card-gate before validating
-  the model, and nvidia actually generates (billed) output for an
-  existing model. Their triples never land in the "paid" branch.
+  vercel answers 403 card-gate before validating the model, and
+  nvidia actually generates (billed) output for an existing model.
+  Their triples never land in the "paid" branch. Requests to
+  opencode.ai carry an x-opencode-session header (the gate answers
+  403 to header-less requests).
 
 Each probe runs with a short timeout; probes for all triples run in a
 small thread pool. Other top-level branches of the output file are
@@ -41,6 +42,7 @@ import os
 import sys
 import urllib.error
 import urllib.request
+import uuid
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
@@ -67,8 +69,6 @@ PROVIDER_DETERMINANTS: dict[str, str] = {
 # Providers that cannot be tested truthfully with zero-cost probes and
 # are therefore skipped entirely (their triples never enter "paid").
 EXCLUDED_PROVIDERS: dict[str, str] = {
-    "opencode": "Cloudflare gate answers 403 to every request",
-    "opencode-go": "same Cloudflare gate as opencode",
     "vercel": "card-gate 403 fires before model validation",
     "nvidia": "an existing model actually generates (billed) output for the probe",
 }
@@ -146,10 +146,13 @@ def collect_paid_triples(pareto_data: dict) -> list[tuple[str, str, str]]:
 
 
 def post_json(url: str, api_key: str, payload: dict, timeout_s: float = REQUEST_TIMEOUT_S) -> tuple[int, str]:
+    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+    if "opencode.ai" in url:
+        headers["x-opencode-session"] = f"pareto-probe-{uuid.uuid4().hex[:16]}"
     request = urllib.request.Request(
         url,
         data=json.dumps(payload).encode("utf-8"),
-        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+        headers=headers,
         method="POST",
     )
     try:
