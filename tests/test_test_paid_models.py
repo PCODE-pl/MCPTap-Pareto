@@ -419,6 +419,21 @@ class OpencodeSessionHeaderTest(unittest.TestCase):
         self.assertEqual(len(seen), 1)
         self.assertNotIn("x-opencode-session", self._lowered(seen[0]))
 
+    def test_opencode_probes_carry_opencode_user_agent(self):
+        seen: list[dict] = []
+        with mock.patch.object(tpm.urllib.request, "urlopen", side_effect=self._fake_urlopen(seen)):
+            tpm.test_triple("https://opencode.ai/zen/v1", "key", "glm-5.3-flash")
+        self.assertEqual(len(seen), 1)
+        lowered = self._lowered(seen[0])
+        self.assertTrue(lowered.get("user-agent", "").startswith("opencode/"))
+
+    def test_other_providers_send_no_explicit_user_agent(self):
+        seen: list[dict] = []
+        with mock.patch.object(tpm.urllib.request, "urlopen", side_effect=self._fake_urlopen(seen)):
+            tpm.test_triple("https://zenmux.ai/api/v1", "key", "model-a")
+        self.assertEqual(len(seen), 1)
+        self.assertNotIn("user-agent", self._lowered(seen[0]))
+
 
 class ResolveApiKeysTest(unittest.TestCase):
     def test_parses_bulk_secret(self):

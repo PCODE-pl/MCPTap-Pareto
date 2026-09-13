@@ -332,6 +332,58 @@ class OpencodeSessionHeaderTest(unittest.TestCase):
         lowered = {key.lower() for key in seen_headers[0]}
         self.assertNotIn("x-opencode-session", lowered)
 
+    def test_opencode_probes_carry_opencode_user_agent(self):
+        seen_headers: list[dict] = []
+
+        def fake_urlopen(request, timeout=None):
+            seen_headers.append(dict(request.header_items()))
+
+            class _FakeResponse:
+                status = 200
+
+                def __enter__(self):
+                    return self
+
+                def __exit__(self, *args):
+                    return False
+
+                def read(self):
+                    return json.dumps({"output_text": "ok"}).encode("utf-8")
+
+            return _FakeResponse()
+
+        with mock.patch.object(tfm.urllib.request, "urlopen", side_effect=fake_urlopen):
+            tfm.test_triple("https://opencode.ai/zen/v1", "key", "model-a")
+        self.assertEqual(len(seen_headers), 1)
+        lowered = {key.lower(): value for key, value in seen_headers[0].items()}
+        self.assertTrue(lowered.get("user-agent", "").startswith("opencode/"))
+
+    def test_other_providers_send_no_explicit_user_agent(self):
+        seen_headers: list[dict] = []
+
+        def fake_urlopen(request, timeout=None):
+            seen_headers.append(dict(request.header_items()))
+
+            class _FakeResponse:
+                status = 200
+
+                def __enter__(self):
+                    return self
+
+                def __exit__(self, *args):
+                    return False
+
+                def read(self):
+                    return json.dumps({"output_text": "ok"}).encode("utf-8")
+
+            return _FakeResponse()
+
+        with mock.patch.object(tfm.urllib.request, "urlopen", side_effect=fake_urlopen):
+            tfm.test_triple("https://zenmux.ai/api/v1", "key", "model-a")
+        self.assertEqual(len(seen_headers), 1)
+        lowered = {key.lower() for key in seen_headers[0]}
+        self.assertNotIn("user-agent", lowered)
+
 
 class ResolveApiKeysTest(unittest.TestCase):
     def test_parses_bulk_secret(self):
