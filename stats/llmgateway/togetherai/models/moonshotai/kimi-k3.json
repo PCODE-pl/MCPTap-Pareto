@@ -1,6 +1,6 @@
 {
-  "logsCount": 55,
-  "avgTimeToFirstToken": 7859.222222222223,
-  "tokensPerSecond": 26,
+  "logsCount": 4,
+  "avgTimeToFirstToken": 100017.66666666667,
+  "tokensPerSecond": 3,
   "uptime": 100
 }
