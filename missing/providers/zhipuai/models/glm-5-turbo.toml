@@ -4,6 +4,5 @@
 # Missing from providers/zhipuai/models.
 # Statistics evidence:
 base_model = "zhipuai/glm-5-turbo"
-# - llmgateway/tencent: stats/llmgateway/tencent/models/zhipuai/glm-5-turbo.json
 # - openrouter/zhipuai: stats/openrouter/zhipuai/models/zhipuai/glm-5-turbo.json
 # - vercel/zhipuai: stats/vercel/zhipuai/models/zhipuai/glm-5-turbo.json

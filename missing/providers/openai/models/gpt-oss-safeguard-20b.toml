@@ -5,3 +5,5 @@
 # Statistics evidence:
 base_model = "openai/gpt-oss-safeguard-20b"
 # - openrouter/groq: stats/openrouter/groq/models/openai/gpt-oss-safeguard-20b.json
+# - vercel/bedrock: stats/vercel/bedrock/models/openai/gpt-oss-safeguard-20b.json
+# - vercel/groq: stats/vercel/groq/models/openai/gpt-oss-safeguard-20b.json
