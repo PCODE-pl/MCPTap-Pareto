@@ -15,6 +15,7 @@ base_model = "openai/gpt-oss-120b"
 # - openrouter/amazon-bedrock: stats/openrouter/amazon-bedrock/models/openai/gpt-oss-120b.json
 # - openrouter/baseten: stats/openrouter/baseten/models/openai/gpt-oss-120b.json
 # - openrouter/cerebras: stats/openrouter/cerebras/models/openai/gpt-oss-120b.json
+# - openrouter/crusoe: stats/openrouter/crusoe/models/openai/gpt-oss-120b.json
 # - openrouter/deepinfra: stats/openrouter/deepinfra/models/openai/gpt-oss-120b.json
 # - openrouter/digitalocean: stats/openrouter/digitalocean/models/openai/gpt-oss-120b.json
 # - openrouter/google: stats/openrouter/google/models/openai/gpt-oss-120b.json
