@@ -12,6 +12,7 @@ base_model = "deepseek/deepseek-v4-flash-0731"
 # - openrouter/Mancer 2: stats/openrouter/Mancer 2/models/deepseek/deepseek-v4-flash-0731.json
 # - openrouter/NextBit: stats/openrouter/NextBit/models/deepseek/deepseek-v4-flash-0731.json
 # - openrouter/OpenInference: stats/openrouter/OpenInference/models/deepseek/deepseek-v4-flash-0731.json
+# - openrouter/Parasail: stats/openrouter/Parasail/models/deepseek/deepseek-v4-flash-0731.json
 # - openrouter/Phala: stats/openrouter/Phala/models/deepseek/deepseek-v4-flash-0731.json
 # - openrouter/Reka: stats/openrouter/Reka/models/deepseek/deepseek-v4-flash-0731.json
 # - openrouter/Relace: stats/openrouter/Relace/models/deepseek/deepseek-v4-flash-0731.json
