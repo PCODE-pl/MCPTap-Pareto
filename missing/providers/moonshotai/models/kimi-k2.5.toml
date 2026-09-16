@@ -17,5 +17,4 @@ base_model = "moonshotai/kimi-k2.5"
 # - openrouter/siliconflow: stats/openrouter/siliconflow/models/moonshotai/kimi-k2.5.json
 # - openrouter/venice: stats/openrouter/venice/models/moonshotai/kimi-k2.5.json
 # - vercel/bedrock: stats/vercel/bedrock/models/moonshotai/kimi-k2.5.json
-# - vercel/moonshotai: stats/vercel/moonshotai/models/moonshotai/kimi-k2.5.json
 # - vercel/novita-ai: stats/vercel/novita-ai/models/moonshotai/kimi-k2.5.json

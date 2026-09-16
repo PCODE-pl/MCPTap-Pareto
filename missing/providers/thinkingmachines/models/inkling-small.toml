@@ -10,4 +10,3 @@ base_model = "thinkingmachines/inkling-small"
 # - vercel/baseten: stats/vercel/baseten/models/thinkingmachines/inkling-small.json
 # - vercel/deepinfra: stats/vercel/deepinfra/models/thinkingmachines/inkling-small.json
 # - vercel/thinkingmachines: stats/vercel/thinkingmachines/models/thinkingmachines/inkling-small.json
-# - vercel/togetherai: stats/vercel/togetherai/models/thinkingmachines/inkling-small.json

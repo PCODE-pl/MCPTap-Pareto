@@ -22,4 +22,3 @@ base_model = "openai/gpt-oss-20b"
 # - vercel/groq: stats/vercel/groq/models/openai/gpt-oss-20b.json
 # - vercel/novita-ai: stats/vercel/novita-ai/models/openai/gpt-oss-20b.json
 # - vercel/parasail: stats/vercel/parasail/models/openai/gpt-oss-20b.json
-# - vercel/togetherai: stats/vercel/togetherai/models/openai/gpt-oss-20b.json
