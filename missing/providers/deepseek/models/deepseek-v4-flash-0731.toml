@@ -7,7 +7,6 @@ base_model = "deepseek/deepseek-v4-flash-0731"
 # - openrouter/AtlasCloud: stats/openrouter/AtlasCloud/models/deepseek/deepseek-v4-flash-0731.json
 # - openrouter/Baidu: stats/openrouter/Baidu/models/deepseek/deepseek-v4-flash-0731.json
 # - openrouter/Cloudflare: stats/openrouter/Cloudflare/models/deepseek/deepseek-v4-flash-0731.json
-# - openrouter/CoreWeave: stats/openrouter/CoreWeave/models/deepseek/deepseek-v4-flash-0731.json
 # - openrouter/Makora: stats/openrouter/Makora/models/deepseek/deepseek-v4-flash-0731.json
 # - openrouter/Mancer 2: stats/openrouter/Mancer 2/models/deepseek/deepseek-v4-flash-0731.json
 # - openrouter/NextBit: stats/openrouter/NextBit/models/deepseek/deepseek-v4-flash-0731.json
@@ -31,6 +30,7 @@ base_model = "deepseek/deepseek-v4-flash-0731"
 # - openrouter/togetherai: stats/openrouter/togetherai/models/deepseek/deepseek-v4-flash-0731.json
 # - openrouter/venice: stats/openrouter/venice/models/deepseek/deepseek-v4-flash-0731.json
 # - openrouter/wafer.ai: stats/openrouter/wafer.ai/models/deepseek/deepseek-v4-flash-0731.json
+# - openrouter/wandb: stats/openrouter/wandb/models/deepseek/deepseek-v4-flash-0731.json
 # - vercel/alibaba: stats/vercel/alibaba/models/deepseek/deepseek-v4-flash-0731.json
 # - vercel/baseten: stats/vercel/baseten/models/deepseek/deepseek-v4-flash-0731.json
 # - vercel/blackbox: stats/vercel/blackbox/models/deepseek/deepseek-v4-flash-0731.json

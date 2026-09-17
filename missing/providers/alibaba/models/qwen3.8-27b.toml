@@ -6,7 +6,6 @@
 base_model = "alibaba/qwen3.8-27b"
 # - openrouter/AkashML: stats/openrouter/AkashML/models/alibaba/qwen3.8-27b.json
 # - openrouter/Cloudflare: stats/openrouter/Cloudflare/models/alibaba/qwen3.8-27b.json
-# - openrouter/CoreWeave: stats/openrouter/CoreWeave/models/alibaba/qwen3.8-27b.json
 # - openrouter/Darkbloom: stats/openrouter/Darkbloom/models/alibaba/qwen3.8-27b.json
 # - openrouter/DekaLLM: stats/openrouter/DekaLLM/models/alibaba/qwen3.8-27b.json
 # - openrouter/Ionstream: stats/openrouter/Ionstream/models/alibaba/qwen3.8-27b.json
@@ -20,6 +19,7 @@ base_model = "alibaba/qwen3.8-27b"
 # - openrouter/io-net: stats/openrouter/io-net/models/alibaba/qwen3.8-27b.json
 # - openrouter/novita-ai: stats/openrouter/novita-ai/models/alibaba/qwen3.8-27b.json
 # - openrouter/venice: stats/openrouter/venice/models/alibaba/qwen3.8-27b.json
+# - openrouter/wandb: stats/openrouter/wandb/models/alibaba/qwen3.8-27b.json
 # - vercel/alibaba: stats/vercel/alibaba/models/alibaba/qwen3.8-27b.json
 # - vercel/cerebras: stats/vercel/cerebras/models/alibaba/qwen3.8-27b.json
 # - vercel/deepinfra: stats/vercel/deepinfra/models/alibaba/qwen3.8-27b.json

@@ -5,7 +5,6 @@
 # Statistics evidence:
 base_model = "openai/gpt-oss-120b"
 # - openrouter/AkashML: stats/openrouter/AkashML/models/openai/gpt-oss-120b.json
-# - openrouter/CoreWeave: stats/openrouter/CoreWeave/models/openai/gpt-oss-120b.json
 # - openrouter/DekaLLM: stats/openrouter/DekaLLM/models/openai/gpt-oss-120b.json
 # - openrouter/Mancer 2: stats/openrouter/Mancer 2/models/openai/gpt-oss-120b.json
 # - openrouter/Mara: stats/openrouter/Mara/models/openai/gpt-oss-120b.json
@@ -24,6 +23,7 @@ base_model = "openai/gpt-oss-120b"
 # - openrouter/novita-ai: stats/openrouter/novita-ai/models/openai/gpt-oss-120b.json
 # - openrouter/siliconflow: stats/openrouter/siliconflow/models/openai/gpt-oss-120b.json
 # - openrouter/togetherai: stats/openrouter/togetherai/models/openai/gpt-oss-120b.json
+# - openrouter/wandb: stats/openrouter/wandb/models/openai/gpt-oss-120b.json
 # - vercel/baseten: stats/vercel/baseten/models/openai/gpt-oss-120b.json
 # - vercel/bedrock: stats/vercel/bedrock/models/openai/gpt-oss-120b.json
 # - vercel/cerebras: stats/vercel/cerebras/models/openai/gpt-oss-120b.json

@@ -6,7 +6,6 @@
 base_model = "meta/llama-3.3-70b-instruct"
 # - openrouter/AkashML: stats/openrouter/AkashML/models/meta/llama-3.3-70b-instruct.json
 # - openrouter/Cloudflare: stats/openrouter/Cloudflare/models/meta/llama-3.3-70b-instruct.json
-# - openrouter/CoreWeave: stats/openrouter/CoreWeave/models/meta/llama-3.3-70b-instruct.json
 # - openrouter/Parasail: stats/openrouter/Parasail/models/meta/llama-3.3-70b-instruct.json
 # - openrouter/SambaNova: stats/openrouter/SambaNova/models/meta/llama-3.3-70b-instruct.json
 # - openrouter/deepinfra: stats/openrouter/deepinfra/models/meta/llama-3.3-70b-instruct.json
@@ -14,3 +13,4 @@ base_model = "meta/llama-3.3-70b-instruct"
 # - openrouter/groq: stats/openrouter/groq/models/meta/llama-3.3-70b-instruct.json
 # - openrouter/novita-ai: stats/openrouter/novita-ai/models/meta/llama-3.3-70b-instruct.json
 # - openrouter/togetherai: stats/openrouter/togetherai/models/meta/llama-3.3-70b-instruct.json
+# - openrouter/wandb: stats/openrouter/wandb/models/meta/llama-3.3-70b-instruct.json
