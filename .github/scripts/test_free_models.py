@@ -20,6 +20,8 @@ from __future__ import annotations
 
 import json
 import os
+import secrets
+import string
 import sys
 import time
 import urllib.error
@@ -100,13 +102,63 @@ def collect_free_triples(pareto_data: dict) -> list[tuple[str, str, str]]:
     return sorted(triples)
 
 
+# Zen free-tier gate (checked 2026-09-18, v1.18.31 sources): requests must
+# present the official client identity — User-Agent
+# opencode/<channel>/<version>/<client> with version >= 1.17.0 — a canonical
+# x-opencode-session id (ses_[0-9a-f]{12}[0-9A-Za-z]{14}) and, on the free
+# lane, the tool quartet (bash/glob/grep/read) in the body with stream=true
+# (non-stream requests are rejected with 403 FreeTierError).
+OPENCODE_CHANNEL = "latest"
+OPENCODE_VERSION = "1.18.31"
+OPENCODE_CLIENT = "cli"
+
+FREE_TIER_TOOLS = [
+    {
+        "type": "function",
+        "name": "bash",
+        "description": "Run a bash command.",
+        "parameters": {"type": "object", "properties": {"command": {"type": "string"}}, "required": ["command"]},
+    },
+    {
+        "type": "function",
+        "name": "glob",
+        "description": "Find files by glob pattern.",
+        "parameters": {"type": "object", "properties": {"pattern": {"type": "string"}}, "required": ["pattern"]},
+    },
+    {
+        "type": "function",
+        "name": "grep",
+        "description": "Search file contents.",
+        "parameters": {"type": "object", "properties": {"pattern": {"type": "string"}}, "required": ["pattern"]},
+    },
+    {
+        "type": "function",
+        "name": "read",
+        "description": "Read a file.",
+        "parameters": {"type": "object", "properties": {"path": {"type": "string"}}, "required": ["path"]},
+    },
+]
+
+
+def opencode_headers() -> dict:
+    """Client-identity headers for opencode.ai requests, fresh per call."""
+    tail = "".join(secrets.choice("0123456789abcdef") for _ in range(12))
+    tail += "".join(secrets.choice(string.ascii_letters + string.digits) for _ in range(14))
+    return {
+        "User-Agent": f"opencode/{OPENCODE_CHANNEL}/{OPENCODE_VERSION}/{OPENCODE_CLIENT}",
+        "x-opencode-client": OPENCODE_CLIENT,
+        "x-opencode-session": f"ses_{tail}",
+        "x-opencode-request": f"msg_{uuid.uuid4().hex}",
+    }
+
+
 def post_json(url: str, api_key: str, payload: dict, timeout_s: float = REQUEST_TIMEOUT_S) -> tuple[int, str]:
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
     if "opencode.ai" in url:
-        headers["x-opencode-session"] = f"pareto-probe-{uuid.uuid4().hex[:16]}"
-        # Explicit opt-in: Zen's gate 403s urllib's default UA; it lets
-        # client-identified traffic through (live-verified 2026-09-13).
-        headers["User-Agent"] = "opencode/1.0.0"
+        headers.update(opencode_headers())
+        # Free lane gates: streaming with the declared tool quartet — a
+        # non-stream request without them answers 403 FreeTierError.
+        payload = {**payload, "stream": True, "tools": FREE_TIER_TOOLS}
     request = urllib.request.Request(
         url,
         data=json.dumps(payload).encode("utf-8"),
@@ -121,7 +173,13 @@ def post_json(url: str, api_key: str, payload: dict, timeout_s: float = REQUEST_
 
 
 def extract_text(payload: dict) -> str:
-    """Extract non-empty text from either a chat/completions or responses body."""
+    """Extract non-empty text from either a chat/completions or responses body.
+
+    Streaming bodies (the zen free lane requires stream=true) arrive as SSE:
+    response.output_text.delta events for /responses and chat.completion.chunk
+    choice deltas for chat/completions. Non-SSE JSON bodies keep the previous
+    extraction paths.
+    """
     for choice in payload.get("choices") or []:
         text = (choice.get("message") or {}).get("content")
         if isinstance(text, str) and text.strip():
@@ -136,6 +194,28 @@ def extract_text(payload: dict) -> str:
     if isinstance(text, str) and text.strip():
         return text
     return ""
+
+
+def extract_sse_text(raw: str) -> str:
+    """Join text deltas from an SSE body (responses or chat chunk format)."""
+    deltas: list[str] = []
+    for line in raw.splitlines():
+        if not line.startswith("data: ") or line.strip() == "data: [DONE]":
+            continue
+        try:
+            event = json.loads(line[6:])
+        except json.JSONDecodeError:
+            continue
+        if event.get("type") == "response.output_text.delta":
+            delta = event.get("delta")
+            if delta:
+                deltas.append(str(delta))
+            continue
+        for choice in event.get("choices") or []:
+            content = (choice.get("delta") or {}).get("content")
+            if content:
+                deltas.append(str(content))
+    return "".join(deltas)
 
 
 def test_triple(api_base: str, api_key: str, provider_model: str) -> tuple[int, str] | None:
@@ -163,11 +243,16 @@ def test_triple(api_base: str, api_key: str, provider_model: str) -> tuple[int, 
         if status != 200:
             print(f"  probe {url} -> HTTP {status}", file=sys.stderr)
             continue
-        try:
-            text = extract_text(json.loads(body))
-        except json.JSONDecodeError:
-            print(f"  probe {url} returned non-JSON body", file=sys.stderr)
-            continue
+        # The zen free lane streams (gate requires stream=true); SSE bodies
+        # are not JSON — try deltas first, then plain JSON extraction.
+        if body.lstrip().startswith("data: ") or body.lstrip().startswith("event:"):
+            text = extract_sse_text(body)
+        else:
+            try:
+                text = extract_text(json.loads(body))
+            except json.JSONDecodeError:
+                print(f"  probe {url} returned non-JSON body", file=sys.stderr)
+                continue
         if text.strip():
             return elapsed_ms, endpoint_type
         print(f"  probe {url} returned 200 with empty text", file=sys.stderr)

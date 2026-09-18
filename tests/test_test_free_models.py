@@ -110,6 +110,37 @@ class ExtractTextTest(unittest.TestCase):
         self.assertEqual(tfm.extract_text({"choices": [{"message": {"content": ""}}]}), "")
 
 
+class ExtractSseTextTest(unittest.TestCase):
+    def test_responses_delta_events(self):
+        raw = (
+            "event: response.output_text.delta\n"
+            + "data: "
+            + json.dumps({"type": "response.output_text.delta", "delta": "Mus"})
+            + "\n"
+            + "data: "
+            + json.dumps({"type": "response.output_text.delta", "delta": "e"})
+            + "\n\n"
+        )
+        self.assertEqual(tfm.extract_sse_text(raw), "Muse")
+
+    def test_chat_chunk_choice_deltas(self):
+        raw = (
+            "data: "
+            + json.dumps({"choices": [{"delta": {"content": "Qw"}}]})
+            + "\n"
+            + "data: "
+            + json.dumps({"choices": [{"delta": {"content": "en"}}]})
+            + "\n"
+            + "data: [DONE]\n\n"
+        )
+        self.assertEqual(tfm.extract_sse_text(raw), "Qwen")
+
+    def test_non_deltas_ignored(self):
+        raw = "data: " + json.dumps({"type": "response.created"}) + "\n\n"
+        self.assertEqual(tfm.extract_sse_text(raw), "")
+        self.assertEqual(tfm.extract_sse_text("not SSE at all\n"), "")
+
+
 class TestTripleProbeOrderTest(unittest.TestCase):
     def _run(self, probe_results):
         calls = []
@@ -274,9 +305,65 @@ class OpencodeSessionHeaderTest(unittest.TestCase):
             self.assertIsNotNone(outcome)
             self.assertEqual(len(seen_headers), 1)
             lowered = {key.lower(): value for key, value in seen_headers[0].items()}
-            session = lowered.get("x-opencode-session")
+            session = lowered.get("x-opencode-session") or ""
             self.assertIsInstance(session, str)
-            self.assertTrue(session.strip())
+            # Zen free-tier gate validates the canonical session shape.
+            self.assertRegex(session, r"^ses_[0-9a-f]{12}[0-9A-Za-z]{14}$")
+            self.assertEqual(lowered.get("x-opencode-client"), "cli")
+            self.assertTrue(lowered.get("x-opencode-request", "").startswith("msg_"))
+
+    def test_opencode_payload_gains_gate_stream_and_tools(self):
+        seen_payloads: list[dict] = []
+
+        def fake_urlopen(request, timeout=None):
+            seen_payloads.append(json.loads(request.data.decode("utf-8")))
+
+            class _FakeResponse:
+                status = 200
+
+                def __enter__(self):
+                    return self
+
+                def __exit__(self, *args):
+                    return False
+
+                def read(self):
+                    return json.dumps({"output_text": "Muse Spark 1.2"}).encode("utf-8")
+
+            return _FakeResponse()
+
+        with mock.patch.object(tfm.urllib.request, "urlopen", side_effect=fake_urlopen):
+            tfm.test_triple("https://opencode.ai/zen/v1", "key", "muse-spark-1.2-contributor-free")
+        self.assertEqual(len(seen_payloads), 1)
+        payload = seen_payloads[0]
+        self.assertIs(payload["stream"], True)
+        self.assertEqual([t["name"] for t in payload["tools"]], ["bash", "glob", "grep", "read"])
+
+    def test_other_providers_payload_untouched(self):
+        seen_payloads: list[dict] = []
+
+        def fake_urlopen(request, timeout=None):
+            seen_payloads.append(json.loads(request.data.decode("utf-8")))
+
+            class _FakeResponse:
+                status = 200
+
+                def __enter__(self):
+                    return self
+
+                def __exit__(self, *args):
+                    return False
+
+                def read(self):
+                    return json.dumps({"output_text": "ok"}).encode("utf-8")
+
+            return _FakeResponse()
+
+        with mock.patch.object(tfm.urllib.request, "urlopen", side_effect=fake_urlopen):
+            tfm.test_triple("https://zenmux.ai/api/v1", "key", "model-a")
+        self.assertEqual(len(seen_payloads), 1)
+        self.assertNotIn("stream", seen_payloads[0])
+        self.assertNotIn("tools", seen_payloads[0])
 
     def test_opencode_session_values_differ_between_probes(self):
         seen: list[str] = []
@@ -356,7 +443,11 @@ class OpencodeSessionHeaderTest(unittest.TestCase):
             tfm.test_triple("https://opencode.ai/zen/v1", "key", "model-a")
         self.assertEqual(len(seen_headers), 1)
         lowered = {key.lower(): value for key, value in seen_headers[0].items()}
-        self.assertTrue(lowered.get("user-agent", "").startswith("opencode/"))
+        # UA must match the official client shape (gate requires >= 1.17.0):
+        # opencode/<channel>/<version>/<client>
+        self.assertEqual(
+            lowered.get("user-agent"), f"opencode/{tfm.OPENCODE_CHANNEL}/{tfm.OPENCODE_VERSION}/{tfm.OPENCODE_CLIENT}"
+        )
 
     def test_other_providers_send_no_explicit_user_agent(self):
         seen_headers: list[dict] = []

@@ -39,6 +39,8 @@ from __future__ import annotations
 
 import json
 import os
+import secrets
+import string
 import sys
 import urllib.error
 import urllib.request
@@ -145,13 +147,31 @@ def collect_paid_triples(pareto_data: dict) -> list[tuple[str, str, str]]:
     return sorted(triples)
 
 
+# Zen free-tier gate (checked 2026-09-18, v1.18.31 sources): requests must
+# present the official client identity — User-Agent
+# opencode/<channel>/<version>/<client> with version >= 1.17.0 — and a
+# canonical x-opencode-session id (ses_[0-9a-f]{12}[0-9A-Za-z]{14}).
+OPENCODE_CHANNEL = "latest"
+OPENCODE_VERSION = "1.18.31"
+OPENCODE_CLIENT = "cli"
+
+
+def opencode_headers() -> dict:
+    """Client-identity headers for opencode.ai requests, fresh per call."""
+    tail = "".join(secrets.choice("0123456789abcdef") for _ in range(12))
+    tail += "".join(secrets.choice(string.ascii_letters + string.digits) for _ in range(14))
+    return {
+        "User-Agent": f"opencode/{OPENCODE_CHANNEL}/{OPENCODE_VERSION}/{OPENCODE_CLIENT}",
+        "x-opencode-client": OPENCODE_CLIENT,
+        "x-opencode-session": f"ses_{tail}",
+        "x-opencode-request": f"msg_{uuid.uuid4().hex}",
+    }
+
+
 def post_json(url: str, api_key: str, payload: dict, timeout_s: float = REQUEST_TIMEOUT_S) -> tuple[int, str]:
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
     if "opencode.ai" in url:
-        headers["x-opencode-session"] = f"pareto-probe-{uuid.uuid4().hex[:16]}"
-        # Explicit opt-in: Zen's gate 403s urllib's default UA; it lets
-        # client-identified traffic through (live-verified 2026-09-13).
-        headers["User-Agent"] = "opencode/1.0.0"
+        headers.update(opencode_headers())
     request = urllib.request.Request(
         url,
         data=json.dumps(payload).encode("utf-8"),

@@ -398,9 +398,39 @@ class OpencodeSessionHeaderTest(unittest.TestCase):
             outcome = tpm.test_triple("https://opencode.ai/zen/v1", "key", "glm-5.3-flash")
         self.assertEqual(outcome, "responses")
         self.assertEqual(len(seen), 1)
-        session = self._lowered(seen[0]).get("x-opencode-session")
+        session = self._lowered(seen[0]).get("x-opencode-session") or ""
         self.assertIsInstance(session, str)
-        self.assertTrue(session.strip())
+        # Zen free-tier gate validates the canonical session shape.
+        self.assertRegex(session, r"^ses_[0-9a-f]{12}[0-9A-Za-z]{14}$")
+        self.assertEqual(self._lowered(seen[0]).get("x-opencode-client"), "cli")
+        self.assertTrue(self._lowered(seen[0]).get("x-opencode-request", "").startswith("msg_"))
+
+    def test_opencode_payload_keeps_probe_shape(self):
+        seen_payloads: list[dict] = []
+
+        def fake_urlopen(request, timeout=None):
+            seen_payloads.append(json.loads(request.data.decode("utf-8")))
+
+            class _FakeResponse:
+                status = 403
+
+                def __enter__(self):
+                    return self
+
+                def __exit__(self, *args):
+                    return False
+
+                def read(self):
+                    return b'{"error": "no credit"}'
+
+            return _FakeResponse()
+
+        with mock.patch.object(tpm.urllib.request, "urlopen", side_effect=fake_urlopen):
+            tpm.test_triple("https://opencode.ai/zen/v1", "key", "glm-5.3-flash")
+        self.assertEqual(len(seen_payloads), 1)
+        # Paid probes keep the minimal shape: the gate stream/tool quartet is
+        # a free-lane requirement.
+        self.assertEqual(seen_payloads[0], {"model": "glm-5.3-flash", "input": "."})
 
     def test_opencode_session_values_differ_between_probes(self):
         seen: list[dict] = []
@@ -425,7 +455,12 @@ class OpencodeSessionHeaderTest(unittest.TestCase):
             tpm.test_triple("https://opencode.ai/zen/v1", "key", "glm-5.3-flash")
         self.assertEqual(len(seen), 1)
         lowered = self._lowered(seen[0])
-        self.assertTrue(lowered.get("user-agent", "").startswith("opencode/"))
+        # UA must match the official client shape (gate requires >= 1.17.0):
+        # opencode/<channel>/<version>/<client>
+        self.assertEqual(
+            lowered.get("user-agent"),
+            f"opencode/{tpm.OPENCODE_CHANNEL}/{tpm.OPENCODE_VERSION}/{tpm.OPENCODE_CLIENT}",
+        )
 
     def test_other_providers_send_no_explicit_user_agent(self):
         seen: list[dict] = []
