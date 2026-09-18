@@ -19,11 +19,33 @@
     "zenmux"
   ],
   "free": {
+    "alibaba/qwen3.8-27b": {
+      "providers": {
+        "kilo": {
+          "qwen/qwen3.8-27b:free": {
+            "latency_ms": 3202,
+            "endpoint_type": "responses"
+          }
+        },
+        "openrouter": {
+          "qwen/qwen3.8-27b:free": {
+            "latency_ms": 2099,
+            "endpoint_type": "responses"
+          }
+        }
+      }
+    },
     "deepseek/deepseek-v4-flash": {
       "providers": {
         "orcarouter": {
           "deepseek/deepseek-v4-flash-free": {
-            "latency_ms": 3907,
+            "latency_ms": 3613,
+            "endpoint_type": "responses"
+          }
+        },
+        "unorouter": {
+          "deepseek-v4-flash:free": {
+            "latency_ms": 15435,
             "endpoint_type": "responses"
           }
         }
@@ -33,23 +55,23 @@
       "providers": {
         "inferx": {
           "gemma-4-31B-it-fp8": {
-            "latency_ms": 830,
+            "latency_ms": 638,
             "endpoint_type": "chat/completions"
           }
         },
-        "openrouter": {
-          "google/gemma-4-31b-it:free": {
-            "latency_ms": 1012,
-            "endpoint_type": "responses"
+        "nvidia": {
+          "google/gemma-4-31b-it": {
+            "latency_ms": 20706,
+            "endpoint_type": "chat/completions"
           }
         },
         "requesty": {
           "gemma-4-31b-it": {
-            "latency_ms": 7761,
+            "latency_ms": 5494,
             "endpoint_type": "responses"
           },
           "google/gemma-4-31b-it": {
-            "latency_ms": 2786,
+            "latency_ms": 5730,
             "endpoint_type": "responses"
           }
         }
@@ -59,7 +81,7 @@
       "providers": {
         "opencode": {
           "muse-spark-1.2-contributor-free": {
-            "latency_ms": 2570,
+            "latency_ms": 3459,
             "endpoint_type": "responses"
           }
         }
@@ -69,24 +91,30 @@
       "providers": {
         "kilo": {
           "nvidia/nemotron-3-ultra-550b-a55b:free": {
-            "latency_ms": 16795,
+            "latency_ms": 978,
             "endpoint_type": "responses"
           }
         },
         "openrouter": {
           "nvidia/nemotron-3-ultra-550b-a55b:free": {
-            "latency_ms": 51529,
+            "latency_ms": 4111,
             "endpoint_type": "responses"
           }
         },
         "requesty": {
           "nemotron-3-ultra-550b-a55b": {
-            "latency_ms": 4504,
+            "latency_ms": 17705,
             "endpoint_type": "responses"
           },
           "nvidia/nemotron-3-ultra-550b-a55b": {
-            "latency_ms": 905,
-            "endpoint_type": "chat/completions"
+            "latency_ms": 1047,
+            "endpoint_type": "responses"
+          }
+        },
+        "unorouter": {
+          "nemotron-3-ultra-550b-a55b:free": {
+            "latency_ms": 11897,
+            "endpoint_type": "responses"
           }
         }
       }
@@ -95,13 +123,13 @@
       "providers": {
         "aihubmix": {
           "xiaomi-mimo-v2.5-free": {
-            "latency_ms": 8344,
+            "latency_ms": 10848,
             "endpoint_type": "responses"
           }
         },
         "kenari": {
           "mimo-v2-5:free": {
-            "latency_ms": 12275,
+            "latency_ms": 10123,
             "endpoint_type": "responses"
           }
         }
@@ -111,7 +139,7 @@
       "providers": {
         "aihubmix": {
           "xiaomi-mimo-v2.5-pro-free": {
-            "latency_ms": 9351,
+            "latency_ms": 3694,
             "endpoint_type": "responses"
           }
         }
@@ -119,9 +147,9 @@
     },
     "zhipuai/glm-5.2": {
       "providers": {
-        "openrouter": {
-          "z-ai/glm-5.2:free": {
-            "latency_ms": 10609,
+        "unorouter": {
+          "glm-5.2:free": {
+            "latency_ms": 3878,
             "endpoint_type": "responses"
           }
         }
@@ -131,7 +159,7 @@
       "providers": {
         "orcarouter": {
           "z-ai/glm-5.3-flash-free": {
-            "latency_ms": 3839,
+            "latency_ms": 3356,
             "endpoint_type": "responses"
           }
         }
@@ -147,10 +175,10 @@
           }
         },
         "nano-gpt": {
-          "qwen/qwen3.5-122b-a10b": {
+          "qwen/qwen3.5-122b-a10b:thinking": {
             "endpoint_type": "models"
           },
-          "qwen/qwen3.5-122b-a10b:thinking": {
+          "qwen/qwen3.5-122b-a10b": {
             "endpoint_type": "models"
           }
         },
@@ -179,10 +207,10 @@
           }
         },
         "nano-gpt": {
-          "qwen/qwen3.5-397b-a17b": {
+          "TEE/qwen3.5-397b-a17b": {
             "endpoint_type": "models"
           },
-          "TEE/qwen3.5-397b-a17b": {
+          "qwen/qwen3.5-397b-a17b": {
             "endpoint_type": "models"
           },
           "qwen/qwen3.5-397b-a17b:thinking": {
@@ -200,17 +228,17 @@
           }
         },
         "requesty": {
-          "deepinfra/Qwen/Qwen3.5-397B-A17B": {
-            "endpoint_type": "responses"
-          },
           "nebius/qwen/qwen3.5-397b-a17b": {
             "endpoint_type": "responses"
           },
-          "novita/qwen/qwen3.5-397b-a17b": {
-            "endpoint_type": "chat/completions"
-          },
           "deepinfra/Qwen/Qwen3.5-397B-A17B:flex": {
-            "endpoint_type": "chat/completions"
+            "endpoint_type": "responses"
+          },
+          "deepinfra/Qwen/Qwen3.5-397B-A17B": {
+            "endpoint_type": "responses"
+          },
+          "novita/qwen/qwen3.5-397b-a17b": {
+            "endpoint_type": "responses"
           }
         }
       }
@@ -303,10 +331,10 @@
           }
         },
         "requesty": {
-          "alibaba/qwen3.6-plus": {
+          "qwen3.6-plus": {
             "endpoint_type": "responses"
           },
-          "qwen3.6-plus": {
+          "alibaba/qwen3.6-plus": {
             "endpoint_type": "responses"
           }
         }
@@ -320,10 +348,10 @@
           }
         },
         "nano-gpt": {
-          "qwen/qwen3.7-max": {
+          "qwen/qwen3.7-max:thinking": {
             "endpoint_type": "models"
           },
-          "qwen/qwen3.7-max:thinking": {
+          "qwen/qwen3.7-max": {
             "endpoint_type": "models"
           }
         },
@@ -383,10 +411,10 @@
           }
         },
         "requesty": {
-          "alibaba/qwen3.7-plus": {
+          "fireworks/qwen3.7-plus": {
             "endpoint_type": "responses"
           },
-          "fireworks/qwen3.7-plus": {
+          "alibaba/qwen3.7-plus": {
             "endpoint_type": "responses"
           },
           "qwen3.7-plus": {
@@ -419,13 +447,13 @@
           "qwen3.8-2.4T-A95B": {
             "endpoint_type": "responses"
           },
+          "tensorx/qwen3.8": {
+            "endpoint_type": "responses"
+          },
           "qwen3.8-2.4T-A95B@eu": {
             "endpoint_type": "responses"
           },
           "tensorx/qwen3.8-2.4t-a95b": {
-            "endpoint_type": "responses"
-          },
-          "tensorx/qwen3.8": {
             "endpoint_type": "responses"
           }
         }
@@ -439,13 +467,13 @@
           }
         },
         "nano-gpt": {
-          "TEE/qwen3.8-27b": {
+          "qwen/qwen3.8-27b": {
             "endpoint_type": "models"
           },
           "qwen/qwen3.8-27b:thinking": {
             "endpoint_type": "models"
           },
-          "qwen/qwen3.8-27b": {
+          "TEE/qwen3.8-27b": {
             "endpoint_type": "models"
           }
         },
@@ -464,10 +492,10 @@
     "alibaba/qwen3.8-max": {
       "providers": {
         "nano-gpt": {
-          "qwen/qwen3.8-max:thinking": {
+          "qwen/qwen3.8-max": {
             "endpoint_type": "models"
           },
-          "qwen/qwen3.8-max": {
+          "qwen/qwen3.8-max:thinking": {
             "endpoint_type": "models"
           }
         },
@@ -499,6 +527,11 @@
     },
     "anthropic/claude-fable-5": {
       "providers": {
+        "aihubmix": {
+          "claude-fable-5": {
+            "endpoint_type": "chat/completions"
+          }
+        },
         "kilo": {
           "anthropic/claude-fable-5": {
             "endpoint_type": "models"
@@ -575,10 +608,10 @@
           "claude-fable-5.1": {
             "endpoint_type": "responses"
           },
-          "claude-fable-5.1@eu": {
+          "vertex/claude-fable-5.1": {
             "endpoint_type": "responses"
           },
-          "vertex/claude-fable-5.1": {
+          "claude-fable-5.1@eu": {
             "endpoint_type": "responses"
           },
           "vertex/claude-fable-5.1@eu": {
@@ -616,19 +649,19 @@
           "anthropic/claude-opus-4-7": {
             "endpoint_type": "responses"
           },
-          "bedrock/claude-opus-4-7": {
+          "bedrock/claude-opus-4-7@eu-central-1": {
             "endpoint_type": "responses"
           },
-          "bedrock/claude-opus-4-7@eu-central-1": {
+          "bedrock/claude-opus-4-7": {
             "endpoint_type": "responses"
           },
           "bedrock/claude-opus-4-7@eu-north-1": {
             "endpoint_type": "responses"
           },
-          "bedrock/claude-opus-4-7@eu-west-1": {
+          "bedrock/claude-opus-4-7@eu-west-3": {
             "endpoint_type": "responses"
           },
-          "claude-opus-4-7@eu": {
+          "bedrock/claude-opus-4-7@eu-west-1": {
             "endpoint_type": "responses"
           },
           "claude-opus-4-7": {
@@ -637,14 +670,14 @@
           "vertex/claude-opus-4-7": {
             "endpoint_type": "responses"
           },
-          "vertex/claude-opus-4-7@us": {
+          "claude-opus-4-7@eu": {
             "endpoint_type": "responses"
           },
-          "bedrock/claude-opus-4-7@eu-west-3": {
-            "endpoint_type": "chat/completions"
-          },
           "vertex/claude-opus-4-7@eu": {
-            "endpoint_type": "chat/completions"
+            "endpoint_type": "responses"
+          },
+          "vertex/claude-opus-4-7@us": {
+            "endpoint_type": "responses"
           }
         }
       }
@@ -662,10 +695,10 @@
           }
         },
         "nano-gpt": {
-          "anthropic/claude-opus-4.8": {
+          "anthropic/claude-opus-4.8:thinking": {
             "endpoint_type": "models"
           },
-          "anthropic/claude-opus-4.8:thinking": {
+          "anthropic/claude-opus-4.8": {
             "endpoint_type": "models"
           }
         },
@@ -689,16 +722,13 @@
           "bedrock/claude-opus-4-8@ap-northeast-1": {
             "endpoint_type": "responses"
           },
-          "bedrock/claude-opus-4-8@eu-central-1": {
-            "endpoint_type": "responses"
-          },
           "bedrock/claude-opus-4-8@eu-north-1": {
             "endpoint_type": "responses"
           },
-          "bedrock/claude-opus-4-8@eu-west-1": {
+          "bedrock/claude-opus-4-8@eu-central-1": {
             "endpoint_type": "responses"
           },
-          "claude-opus-4-8": {
+          "bedrock/claude-opus-4-8@eu-west-1": {
             "endpoint_type": "responses"
           },
           "bedrock/claude-opus-4-8@eu-west-3": {
@@ -707,11 +737,14 @@
           "claude-opus-4-8@eu": {
             "endpoint_type": "responses"
           },
-          "vertex/claude-opus-4-8": {
+          "claude-opus-4-8": {
             "endpoint_type": "responses"
           },
           "vertex/claude-opus-4-8@eu": {
             "endpoint_type": "responses"
+          },
+          "vertex/claude-opus-4-8": {
+            "endpoint_type": "chat/completions"
           },
           "vertex/claude-opus-4-8@us": {
             "endpoint_type": "responses"
@@ -755,13 +788,10 @@
           "anthropic/claude-opus-5": {
             "endpoint_type": "responses"
           },
-          "bedrock/claude-opus-5": {
-            "endpoint_type": "responses"
-          },
           "bedrock/claude-opus-5@eu-central-1": {
             "endpoint_type": "responses"
           },
-          "bedrock/claude-opus-5@eu-north-1": {
+          "bedrock/claude-opus-5": {
             "endpoint_type": "responses"
           },
           "bedrock/claude-opus-5@eu-west-1": {
@@ -776,13 +806,16 @@
           "claude-opus-5@eu": {
             "endpoint_type": "responses"
           },
-          "vertex/claude-opus-5@eu": {
+          "vertex/claude-opus-5": {
             "endpoint_type": "responses"
+          },
+          "bedrock/claude-opus-5@eu-north-1": {
+            "endpoint_type": "chat/completions"
           },
           "vertex/claude-opus-5@us": {
             "endpoint_type": "responses"
           },
-          "vertex/claude-opus-5": {
+          "vertex/claude-opus-5@eu": {
             "endpoint_type": "responses"
           }
         }
@@ -796,10 +829,10 @@
           }
         },
         "nano-gpt": {
-          "anthropic/claude-sonnet-4.6": {
+          "anthropic/claude-sonnet-4.6:thinking": {
             "endpoint_type": "models"
           },
-          "anthropic/claude-sonnet-4.6:thinking": {
+          "anthropic/claude-sonnet-4.6": {
             "endpoint_type": "models"
           }
         },
@@ -814,6 +847,9 @@
           }
         },
         "requesty": {
+          "anthropic/claude-sonnet-4-6": {
+            "endpoint_type": "responses"
+          },
           "bedrock/claude-sonnet-4-6": {
             "endpoint_type": "responses"
           },
@@ -826,32 +862,29 @@
           "bedrock/claude-sonnet-4-6@eu-north-1": {
             "endpoint_type": "responses"
           },
-          "bedrock/claude-sonnet-4-6@eu-west-1": {
+          "bedrock/claude-sonnet-4-6@eu-west-3": {
             "endpoint_type": "responses"
           },
-          "bedrock/claude-sonnet-4-6@us-east-1": {
+          "bedrock/claude-sonnet-4-6@eu-west-1": {
             "endpoint_type": "responses"
           },
           "bedrock/claude-sonnet-4-6@us-west-2": {
             "endpoint_type": "responses"
           },
-          "claude-sonnet-4-6": {
-            "endpoint_type": "responses"
-          },
           "claude-sonnet-4-6@eu": {
             "endpoint_type": "responses"
           },
-          "bedrock/claude-sonnet-4-6@eu-west-3": {
-            "endpoint_type": "chat/completions"
-          },
           "vertex/claude-sonnet-4-6": {
+            "endpoint_type": "responses"
+          },
+          "vertex/claude-sonnet-4-6@europe-west1": {
             "endpoint_type": "responses"
           },
           "bedrock/claude-sonnet-4-6@us-east-2": {
             "endpoint_type": "chat/completions"
           },
-          "vertex/claude-sonnet-4-6@europe-west1": {
-            "endpoint_type": "responses"
+          "claude-sonnet-4-6": {
+            "endpoint_type": "chat/completions"
           },
           "vertex/claude-sonnet-4-6@us-east5": {
             "endpoint_type": "responses"
@@ -891,19 +924,16 @@
           "bedrock/claude-sonnet-5": {
             "endpoint_type": "responses"
           },
-          "bedrock/claude-sonnet-5@ap-southeast-2": {
-            "endpoint_type": "responses"
-          },
           "bedrock/claude-sonnet-5@eu-central-1": {
             "endpoint_type": "responses"
           },
           "bedrock/claude-sonnet-5@eu-north-1": {
             "endpoint_type": "responses"
           },
-          "bedrock/claude-sonnet-5@eu-west-1": {
+          "bedrock/claude-sonnet-5@eu-west-2": {
             "endpoint_type": "responses"
           },
-          "bedrock/claude-sonnet-5@eu-west-2": {
+          "bedrock/claude-sonnet-5@eu-west-1": {
             "endpoint_type": "responses"
           },
           "bedrock/claude-sonnet-5@us-east-1": {
@@ -912,13 +942,10 @@
           "bedrock/claude-sonnet-5@us-west-2": {
             "endpoint_type": "responses"
           },
-          "bedrock/claude-sonnet-5@us-east-2": {
+          "claude-sonnet-5@eu": {
             "endpoint_type": "responses"
           },
           "claude-sonnet-5": {
-            "endpoint_type": "responses"
-          },
-          "claude-sonnet-5@eu": {
             "endpoint_type": "responses"
           },
           "vertex/claude-sonnet-5": {
@@ -1029,10 +1056,10 @@
           }
         },
         "requesty": {
-          "deepinfra/deepseek-v4-flash-0424": {
+          "deepinfra/deepseek-v4-flash-0424:flex": {
             "endpoint_type": "responses"
           },
-          "deepinfra/deepseek-v4-flash-0424:flex": {
+          "deepinfra/deepseek-v4-flash-0424": {
             "endpoint_type": "responses"
           },
           "deepseek-v4-flash": {
@@ -1044,11 +1071,11 @@
           "doubleword/deepseek-v4-flash-0424:flex": {
             "endpoint_type": "responses"
           },
-          "novita/deepseek/deepseek-v4-flash-0424": {
-            "endpoint_type": "responses"
-          },
           "parasail/deepseek-v4-flash-0424": {
             "endpoint_type": "responses"
+          },
+          "novita/deepseek/deepseek-v4-flash-0424": {
+            "endpoint_type": "chat/completions"
           }
         },
         "unorouter": {
@@ -1092,29 +1119,29 @@
           "deepinfra/deepseek-v4-pro-0424": {
             "endpoint_type": "responses"
           },
-          "deepseek-v4-pro": {
-            "endpoint_type": "responses"
-          },
           "deepinfra/deepseek-v4-pro-0424:flex": {
             "endpoint_type": "responses"
           },
-          "deepseek-v4-pro@eu": {
+          "deepseek-v4-pro": {
             "endpoint_type": "responses"
           },
           "doubleword/deepseek-v4-pro-0424": {
             "endpoint_type": "responses"
           },
-          "doubleword/deepseek-v4-pro-0424:flex": {
-            "endpoint_type": "responses"
-          },
           "lyceum/deepseek-v4-pro": {
             "endpoint_type": "responses"
           },
-          "nebius/deepseek-v4-pro-0424": {
+          "deepseek-v4-pro@eu": {
             "endpoint_type": "responses"
           },
           "tensorx/deepseek-v4-pro-0424": {
             "endpoint_type": "responses"
+          },
+          "doubleword/deepseek-v4-pro-0424:flex": {
+            "endpoint_type": "chat/completions"
+          },
+          "nebius/deepseek-v4-pro-0424": {
+            "endpoint_type": "chat/completions"
           }
         },
         "unorouter": {
@@ -1174,26 +1201,26 @@
           "gemini-3.1-pro-preview": {
             "endpoint_type": "responses"
           },
+          "google/gemini-3-pro-preview": {
+            "endpoint_type": "responses"
+          },
           "google/gemini-3-pro-preview:flex": {
             "endpoint_type": "responses"
           },
           "google/gemini-3.1-pro-preview": {
             "endpoint_type": "responses"
           },
-          "vertex/gemini-3-pro-preview": {
+          "google/gemini-3.1-pro-preview:flex": {
             "endpoint_type": "responses"
           },
-          "google/gemini-3.1-pro-preview:flex": {
+          "vertex/gemini-3-pro-preview": {
             "endpoint_type": "responses"
           },
           "vertex/gemini-3.1-pro-preview": {
             "endpoint_type": "responses"
           },
-          "google/gemini-3-pro-preview": {
-            "endpoint_type": "chat/completions"
-          },
           "vertex/gemini-3.1-pro-preview:flex": {
-            "endpoint_type": "chat/completions"
+            "endpoint_type": "responses"
           }
         },
         "zenmux": {
@@ -1229,10 +1256,10 @@
           }
         },
         "requesty": {
-          "gemini-3.5-flash@eu": {
+          "gemini-3.5-flash": {
             "endpoint_type": "responses"
           },
-          "gemini-3.5-flash": {
+          "gemini-3.5-flash@eu": {
             "endpoint_type": "responses"
           },
           "google/gemini-3.5-flash": {
@@ -1241,16 +1268,16 @@
           "google/gemini-3.5-flash:flex": {
             "endpoint_type": "responses"
           },
-          "vertex/gemini-3.5-flash:flex": {
+          "vertex/gemini-3.5-flash": {
             "endpoint_type": "responses"
           },
-          "vertex/gemini-3.5-flash@eu": {
+          "vertex/gemini-3.5-flash:flex": {
             "endpoint_type": "responses"
           },
           "vertex/gemini-3.5-flash@us": {
             "endpoint_type": "responses"
           },
-          "vertex/gemini-3.5-flash": {
+          "vertex/gemini-3.5-flash@eu": {
             "endpoint_type": "chat/completions"
           }
         },
@@ -1304,11 +1331,11 @@
           "vertex/gemini-3.5-flash-lite": {
             "endpoint_type": "responses"
           },
-          "vertex/gemini-3.5-flash-lite@eu": {
-            "endpoint_type": "responses"
-          },
           "vertex/gemini-3.5-flash-lite:flex": {
             "endpoint_type": "responses"
+          },
+          "vertex/gemini-3.5-flash-lite@eu": {
+            "endpoint_type": "chat/completions"
           }
         }
       }
@@ -1342,14 +1369,14 @@
           "google/gemini-3.6-flash": {
             "endpoint_type": "responses"
           },
-          "google/gemini-3.6-flash:flex": {
-            "endpoint_type": "responses"
-          },
           "vertex/gemini-3.6-flash": {
             "endpoint_type": "responses"
           },
           "vertex/gemini-3.6-flash:flex": {
             "endpoint_type": "responses"
+          },
+          "google/gemini-3.6-flash:flex": {
+            "endpoint_type": "chat/completions"
           }
         }
       }
@@ -1681,9 +1708,6 @@
           }
         },
         "requesty": {
-          "fireworks/minimax-m3": {
-            "endpoint_type": "responses"
-          },
           "minimax-m3": {
             "endpoint_type": "responses"
           },
@@ -1691,6 +1715,9 @@
             "endpoint_type": "responses"
           },
           "minimaxi/minimax-m3": {
+            "endpoint_type": "responses"
+          },
+          "fireworks/minimax-m3": {
             "endpoint_type": "responses"
           },
           "tensorx/minimax-m3": {
@@ -1763,16 +1790,16 @@
           "bedrock/kimi-k2.5@us-east-1": {
             "endpoint_type": "responses"
           },
-          "bedrock/kimi-k2.5@us-west-2": {
-            "endpoint_type": "responses"
-          },
-          "deepinfra/moonshotai/Kimi-K2.5": {
-            "endpoint_type": "responses"
-          },
           "bedrock/kimi-k2.5@us-east-2": {
             "endpoint_type": "responses"
           },
+          "bedrock/kimi-k2.5@us-west-2": {
+            "endpoint_type": "responses"
+          },
           "moonshot/kimi-k2.5": {
+            "endpoint_type": "responses"
+          },
+          "deepinfra/moonshotai/Kimi-K2.5": {
             "endpoint_type": "responses"
           }
         }
@@ -1813,26 +1840,23 @@
           "deepinfra/moonshotai/Kimi-K2.6:flex": {
             "endpoint_type": "responses"
           },
-          "fireworks/kimi-k2.6": {
-            "endpoint_type": "responses"
-          },
           "inceptron/kimi-k2.6": {
             "endpoint_type": "responses"
           },
-          "kimi-k2.6": {
+          "fireworks/kimi-k2.6": {
             "endpoint_type": "responses"
           },
           "kimi-k2.6@eu": {
             "endpoint_type": "responses"
           },
-          "nebius/moonshotai/kimi-k2.6": {
+          "moonshot/kimi-k2.6": {
             "endpoint_type": "responses"
           },
           "sail/kimi-k2.6": {
             "endpoint_type": "responses"
           },
-          "moonshot/kimi-k2.6": {
-            "endpoint_type": "responses"
+          "nebius/moonshotai/kimi-k2.6": {
+            "endpoint_type": "chat/completions"
           }
         },
         "unorouter": {
@@ -1855,10 +1879,10 @@
           }
         },
         "nano-gpt": {
-          "moonshotai/kimi-k2.7-code": {
+          "TEE/kimi-k2.7-code": {
             "endpoint_type": "models"
           },
-          "TEE/kimi-k2.7-code": {
+          "moonshotai/kimi-k2.7-code": {
             "endpoint_type": "models"
           }
         },
@@ -1876,20 +1900,20 @@
           "fireworks/kimi-k2.7-code": {
             "endpoint_type": "responses"
           },
-          "kimi-k2.7-code": {
-            "endpoint_type": "responses"
-          },
           "inceptron/kimi-k2.7-Code": {
-            "endpoint_type": "responses"
-          },
-          "kimi-k2.7-code@eu": {
             "endpoint_type": "responses"
           },
           "moonshot/kimi-k2.7-code": {
             "endpoint_type": "responses"
           },
+          "kimi-k2.7-code@eu": {
+            "endpoint_type": "responses"
+          },
           "tensorx/kimi-k2.7-code": {
             "endpoint_type": "responses"
+          },
+          "kimi-k2.7-code": {
+            "endpoint_type": "chat/completions"
           }
         },
         "zenmux": {
@@ -1937,17 +1961,17 @@
           "lyceum/kimi-k3": {
             "endpoint_type": "responses"
           },
-          "nebius/kimi-k3": {
+          "moonshot/kimi-k3": {
             "endpoint_type": "responses"
           },
-          "tensorx/kimi-k3": {
+          "nebius/kimi-k3": {
             "endpoint_type": "responses"
           },
           "sference/kimi-k3": {
             "endpoint_type": "responses"
           },
-          "moonshot/kimi-k3": {
-            "endpoint_type": "chat/completions"
+          "tensorx/kimi-k3": {
+            "endpoint_type": "responses"
           }
         },
         "zenmux": {
@@ -1988,7 +2012,7 @@
             "endpoint_type": "responses"
           },
           "nebius/nvidia/nemotron-3-ultra-550b-a55b": {
-            "endpoint_type": "responses"
+            "endpoint_type": "chat/completions"
           }
         }
       }
@@ -2019,13 +2043,16 @@
           "azure/gpt-5.1": {
             "endpoint_type": "responses"
           },
-          "azure/gpt-5.1@francecentral": {
-            "endpoint_type": "responses"
-          },
           "azure/gpt-5.1@eastus2": {
             "endpoint_type": "responses"
           },
+          "azure/gpt-5.1@francecentral": {
+            "endpoint_type": "responses"
+          },
           "azure/gpt-5.1@swedencentral": {
+            "endpoint_type": "responses"
+          },
+          "openai/gpt-5.1": {
             "endpoint_type": "responses"
           },
           "gpt-5.1@eu": {
@@ -2033,9 +2060,6 @@
           },
           "openai/gpt-5.1:flex": {
             "endpoint_type": "responses"
-          },
-          "openai/gpt-5.1": {
-            "endpoint_type": "chat/completions"
           }
         },
         "zenmux": {
@@ -2074,6 +2098,9 @@
           "azure/gpt-5.4@eastus2": {
             "endpoint_type": "responses"
           },
+          "azure/gpt-5.4@francecentral": {
+            "endpoint_type": "responses"
+          },
           "azure/gpt-5.4@germanywestcentral": {
             "endpoint_type": "responses"
           },
@@ -2086,16 +2113,16 @@
           "bedrock/gpt-5.4@us-east-1": {
             "endpoint_type": "responses"
           },
-          "azure/gpt-5.4@francecentral": {
-            "endpoint_type": "chat/completions"
-          },
           "bedrock/gpt-5.4@us-east-2": {
             "endpoint_type": "responses"
           },
-          "gpt-5.4": {
+          "bedrock/gpt-5.4@us-west-2": {
             "endpoint_type": "responses"
           },
-          "bedrock/gpt-5.4@us-west-2": {
+          "openai/gpt-5.4": {
+            "endpoint_type": "responses"
+          },
+          "gpt-5.4": {
             "endpoint_type": "responses"
           },
           "gpt-5.4@eu": {
@@ -2103,9 +2130,6 @@
           },
           "openai/gpt-5.4:flex": {
             "endpoint_type": "responses"
-          },
-          "openai/gpt-5.4": {
-            "endpoint_type": "chat/completions"
           }
         },
         "zenmux": {
@@ -2187,10 +2211,10 @@
           "gpt-5.4-nano": {
             "endpoint_type": "responses"
           },
-          "openai/gpt-5.4-nano:flex": {
+          "openai/gpt-5.4-nano": {
             "endpoint_type": "responses"
           },
-          "openai/gpt-5.4-nano": {
+          "openai/gpt-5.4-nano:flex": {
             "endpoint_type": "responses"
           }
         },
@@ -2224,13 +2248,13 @@
           }
         },
         "requesty": {
-          "azure/gpt-5.5@eastus2": {
-            "endpoint_type": "responses"
-          },
           "azure/gpt-5.5@germanywestcentral": {
             "endpoint_type": "responses"
           },
           "azure/gpt-5.5@swedencentral": {
+            "endpoint_type": "responses"
+          },
+          "azure/gpt-5.5@eastus2": {
             "endpoint_type": "responses"
           },
           "azure/gpt-5.5@westeurope": {
@@ -2239,13 +2263,10 @@
           "bedrock/gpt-5.5@us-east-1": {
             "endpoint_type": "responses"
           },
-          "bedrock/gpt-5.5@us-east-2": {
-            "endpoint_type": "responses"
-          },
           "gpt-5.5": {
             "endpoint_type": "responses"
           },
-          "gpt-5.5@eu": {
+          "bedrock/gpt-5.5@us-east-2": {
             "endpoint_type": "responses"
           },
           "openai/gpt-5.5": {
@@ -2253,6 +2274,9 @@
           },
           "openai/gpt-5.5:flex": {
             "endpoint_type": "responses"
+          },
+          "gpt-5.5@eu": {
+            "endpoint_type": "chat/completions"
           }
         },
         "unorouter": {
@@ -2270,18 +2294,18 @@
     "openai/gpt-5.6-luna": {
       "providers": {
         "kilo": {
-          "openai/gpt-5.6-luna": {
+          "openai/gpt-5.6-luna-pro": {
             "endpoint_type": "models"
           },
-          "openai/gpt-5.6-luna-pro": {
+          "openai/gpt-5.6-luna": {
             "endpoint_type": "models"
           }
         },
         "nano-gpt": {
-          "openai/gpt-5.6-luna": {
+          "openai/gpt-5.6-luna-pro": {
             "endpoint_type": "models"
           },
-          "openai/gpt-5.6-luna-pro": {
+          "openai/gpt-5.6-luna": {
             "endpoint_type": "models"
           }
         },
@@ -2311,14 +2335,17 @@
           "azure/gpt-5.6-luna@westeurope": {
             "endpoint_type": "responses"
           },
+          "azure/gpt-5.6-luna@swedencentral": {
+            "endpoint_type": "responses"
+          },
           "bedrock/gpt-5.6-luna@us-east-1": {
             "endpoint_type": "responses"
           },
           "bedrock/gpt-5.6-luna@us-east-2": {
             "endpoint_type": "responses"
           },
-          "azure/gpt-5.6-luna@swedencentral": {
-            "endpoint_type": "chat/completions"
+          "bedrock/gpt-5.6-luna@us-west-2": {
+            "endpoint_type": "responses"
           },
           "gpt-5.6-luna@eu": {
             "endpoint_type": "responses"
@@ -2342,19 +2369,24 @@
     },
     "openai/gpt-5.6-sol": {
       "providers": {
+        "aihubmix": {
+          "gpt-5.6-sol": {
+            "endpoint_type": "chat/completions"
+          }
+        },
         "kilo": {
-          "openai/gpt-5.6-sol-pro": {
+          "openai/gpt-5.6-sol": {
             "endpoint_type": "models"
           },
-          "openai/gpt-5.6-sol": {
+          "openai/gpt-5.6-sol-pro": {
             "endpoint_type": "models"
           }
         },
         "nano-gpt": {
-          "openai/gpt-5.6-sol": {
+          "openai/gpt-5.6-sol-pro": {
             "endpoint_type": "models"
           },
-          "openai/gpt-5.6-sol-pro": {
+          "openai/gpt-5.6-sol": {
             "endpoint_type": "models"
           }
         },
@@ -2393,17 +2425,17 @@
           "bedrock/gpt-5.6-sol@us-east-2": {
             "endpoint_type": "responses"
           },
-          "gpt-5.6-sol": {
-            "endpoint_type": "responses"
-          },
           "gpt-5.6-sol@eu": {
             "endpoint_type": "responses"
           },
-          "openai/gpt-5.6-sol": {
+          "gpt-5.6-sol": {
             "endpoint_type": "responses"
           },
           "openai/gpt-5.6-sol:flex": {
             "endpoint_type": "responses"
+          },
+          "openai/gpt-5.6-sol": {
+            "endpoint_type": "chat/completions"
           }
         },
         "zenmux": {
@@ -2445,14 +2477,14 @@
           }
         },
         "requesty": {
-          "azure/gpt-5.6-terra@eastus2": {
+          "azure/gpt-5.6-terra@francecentral": {
             "endpoint_type": "responses"
           },
           "azure/gpt-5.6-terra@germanywestcentral": {
             "endpoint_type": "responses"
           },
-          "azure/gpt-5.6-terra@francecentral": {
-            "endpoint_type": "responses"
+          "azure/gpt-5.6-terra@eastus2": {
+            "endpoint_type": "chat/completions"
           },
           "azure/gpt-5.6-terra@swedencentral": {
             "endpoint_type": "responses"
@@ -2460,13 +2492,13 @@
           "azure/gpt-5.6-terra@westeurope": {
             "endpoint_type": "responses"
           },
+          "bedrock/gpt-5.6-terra@us-west-2": {
+            "endpoint_type": "responses"
+          },
           "bedrock/gpt-5.6-terra@us-east-2": {
             "endpoint_type": "responses"
           },
           "gpt-5.6-terra": {
-            "endpoint_type": "responses"
-          },
-          "bedrock/gpt-5.6-terra@us-west-2": {
             "endpoint_type": "responses"
           },
           "gpt-5.6-terra@eu": {
@@ -2504,6 +2536,9 @@
           }
         },
         "requesty": {
+          "azure/gpt-6-astra@eastus2": {
+            "endpoint_type": "responses"
+          },
           "gpt-6-astra": {
             "endpoint_type": "responses"
           },
@@ -2512,9 +2547,6 @@
           },
           "openai/gpt-6-astra:flex": {
             "endpoint_type": "responses"
-          },
-          "azure/gpt-6-astra@eastus2": {
-            "endpoint_type": "chat/completions"
           }
         }
       }
@@ -2589,10 +2621,10 @@
           }
         },
         "nano-gpt": {
-          "thinkingmachines/Inkling-Small": {
+          "thinkingmachines/Inkling-Small:thinking": {
             "endpoint_type": "models"
           },
-          "thinkingmachines/Inkling-Small:thinking": {
+          "thinkingmachines/Inkling-Small": {
             "endpoint_type": "models"
           }
         },
@@ -2690,10 +2722,10 @@
           }
         },
         "requesty": {
-          "xai/grok-4.5": {
+          "grok-4.5": {
             "endpoint_type": "responses"
           },
-          "grok-4.5": {
+          "xai/grok-4.5": {
             "endpoint_type": "responses"
           }
         },
@@ -2754,10 +2786,10 @@
           }
         },
         "requesty": {
-          "xai/grok-build-0.1": {
+          "grok-build-0.1": {
             "endpoint_type": "responses"
           },
-          "grok-build-0.1": {
+          "xai/grok-build-0.1": {
             "endpoint_type": "responses"
           }
         },
@@ -2794,10 +2826,10 @@
           }
         },
         "requesty": {
-          "deepinfra/XiaomiMiMo/MiMo-V2.5": {
+          "deepinfra/XiaomiMiMo/MiMo-V2.5:flex": {
             "endpoint_type": "responses"
           },
-          "deepinfra/XiaomiMiMo/MiMo-V2.5:flex": {
+          "deepinfra/XiaomiMiMo/MiMo-V2.5": {
             "endpoint_type": "responses"
           },
           "mimo-v2.5": {
@@ -2941,10 +2973,10 @@
           "TEE/glm-5.1-thinking": {
             "endpoint_type": "models"
           },
-          "z-ai/glm-5.1": {
+          "z-ai/glm-5.1:thinking": {
             "endpoint_type": "models"
           },
-          "z-ai/glm-5.1:thinking": {
+          "z-ai/glm-5.1": {
             "endpoint_type": "models"
           }
         },
@@ -2981,7 +3013,7 @@
             "endpoint_type": "responses"
           },
           "zai/glm-5.1": {
-            "endpoint_type": "responses"
+            "endpoint_type": "chat/completions"
           }
         }
       }
@@ -3021,13 +3053,13 @@
           "deepinfra/glm-5.2": {
             "endpoint_type": "responses"
           },
+          "deepinfra/glm-5.2:flex": {
+            "endpoint_type": "responses"
+          },
           "doubleword/glm-5.2": {
             "endpoint_type": "responses"
           },
           "doubleword/glm-5.2:flex": {
-            "endpoint_type": "responses"
-          },
-          "deepinfra/glm-5.2:flex": {
             "endpoint_type": "responses"
           },
           "fireworks/glm-5.2": {
@@ -3042,20 +3074,20 @@
           "glm-5.2@eu": {
             "endpoint_type": "responses"
           },
-          "inceptron/glm-5.2": {
-            "endpoint_type": "responses"
-          },
           "mistral/glm-5-2": {
             "endpoint_type": "responses"
           },
           "nebius/glm-5.2": {
             "endpoint_type": "responses"
           },
-          "sail/glm-5.2": {
-            "endpoint_type": "responses"
+          "inceptron/glm-5.2": {
+            "endpoint_type": "chat/completions"
           },
           "runware/glm-5.2": {
-            "endpoint_type": "chat/completions"
+            "endpoint_type": "responses"
+          },
+          "sail/glm-5.2": {
+            "endpoint_type": "responses"
           },
           "scaleway/glm-5.2": {
             "endpoint_type": "responses"
@@ -3067,7 +3099,7 @@
             "endpoint_type": "responses"
           },
           "zai/glm-5.2": {
-            "endpoint_type": "chat/completions"
+            "endpoint_type": "responses"
           }
         },
         "unorouter": {
@@ -3114,16 +3146,13 @@
           "deepinfra/glm-5.3": {
             "endpoint_type": "responses"
           },
-          "glm-5.3": {
-            "endpoint_type": "responses"
-          },
           "fireworks/glm-5.3": {
             "endpoint_type": "responses"
           },
-          "glm-5.3@eu": {
+          "glm-5.3": {
             "endpoint_type": "responses"
           },
-          "lyceum/glm-5.3": {
+          "glm-5.3@eu": {
             "endpoint_type": "responses"
           },
           "runware/glm-5.3": {
@@ -3131,6 +3160,9 @@
           },
           "sference/glm-5.3": {
             "endpoint_type": "responses"
+          },
+          "lyceum/glm-5.3": {
+            "endpoint_type": "chat/completions"
           },
           "tensorx/glm-5.3": {
             "endpoint_type": "responses"
@@ -3176,10 +3208,10 @@
           "glm-5.3-flash": {
             "endpoint_type": "responses"
           },
-          "lyceum/glm-5.3-flash": {
+          "glm-5.3-flash@eu": {
             "endpoint_type": "responses"
           },
-          "glm-5.3-flash@eu": {
+          "lyceum/glm-5.3-flash": {
             "endpoint_type": "responses"
           },
           "novita/glm-5.3-flash": {
@@ -3188,10 +3220,10 @@
           "runware/glm-5.3-flash": {
             "endpoint_type": "responses"
           },
-          "tensorx/glm-5.3-flash": {
+          "sference/glm-5.3-flash": {
             "endpoint_type": "responses"
           },
-          "sference/glm-5.3-flash": {
+          "tensorx/glm-5.3-flash": {
             "endpoint_type": "responses"
           },
           "zai/glm-5.3-flash": {
